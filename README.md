@@ -1,8 +1,4 @@
-*Code of Conduct*
+*Resources*
 
-Never pushing main
+Docker: https://www.docker.com/
 
-test
-test 2
-
-test 3
