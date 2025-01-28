@@ -1,9 +1,9 @@
 *Resources*
 
-Docker: https://www.docker.com/
-HeidiSQL: https://www.heidisql.com/
-Xampp: https://www.apachefriends.org/
-Vscode: https://code.visualstudio.com/
+* Docker: https://www.docker.com/
+* HeidiSQL: https://www.heidisql.com/
+* Xampp: https://www.apachefriends.org/
+* Vscode: https://code.visualstudio.com/
 
 
 
