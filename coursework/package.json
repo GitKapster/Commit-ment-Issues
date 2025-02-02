@@ -1,0 +1,23 @@
+{
+    "name": "test",
+    "description": "Software Engineering Project",
+    "version": "0.0.4",
+    "author": "Erin",
+    "homepage": "https://localhost:3000",
+    "private": true,
+    "scripts": {
+      "start": "node ./index.js",
+      "test": "jest",
+      "dev": "set NODE_ENV=development && node ./index.js"
+    },
+    "dependencies": {
+      "body-parser": "^1.19.2",
+      "debug": "~2.6.9",
+      "express": "~4.16.1",
+      "express-session": "^1.17.2",
+      "http-errors": "~1.6.3",
+      "mysql": "^2.18.1",
+      "mysql2": "^2.3.3",
+      "pug": "^3.0.2"
+    }
+  }
