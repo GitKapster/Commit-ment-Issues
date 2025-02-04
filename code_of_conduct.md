@@ -1,9 +1,9 @@
 # Software Engineering 1 Code of Conduct
 Group Members:
-Kacper Cibinski (CIB22544833)
-Oskar Kandulski (KAN23577717)
-Taran Bolina (BOL23573432)
-Erin Goonan (GOO23590487)
+* Kacper Cibinski (CIB22544833)
+* Oskar Kandulski (KAN23577717)
+* Taran Bolina (BOL23573432)
+* Erin Goonan (GOO23590487)
 
 ## Attendance and Participation
 Members of the team are expected to attend all Lab sessions and all team meetings , these will occur on Tuesday at 10am till 2pm and on Thursdays at 6pm till 8pm GMT. If a member of the group cannot attend the session , they will notify the group of their absence. 
