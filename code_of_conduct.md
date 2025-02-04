@@ -1,5 +1,5 @@
 # Software Engineering 1 Code of Conduct
-Group Members:
+## Group Members:
 * Kacper Cibinski (CIB22544833)
 * Oskar Kandulski (KAN23577717)
 * Taran Bolina (BOL23573432)
