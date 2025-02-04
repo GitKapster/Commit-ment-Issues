@@ -6,5 +6,5 @@
 * Vscode: https://code.visualstudio.com/
 * Discord: https://discord.com/
 
-
+BOL23573432
 add any resources we use/will use that i might have missed
