@@ -2,7 +2,7 @@
 Group Members:
 Kacper Cibinski
 Oskar Kandulski 
-Taran Bolina 
+Taran Bolina (BOL23573432)
 Erin Goonan 
 
 ## Attendance and Participation
