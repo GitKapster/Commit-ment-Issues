@@ -50,7 +50,7 @@ Second offence: offender must buy all other group members a 4 pack of redubll of
 Third offence: offender must write a written apology in the discord and tell lisa you have held your group back
 Continued offences may risk in a member being removed from the group, and may require notifying senior staff members.
 
-##Conclusion
+## Conclusion
 By participating in this group, each member understands that they will follow this code of conduct, so that we can build a positive and productive environment, where all members feel valued and respected. If a member has any questions, ask through whatever available mediums there are.
 
 This document does reference the Mozilla Code of Conduct, found :
