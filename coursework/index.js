@@ -3,4 +3,4 @@
 // Include the app.js file.
 // This will run the code.
 console.log("entrypoint");
-const app = require("./coursework/src/routes/app.js");
+const app = require("./app/app.js");

@@ -1,5 +1,10 @@
-const express = require('express');
-const router = express.Router();
+const express = require("express");
+
+// Create express app
+var app = express();
+
+// Add static files location
+app.use(express.static("static"));
 
 // Use the Pug templating engine
 app.set('view engine', 'pug');
@@ -8,14 +13,12 @@ app.set('views', './app/views');
 // Get the functions in the db.js file to use
 const db = require('./services/db');
 
-// Home page
-router.get('/', (req, res) => {
-  res.send('Welcome to the main page!');
+// Create a route for root - /
+app.get("/", function(req, res) {
+        res.render("hello world");
 });
 
-// Test route
-router.get('/test', (req, res) => {
-  res.send('This is a test page');
+// Start server on port 3000
+app.listen(3000,function(){
+  console.log(`Server running at http://127.0.0.1:3000/`);
 });
-
-module.exports = router;
