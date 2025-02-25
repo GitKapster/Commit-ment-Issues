@@ -14,8 +14,13 @@ app.set('views', './app/views');
 const db = require('./services/db');
 
 // root
-app.get("/", function(req, res) {
-  res.send("Hello World");
+app.get("/", function (req, res) {
+  res.render("index");  // Render the 'index.pug' template
+});
+
+// account page
+app.get("/account", function(req, res) {
+  res.send("er1no");
 });
 
 // Start server on port 3000
