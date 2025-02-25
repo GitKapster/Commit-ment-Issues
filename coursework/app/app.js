@@ -13,9 +13,9 @@ app.set('views', './app/views');
 // Get the functions in the db.js file to use
 const db = require('./services/db');
 
-// Create a route for root - /
+// root
 app.get("/", function(req, res) {
-        res.render("hello world");
+  res.send("Hello World");
 });
 
 // Start server on port 3000
