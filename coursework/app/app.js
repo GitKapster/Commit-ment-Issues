@@ -13,14 +13,14 @@ app.set('views', './app/views');
 // Get the functions in the db.js file to use
 const db = require('./services/db');
 
-// root
+// home page / root page
 app.get("/", function (req, res) {
-  res.render("index");  // Render the 'index.pug' template
+  res.render("home");  // Render the 'index.pug' template
 });
 
 // account page
 app.get("/account", function(req, res) {
-  res.send("er1no");
+  res.render("account"); // render account pug template
 });
 
 // Start server on port 3000
