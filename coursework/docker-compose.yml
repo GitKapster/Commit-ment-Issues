@@ -18,7 +18,7 @@ services:
       - "3308:3306"
     volumes:
       - ./db:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/test.sql  # Added this line to initilize our database
+      - ./init.sql:/docker-entrypoint-initdb.d/AimTrainer.sql  # Added this line to initilize our database
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     restart: always
