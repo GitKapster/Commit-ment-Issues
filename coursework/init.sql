@@ -1,15 +1,15 @@
-CREATE DATABASE IF NOT EXISTS AimTrainer;  --have the if not statement incase someone else runs it and it tries creating the database twice
+CREATE DATABASE IF NOT EXISTS AimTrainer;  -- have the if not statement incase someone else runs it and it tries creating the database twice
 USE AimTrainer;  -- This selects which database to create all the tables in
 
---User Accounts Info
-CREATE TABLE Users ( 
+-- User Accounts Info
+CREATE TABLE IF NOT EXISTS Users ( 
   UserID int PRIMARY KEY,
   Username varchar(25),
   Password varchar(25)
 );
 
---Leaderboards Info
-CREATE TABLE Leaderboard (
+-- Leaderboards Info
+CREATE TABLE IF NOT EXISTS Leaderboard (
   TaskID int,
   UserID int,
   Username varchar(25),
@@ -17,8 +17,8 @@ CREATE TABLE Leaderboard (
   FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
---Table for Forums
-CREATE TABLE Forums (
+-- Table for Forums
+CREATE TABLE IF NOT EXISTS Forums (
   ForumID int,
   UserID int,
   Title varchar (25),
@@ -27,9 +27,9 @@ CREATE TABLE Forums (
   KEY UserID (UserID)
 );
 
---Table for Posts (inside of Forums)
-CREATE TABLE Posts (
-  ThreadID int,
+-- Table for Posts (inside of Forums)
+CREATE TABLE IF NOT EXISTS Posts (
+  ForumID int,
   PostID int,
   UserID int,
   Title varchar (25),
