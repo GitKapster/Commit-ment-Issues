@@ -1,5 +1,4 @@
-CREATE DATABASE AimTrainer;
-
+CREATE DATABASE IF NOT EXISTS AimTrainer;  --have the if not statement incase someone else runs it and it tries creating the database twice
 USE AimTrainer;  -- This selects which database to create all the tables in
 
 CREATE TABLE Users (
