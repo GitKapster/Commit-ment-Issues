@@ -1,0 +1,58 @@
+doctype html
+html
+  head
+    style.
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+      }
+      .navbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: #333;
+        display: flex;
+        align-items: center;
+        padding: 10px 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .navbar img {
+        width: 40px;
+        height: 40px;
+        margin: 0 15px;
+      }
+      .navbar .buttons {
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+      }
+      .navbar button {
+        margin: 0 10px;
+        padding: 10px 15px;
+        background: #555;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 5px;
+      }
+      .navbar button:hover {
+        background: #777;
+      }
+      .content {
+        margin-top: 80px; /* Push content down so it’s not hidden under navbar */
+        text-align: center;
+        padding: 20px;
+      }
+
+  body
+    .navbar
+      img(src="icon1.png", alt="Left Icon") 
+      .buttons
+        button(onclick="alert('Tasks clicked')") Tasks
+        button(onclick="alert('Leaderboard clicked')") Leaderboard
+        button(onclick="alert('Games clicked')") Games
+        button(onclick="alert('Forum clicked')") Forum
+      img(src="icon2.png", alt="Right Icon")
+
+    block content  //- Placeholder for content to be added by child pages
