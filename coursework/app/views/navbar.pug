@@ -20,22 +20,26 @@ html
         width: 40px;
         height: 40px;
         margin: 0 15px;
-        padding: 0px 10px 0px 0px;
+        padding: 0px 20px 0px 0px;
       }
       .navbar .buttons {
         flex-grow: 1;
         display: flex;
         justify-content: center;
+        gap: 10px;
       }
       .navbar button {
-        margin: 0 10px;
-        padding: 10px 15px;
-        background: #555;
+        flex: 1; 
+        max-width: 120px; 
+        height: 45px; 
+        padding: 10px;
+        font-size: 16px;
         color: white;
+        background: #555;
         border: none;
         cursor: pointer;
-        font-size: 16px;
         border-radius: 5px;
+        text-align: center;
       }
       .navbar button:hover {
         background: #777;
@@ -46,17 +50,18 @@ html
         padding: 20px;
       }
 
-body
-  .navbar
-    a(href="/")
-      img(src="/images/sillycat.jpg", alt="Logo Icon") 
-    .buttons
-      button(onclick="alert('Tasks clicked')") Tasks
-      button(onclick="alert('Leaderboard clicked')") Leaderboard
-      button(onclick="alert('Games clicked')") Games
-      button(onclick="alert('Forum clicked')") Forum
-    a(href="/account")
-      img(src="/images/account.png", alt="Account Icon")
+  body
+    .navbar
+      a(href="/")
+        img(src="/images/sillycat.jpg", alt="Logo Icon") 
+      .buttons
+        button(onclick="alert('Tasks clicked')") Tasks
+        button(onclick="alert('Leaderboard clicked')") Leaderboard
+        button(onclick="alert('Games clicked')") Games
+        button(onclick="alert('Forum clicked')") Forum
+      a(href="/account")
+        img(src="/images/accounticon.png", alt="Account Icon")
 
-    
-  block content  //- Placeholder for content to be added by child pages
+    //- Move block content OUTSIDE the navbar
+    .content
+      block content
