@@ -23,6 +23,11 @@ app.get("/account", function(req, res) {
   res.render("account"); // render account pug template
 });
 
+// login page
+app.get("/login", (req, res) => {
+  res.render("login"); // Render the login.pug template
+});
+
 // Start server on port 3000
 app.listen(3000,function(){
   console.log(`Server running at http://127.0.0.1:3000/`);
