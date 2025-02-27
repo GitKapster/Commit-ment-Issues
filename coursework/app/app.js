@@ -111,7 +111,7 @@ async function getEsportsNews() {
       date: new Date(item.pubDate).toLocaleDateString()
     }));
   } catch (error) {
-    // Return fallback data
+    // Incase api key gets deleted (i might have to update the api key once in a while)
     return [
       { title: "Team Liquid advances to finals", date: "Feb 27, 2025" },
       { title: "New Valorant tournament announced", date: "Feb 26, 2025" },
