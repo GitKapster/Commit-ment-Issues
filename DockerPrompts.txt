@@ -3,7 +3,7 @@ remove the database directory otherwise changes will not be loaded into the data
 
 Use these commands below in terminal:
 
-docker-compose down
+docker-compose down -v
 Remove-Item -Path ./db -Recurse -Force
 docker-compose up
 
