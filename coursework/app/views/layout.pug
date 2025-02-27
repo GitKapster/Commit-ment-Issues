@@ -1,3 +1,4 @@
+//- views/layout.pug
 doctype html
 html
   head
@@ -50,7 +51,7 @@ html
         transform: scale(1.02);
       }
       .content {
-        margin-top: 80px; /* Push content down so it’s not hidden under navbar */
+        margin-top: 80px; /* Push content down so it's not hidden under navbar */
         text-align: center;
         padding: 20px;
       }
@@ -63,9 +64,10 @@ html
         button(onclick="alert('Tasks clicked')") Tasks
         button(onclick="alert('Leaderboard clicked')") Leaderboard
         button(onclick="alert('Games clicked')") Games
-        button(onclick="alert('Forum clicked')") Forum
+        button(onclick="window.location.href='/forum'") Forum  <!-- CHANGED: Now links to /forum instead of showing alert -->
       a(href="/account")
         img(src="/images/accounticon.png", alt="Account Icon")
+
 
     //- Move block content OUTSIDE the navbar
     .content

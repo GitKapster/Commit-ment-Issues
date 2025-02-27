@@ -49,6 +49,12 @@ app.get("/login", (req, res) => {
   res.render("login"); // Render the login.pug template
 });
 
+// Forum main page
+app.get("/forum", function(req, res) {
+  // For now, just render the forum page without data
+  res.render("forum");
+});
+
 // login function fetching from database
 app.post("/login", async (req, res) => {
   const { username, password } = req.body; // username and password taken from user input
