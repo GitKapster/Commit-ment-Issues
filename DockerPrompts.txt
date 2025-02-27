@@ -1,0 +1,11 @@
+Whenever updating the database because of dockers old design we have to manually 
+remove the database directory otherwise changes will not be loaded into the database
+
+Use these commands below in terminal:
+
+docker-compose down
+Remove-Item -Path ./db -Recurse -Force
+docker-compose up
+
+Last resort u can try remove it manually:
+docker exec -it db-1 mysql -uroot -p -e "source /docker-entrypoint-initdb.d/init.sql"
