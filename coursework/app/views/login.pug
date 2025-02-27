@@ -11,9 +11,7 @@ block content
 
   //- Styles for the login page
   style.
-    * {
-        box-sizing: border-box;
-    }
+    
     .login-container {
       background: #222;
       padding: 30px;
@@ -31,11 +29,12 @@ block content
     input {
       width: 100%; /* Full width */
       padding: 12px; /* More padding for better spacing */
-      margin: 10px 0; /* Space between inputs */
+      margin: 8px 0; /* Space between inputs */
       border: 1px solid #ccc; /* Light gray border */
       border-radius: 5px; /* Rounded corners */
       font-size: 16px; /* Font size for input */
       transition: border-color 0.3s; /* Transition for border color */
+      box-sizing: border-box;
     }
     input:focus {
       border-color: #5dc5c1; /* Green border on focus */
@@ -44,6 +43,7 @@ block content
     button {
       width: 100%; /* Full width */
       padding: 12px;
+      margin: 8px 0;
       background-color: #5dc5c1; 
       color: white; /* White text */
       border: none; /* No border */
