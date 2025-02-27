@@ -20,6 +20,7 @@ html
         width: 40px;
         height: 40px;
         margin: 0 15px;
+        padding: 0px 10px 0px 0px;
       }
       .navbar .buttons {
         flex-grow: 1;
@@ -45,14 +46,17 @@ html
         padding: 20px;
       }
 
-  body
-    .navbar
-      img(src="icon1.png", alt="Left Icon") 
-      .buttons
-        button(onclick="alert('Tasks clicked')") Tasks
-        button(onclick="alert('Leaderboard clicked')") Leaderboard
-        button(onclick="alert('Games clicked')") Games
-        button(onclick="alert('Forum clicked')") Forum
-      img(src="icon2.png", alt="Right Icon")
+body
+  .navbar
+    a(href="/")
+      img(src="/images/sillycat.jpg", alt="Logo Icon") 
+    .buttons
+      button(onclick="alert('Tasks clicked')") Tasks
+      button(onclick="alert('Leaderboard clicked')") Leaderboard
+      button(onclick="alert('Games clicked')") Games
+      button(onclick="alert('Forum clicked')") Forum
+    a(href="/account")
+      img(src="/images/account.png", alt="Account Icon")
 
-    block content  //- Placeholder for content to be added by child pages
+    
+  block content  //- Placeholder for content to be added by child pages
