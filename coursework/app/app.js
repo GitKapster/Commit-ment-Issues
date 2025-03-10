@@ -3,6 +3,7 @@ const axios = require("axios"); // this is for the api hook
 
 // Create express app
 var app = express();
+const { query } = require("./services/db");
 
 // Add static files location
 app.use(express.static("static"));
@@ -48,6 +49,18 @@ app.get("/account", (req, res) => {
 // login page
 app.get("/login", (req, res) => {
   res.render("login"); // Render the login.pug template
+});
+
+// account list page
+app.get("/account-list", async (req, res) => {
+  try {
+    const results = await query("SELECT UserID, Username FROM Users");
+    console.log("Fetched users:", results); // Debugging
+    res.render("account-list", { users: results });
+  } catch (err) {
+    console.error("Database query error:", err.message);
+    res.status(500).send(`Database query failed: ${err.message}`);
+  }
 });
 
 // login function fetching from database
