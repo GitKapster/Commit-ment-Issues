@@ -30,5 +30,36 @@ block content
       transform: scale(0.98);
     }
 
+    .list-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 50px;
+    }
+
+    .list-button {
+      padding: 12px 24px;
+      font-size: 18px;
+      font-weight: bold;
+      color: white;
+      background: #43c6c1;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .list-button:hover {
+      background: #37a09c;
+      transform: scale(1.02);
+    }
+
+    .list-button:active {
+      transform: scale(0.98);
+    }
+
   .login-container
     button.login-button(onclick="window.location.href='/login'") Login
+
+  .list-container
+    button.list-button(onclick="window.location.href='/account-list'") Accounts

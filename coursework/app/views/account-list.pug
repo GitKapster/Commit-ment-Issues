@@ -1,0 +1,52 @@
+extends layout
+
+block content
+  h1 User List
+  table.table
+    thead
+      tr
+        th UserID
+        th Username
+    tbody
+      each user in users
+        tr
+          td= user.UserID
+          td= user.Username
+
+  style.
+    .content {
+      padding: 20px;
+    }
+    h1 {
+      color: #fff;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      max-width: 800px;
+      margin: auto;
+      border-collapse: collapse;
+      background: #2c2c2c;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #444;
+      text-align: left;
+      color: #e0e0e0;
+    }
+    th {
+      background-color: #1e1e1e;
+      color: #67d9dc;
+      font-size: 16px;
+    }
+    tr:nth-child(even) {
+      background-color: #3a3a3a;
+    }
+    tr:hover {
+      background-color: #4a4a4a;
+      transition: 0.3s;
+    }
