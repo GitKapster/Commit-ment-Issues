@@ -38,12 +38,33 @@ app.get("/", function (req, res) {
 });
 
 // account page
+app.get("/account/:id", (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/login"); // redirect if not logged in
+  }
+
+  const userID = Number(req.session.user.UserID); // Convert to number
+  const requestedID = Number(req.params.id); // Convert to number
+
+  // user can only open their own account page
+  if (requestedID !== userID) {
+    return res.status(403).send("Denied: You can only access your own account.");
+  }
+
+  res.render("account", { 
+    username: req.session.user.Username,
+    userID: userID 
+  });
+});
+
+// Redirect /account to /account/userID
 app.get("/account", (req, res) => {
   if (!req.session.user) {
-    return res.redirect("/login"); // Redirect if not logged in
+    return res.redirect("/login");
   }
-  
-  res.render("account", { username: req.session.user.Username });
+
+  const userID = Number(req.session.user.UserID);
+  res.redirect(`/account/${userID}`);
 });
 
 // login page
@@ -86,7 +107,7 @@ app.post("/login", async (req, res) => {
     if (password === user.Password) {  // Direct password comparison, no hashing
       req.session.user = user; // storing user in session
       console.log("Login successful, redirecting..."); // debugging
-      return res.redirect("/account"); // send to account page
+      return res.redirect(`/account/${user.UserID}`); 
     }
 
     console.log("Password incorrect.");
@@ -96,6 +117,17 @@ app.post("/login", async (req, res) => {
     console.error("Database error:", error);
     res.status(500).send("Server error");
   }
+});
+
+//logout route
+app.get("/logout", (req,res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destroying session:", err);
+      return res.status(500).send("Error logging out");
+    }
+    res.redirect("/login"); // Redirect user to login page
+  });
 });
 
 
