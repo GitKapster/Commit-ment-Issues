@@ -189,11 +189,17 @@ app.get("/forum", async function(req, res) {
 app.get("/leaderboard", async (req, res) => {
   try {
     const [players] = await db.query(
-      "SELECT Username, Score FROM Leaderboard ORDER BY Score DESC LIMIT 10"
+      "SELECT UserID, Score FROM Leaderboard ORDER BY Score DESC LIMIT 10"
     );
     res.render("leaderboard", { players });
   } catch (err) {
     console.error("Database Error:", err);
     res.status(500).send("Error loading leaderboard");
   }
+});
+
+
+// Tasks Route - Detching data from the SQL
+app.get("/tasks", (req, res) => {
+  res.render("tasks"); // Render the tasks.pug template
 });
