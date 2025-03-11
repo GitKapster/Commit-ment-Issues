@@ -39,21 +39,50 @@ block content
             margin-top: 10px;
         }
 
+        .difficulty-buttons {
+            margin-top: 15px;
+        }
+
+        .difficulty-buttons button {
+            margin: 5px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .easy { background-color: #8BC34A; color: white; }
+        .medium { background-color: #FFC107; color: white; }
+        .hard { background-color: #F44336; color: white; }
+
     .container
         .block
             .header Aim Trainer
             .image 
                 img(src="https://tr.rbxcdn.com/180DAY-11680b41dbbed0d4d49b13d4c39c02ce/768/432/Image/Webp/noFilter" alt="Aim Trainer")
             .description Test your Aim!
+            .difficulty-buttons
+                button.easy Easy ⭐
+                button.medium Medium ⭐⭐
+                button.hard Hard ⭐⭐⭐
 
         .block
             .header Reaction Test
             .image 
                 img(src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZl7w16PU6k0UltqcwlobWihA9HNsqteamcw&s" alt="Reaction Test")
             .description Test your reaction speed 
+            .difficulty-buttons
+                button.easy Easy ⭐
+                button.medium Medium ⭐⭐
+                button.hard Hard ⭐⭐⭐
 
         .block
             .header Memory Test
             .image 
                 img(src="https://hips.hearstapps.com/hmg-prod/images/thumbnail-1-1461101041.jpg" alt="Memory Test")
             .description Test your memory
+            .difficulty-buttons
+                button.easy Easy ⭐
+                button.medium Medium ⭐⭐
+                button.hard Hard ⭐⭐⭐
