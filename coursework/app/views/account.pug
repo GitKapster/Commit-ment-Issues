@@ -5,50 +5,58 @@ block content
     .account-box
       h1 Welcome, #{username}!
       p User ID: #{userID}
-      button(onclick="window.location.href='/logout'") Log Out 
+      button(onclick="window.location.href='/logout'") Log Out
 
-      //- Table 1: Aim Scores
+      //- Table 1: Aim Task (Dynamic data from aimData)
       h2 Aim Task
-      table
-        thead
-          tr
-            th Username
-            th Task
-            th Score
-        tbody
+      if aimData && aimData.UserID
+        table
+          thead
             tr
-              td= "Erin"
-              td= "Aim"
-              td= 10
+              th Username
+              th Task
+              th Score
+          tbody
+            tr
+              td= aimData.UserID
+              td= aimData.TaskID
+              td= aimData.Score
+      else
+        p No data available for Aim Task.
 
-      //- Table 2: Memory Scores
+      //- Table 2: Memory Task (Dynamic data from memoryData)
       h2 Memory Task
-      table
-        thead
-          tr
-            th Username
-            th Task
-            th Score
-        tbody
+      if memoryData && memoryData.UserID
+        table
+          thead
             tr
-              td= "Erin"
-              td= "Memory"
-              td= 5
-
-      //- Table 3: Reaction Scores
-      h2Reaction Task
-      table
-        thead
-          tr
-            th Username
-            th Task
-            th Score
-        tbody
+              th Username
+              th Task
+              th Score
+          tbody
             tr
-              td= "Erin"
-              td= "Reaction"
-              td= 7
+              td= memoryData.UserID
+              td= memoryData.TaskID
+              td= memoryData.Score
+      else
+        p No data available for Memory Task.
 
+      //- Table 3: Reaction Task (Dynamic data from reactionData)
+      h2 Reaction Task
+      if reactionData && reactionData.UserID
+        table
+          thead
+            tr
+              th Username
+              th Task
+              th Score
+          tbody
+            tr
+              td= reactionData.UserID
+              td= reactionData.TaskID
+              td= reactionData.Score
+      else
+        p No data available for Reaction Task.
 
   style.
     body {
