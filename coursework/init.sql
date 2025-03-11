@@ -8,11 +8,20 @@ CREATE TABLE IF NOT EXISTS Users (
   Password varchar(25)
 );
 
+--Tasks Table
+CREATE TABLE IF NOT EXISTS Tasks (
+  TaskID int,
+  TaskType varchar(25),
+  Difficulty int,
+
+
+)
+
 -- Leaderboards Info
 CREATE TABLE IF NOT EXISTS Leaderboard (
+  LeaderboardID int,
   TaskID int,
   UserID int,
-  Username varchar(25),
   Score int,
   FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
@@ -38,6 +47,14 @@ CREATE TABLE IF NOT EXISTS Posts (
   KEY ForumID (ForumID),
   Key UserID (UserID)
 );
+
+--Tasks Page Data
+
+--Leaderboard Page
+INSERT INTO Leaderboard (TaskID, UserID, Score)
+Values ('323', '2', '999');
+
+
 
 -- Temporary logins for everyone
 INSERT INTO Users (Username, Password) 
