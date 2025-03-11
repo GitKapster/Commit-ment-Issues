@@ -177,4 +177,17 @@ app.get("/forum", async function(req, res) {
     // If there's an error, pass an empty array
     res.render("forum", { esportsNews: [] });
   }
+});1
+
+// Leaderboard Route - Fetch Data from MySQL
+app.get("/leaderboard", async (req, res) => {
+  try {
+    const [players] = await db.query(
+      "SELECT Username, Score FROM Leaderboard ORDER BY Score DESC LIMIT 10"
+    );
+    res.render("leaderboard", { players });
+  } catch (err) {
+    console.error("Database Error:", err);
+    res.status(500).send("Error loading leaderboard");
+  }
 });
