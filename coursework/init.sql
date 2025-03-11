@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS Users (
 
 -- Tasks Info
 CREATE TABLE IF NOT EXISTS Tasks (
-  TaskID int,
+  TaskID int PRIMARY KEY AUTO_INCREMENT,
   TaskType varchar(25),
   Difficulty int
 );
@@ -58,7 +58,7 @@ VALUES ('Taran', 'Password');
 INSERT INTO Users (Username, Password) 
 VALUES ('Oskar', 'Password');
 
---Leaderboard Sample Data
+-- Leaderboard Sample Data
 
 -- Task 1, UserID 1 (Kapi) - Score 999
 INSERT INTO Leaderboard (TaskID, UserID, Score)
@@ -95,42 +95,43 @@ VALUES (3, 2, 800);
 -- Sample Tasks for Task Table
 
 -- Difficulty 1
-INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (1, 'Aim', 1);
+INSERT INTO Tasks (TaskType, Difficulty)
+VALUES ('Aim', 1);
 
-INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (2, 'Reaction', 1);
+INSERT INTO Tasks (TaskType, Difficulty)
+VALUES ('Reaction', 1);
 
-INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (3, 'Memory', 1);
+INSERT INTO Tasks (TaskType, Difficulty)
+VALUES ('Memory', 1);
 
 -- Difficulty 2
-INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (1, 'Aim', 2);
+INSERT INTO Tasks (TaskType, Difficulty)
+VALUES ('Aim', 2);
 
-INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (2, 'Reaction', 2);
+INSERT INTO Tasks (TaskType, Difficulty)
+VALUES ('Reaction', 2);
 
-INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (3, 'Memory', 2);
+INSERT INTO Tasks (TaskType, Difficulty)
+VALUES ('Memory', 2);
 
 -- Difficulty 3
-INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (1, 'Aim', 3);
+INSERT INTO Tasks (TaskType, Difficulty)
+VALUES ('Aim', 3);
 
-INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (2, 'Reaction', 3);
+INSERT INTO Tasks (TaskType, Difficulty)
+VALUES ('Reaction', 3);
 
-INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (3, 'Memory', 3);
+INSERT INTO Tasks (TaskType, Difficulty)
+VALUES ('Memory', 3);
 
 -- Difficulty 4
-INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (1, 'Aim', 4);
+INSERT INTO Tasks (TaskType, Difficulty)
+VALUES ('Aim', 4);
 
-INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (2, 'Reaction', 4);
+INSERT INTO Tasks (TaskType, Difficulty)
+VALUES ('Reaction', 4);
 
-INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (3, 'Memory', 4);
+INSERT INTO Tasks (TaskType, Difficulty)
+VALUES ('Memory', 4);
+
 
