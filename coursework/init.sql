@@ -96,41 +96,41 @@ VALUES (3, 2, 800);
 
 --Difficulty 1
 INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (1, 'Aim', 1)
+Values (1, 'Aim', 1);
 
 INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (2, 'Reaction', 1)
+Values (2, 'Reaction', 1);
 
 INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (3, 'Memory', 1)
+Values (3, 'Memory', 1);
 
 --Difficulty 2
 INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (1, 'Aim', 2)
+Values (1, 'Aim', 2);
 
 INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (2, 'Reaction', 2)
+Values (2, 'Reaction', 2);
 
 INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (3, 'Memory', 2)
+Values (3, 'Memory', 2);
 
 --Difficulty 3
 INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (1, 'Aim', 3)
+Values (1, 'Aim', 3);
 
 INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (2, 'Reaction', 3)
+Values (2, 'Reaction', 3);
 
 INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (3, 'Memory', 3)
+Values (3, 'Memory', 3);
 
 --Difficulty 4
 INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (1, 'Aim', 4)
+Values (1, 'Aim', 4);
 
 INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (2, 'Reaction', 4)
+Values (2, 'Reaction', 4);
 
 INSERT INTO Tasks (TaskID, TaskType, Difficulty)
-Values (3, 'Memory', 4)
+Values (3, 'Memory', 4);
 
