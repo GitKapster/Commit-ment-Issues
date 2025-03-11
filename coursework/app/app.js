@@ -72,6 +72,11 @@ app.get("/login", (req, res) => {
   res.render("login"); // Render the login.pug template
 });
 
+// Games page
+app.get("/Games", (req, res) => {
+  res.render("Games"); // Render the games.pug template
+});
+
 // account list page
 app.get("/account-list", async (req, res) => {
   try {
