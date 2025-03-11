@@ -164,6 +164,7 @@ async function getEsportsNews() {
     ];
   }
 }
+
 // Forum main page
 app.get("/forum", async function(req, res) {
   try {
