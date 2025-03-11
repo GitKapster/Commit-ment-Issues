@@ -92,9 +92,9 @@ VALUES (3, 4, 945);
 INSERT INTO Leaderboard (TaskID, UserID, Score)
 VALUES (3, 2, 800);
 
---Sample Tasks for Task Table
+-- Sample Tasks for Task Table
 
---Difficulty 1
+-- Difficulty 1
 INSERT INTO Tasks (TaskID, TaskType, Difficulty)
 Values (1, 'Aim', 1);
 
@@ -104,7 +104,7 @@ Values (2, 'Reaction', 1);
 INSERT INTO Tasks (TaskID, TaskType, Difficulty)
 Values (3, 'Memory', 1);
 
---Difficulty 2
+-- Difficulty 2
 INSERT INTO Tasks (TaskID, TaskType, Difficulty)
 Values (1, 'Aim', 2);
 
@@ -114,7 +114,7 @@ Values (2, 'Reaction', 2);
 INSERT INTO Tasks (TaskID, TaskType, Difficulty)
 Values (3, 'Memory', 2);
 
---Difficulty 3
+-- Difficulty 3
 INSERT INTO Tasks (TaskID, TaskType, Difficulty)
 Values (1, 'Aim', 3);
 
@@ -124,7 +124,7 @@ Values (2, 'Reaction', 3);
 INSERT INTO Tasks (TaskID, TaskType, Difficulty)
 Values (3, 'Memory', 3);
 
---Difficulty 4
+-- Difficulty 4
 INSERT INTO Tasks (TaskID, TaskType, Difficulty)
 Values (1, 'Aim', 4);
 
