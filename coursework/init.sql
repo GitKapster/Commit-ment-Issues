@@ -8,6 +8,13 @@ CREATE TABLE IF NOT EXISTS Users (
   Password varchar(25)
 );
 
+-- Tasks Info
+CREATE TABLE IF NOT EXISTS Tasks (
+  TaskID int,
+  TaskType varchar(25),
+  Difficulty int
+);
+
 -- Leaderboards Info
 CREATE TABLE IF NOT EXISTS Leaderboard (
   LeaderboardID int,
