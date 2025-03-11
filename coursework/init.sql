@@ -48,9 +48,39 @@ CREATE TABLE IF NOT EXISTS Posts (
 
 --Tasks Page Data
 
---Leaderboard Page
+-- Sample Scores for the Leaderboard
+
+-- Task 1, UserID 2 (Kapi) - Score 999
 INSERT INTO Leaderboard (TaskID, UserID, Score)
-Values ('323', '2', '999');
+VALUES (323, 2, 999);
+
+-- Task 1, UserID 3 (Erin) - Score 850
+INSERT INTO Leaderboard (TaskID, UserID, Score)
+VALUES (323, 3, 850);
+
+-- Task 2, UserID 4 (Taran) - Score 900
+INSERT INTO Leaderboard (TaskID, UserID, Score)
+VALUES (324, 4, 900);
+
+-- Task 2, UserID 5 (Oskar) - Score 975
+INSERT INTO Leaderboard (TaskID, UserID, Score)
+VALUES (324, 5, 975);
+
+-- Task 1, UserID 4 (Taran) - Score 875
+INSERT INTO Leaderboard (TaskID, UserID, Score)
+VALUES (323, 4, 875);
+
+-- Task 2, UserID 2 (Kapi) - Score 920
+INSERT INTO Leaderboard (TaskID, UserID, Score)
+VALUES (324, 2, 920);
+
+-- Task 3, UserID 5 (Oskar) - Score 945
+INSERT INTO Leaderboard (TaskID, UserID, Score)
+VALUES (325, 5, 945);
+
+-- Task 3, UserID 3 (Erin) - Score 800
+INSERT INTO Leaderboard (TaskID, UserID, Score)
+VALUES (325, 3, 800);
 
 
 
