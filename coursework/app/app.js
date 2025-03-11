@@ -192,3 +192,6 @@ app.get("/leaderboard", async (req, res) => {
     res.status(500).send("Error loading leaderboard");
   }
 });
+
+
+// Tasks Route - Detching data from the SQL
