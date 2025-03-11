@@ -50,7 +50,7 @@ INSERT INTO Users (Username, Password)
 VALUES ('Kapi', 'Password');
 
 INSERT INTO Users (Username, Password) 
-VALUES ('Erin', 'Password');
+VALUES ('Erin', 'Goonan123');
 
 INSERT INTO Users (Username, Password) 
 VALUES ('Taran', 'Password');
@@ -58,7 +58,8 @@ VALUES ('Taran', 'Password');
 INSERT INTO Users (Username, Password) 
 VALUES ('Oskar', 'Password');
 
--- Now insert the scores (Leaderboard entries)
+--Leaderboard Sample Data
+
 -- Task 1, UserID 1 (Kapi) - Score 999
 INSERT INTO Leaderboard (TaskID, UserID, Score)
 VALUES (1, 1, 999);
