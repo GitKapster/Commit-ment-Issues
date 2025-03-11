@@ -17,7 +17,6 @@ CREATE TABLE IF NOT EXISTS Tasks (
 
 -- Leaderboards Info
 CREATE TABLE IF NOT EXISTS Leaderboard (
-  LeaderboardID int,
   TaskID int,
   UserID int,
   Score int,
@@ -46,45 +45,7 @@ CREATE TABLE IF NOT EXISTS Posts (
   Key UserID (UserID)
 );
 
---Tasks Page Data
-
--- Sample Scores for the Leaderboard
-
--- Task 1, UserID 2 (Kapi) - Score 999
-INSERT INTO Leaderboard (TaskID, UserID, Score)
-VALUES (323, 2, 999);
-
--- Task 1, UserID 3 (Erin) - Score 850
-INSERT INTO Leaderboard (TaskID, UserID, Score)
-VALUES (323, 3, 850);
-
--- Task 2, UserID 4 (Taran) - Score 900
-INSERT INTO Leaderboard (TaskID, UserID, Score)
-VALUES (324, 4, 900);
-
--- Task 2, UserID 5 (Oskar) - Score 975
-INSERT INTO Leaderboard (TaskID, UserID, Score)
-VALUES (324, 5, 975);
-
--- Task 1, UserID 4 (Taran) - Score 875
-INSERT INTO Leaderboard (TaskID, UserID, Score)
-VALUES (323, 4, 875);
-
--- Task 2, UserID 2 (Kapi) - Score 920
-INSERT INTO Leaderboard (TaskID, UserID, Score)
-VALUES (324, 2, 920);
-
--- Task 3, UserID 5 (Oskar) - Score 945
-INSERT INTO Leaderboard (TaskID, UserID, Score)
-VALUES (325, 5, 945);
-
--- Task 3, UserID 3 (Erin) - Score 800
-INSERT INTO Leaderboard (TaskID, UserID, Score)
-VALUES (325, 3, 800);
-
-
-
--- Temporary logins for everyone
+-- Temporary logins for everyone (Insert users first)
 INSERT INTO Users (Username, Password) 
 VALUES ('Kapi', 'Password');
 
@@ -96,3 +57,37 @@ VALUES ('Taran', 'Password');
 
 INSERT INTO Users (Username, Password) 
 VALUES ('Oskar', 'Password');
+
+-- Now insert the scores (Leaderboard entries)
+-- Task 1, UserID 1 (Kapi) - Score 999
+INSERT INTO Leaderboard (TaskID, UserID, Score)
+VALUES (1, 1, 999);
+
+-- Task 1, UserID 2 (Erin) - Score 850
+INSERT INTO Leaderboard (TaskID, UserID, Score)
+VALUES (1, 2, 850);
+
+-- Task 2, UserID 3 (Taran) - Score 900
+INSERT INTO Leaderboard (TaskID, UserID, Score)
+VALUES (2, 3, 900);
+
+-- Task 2, UserID 4 (Oskar) - Score 975
+INSERT INTO Leaderboard (TaskID, UserID, Score)
+VALUES (2, 4, 975);
+
+-- Task 1, UserID 3 (Taran) - Score 875
+INSERT INTO Leaderboard (TaskID, UserID, Score)
+VALUES (1, 3, 875);
+
+-- Task 2, UserID 1 (Kapi) - Score 920
+INSERT INTO Leaderboard (TaskID, UserID, Score)
+VALUES (2, 1, 920);
+
+-- Task 3, UserID 4 (Oskar) - Score 945
+INSERT INTO Leaderboard (TaskID, UserID, Score)
+VALUES (3, 4, 945);
+
+-- Task 3, UserID 2 (Erin) - Score 800
+INSERT INTO Leaderboard (TaskID, UserID, Score)
+VALUES (3, 2, 800);
+
