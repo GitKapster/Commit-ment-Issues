@@ -195,3 +195,6 @@ app.get("/leaderboard", async (req, res) => {
 
 
 // Tasks Route - Detching data from the SQL
+app.get("/tasks", (req, res) => {
+  res.render("tasks"); // Render the tasks.pug template
+});
