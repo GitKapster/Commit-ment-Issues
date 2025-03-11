@@ -38,7 +38,7 @@ app.get("/", function (req, res) {
 });
 
 // account page
-app.get("/account/:id", (req, res) => {
+app.get("/account/:id", async (req, res) => {
   if (!req.session.user) {
     return res.redirect("/login"); // redirect if not logged in
   }
@@ -46,15 +46,40 @@ app.get("/account/:id", (req, res) => {
   const userID = Number(req.session.user.UserID); // Convert to number
   const requestedID = Number(req.params.id); // Convert to number
 
-  // user can only open their own account page
+  // User can only open their own account page
   if (requestedID !== userID) {
     return res.status(403).send("Denied: You can only access your own account.");
   }
 
-  res.render("account", { 
-    username: req.session.user.Username,
-    userID: userID 
-  });
+  try {
+    // Query the database for the Aim task data
+    const aimQuery = 'SELECT * FROM Leaderboard WHERE UserID = ? AND TaskID = 1';
+    const memoryQuery = 'SELECT * FROM Leaderboard WHERE UserID = ? AND TaskID = 2';
+    const reactionQuery = 'SELECT * FROM Leaderboard WHERE UserID = ? AND TaskID = 3';
+    
+    // Execute the queries using `await` and `mysql2`'s query method
+    const aimData = await db.query(aimQuery, [userID]);
+    const memoryData = await db.query(memoryQuery, [userID]);
+    const reactionData = await db.query(reactionQuery, [userID]);
+
+    // Log the data to see if it's being fetched properly
+    console.log("Aim Data:", aimData); 
+    console.log("Memory Data:", memoryData); 
+    console.log("Reaction Data:", reactionData); 
+
+    // Render the account page with the queried data
+    res.render('account', {
+      username: req.session.user.Username, 
+      userID: userID,
+      aimData: aimData[0] || [], 
+      memoryData: memoryData[0] || [], 
+      reactionData: reactionData[0] || [],
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
 });
 
 // Redirect /account to /account/userID

@@ -4,36 +4,56 @@ block content
     h1 Tasks
 
     style.
-        .header {
-            width: 100%;
-            float: left;
+        .container {
+            display: flex; 
+            justify-content: space-around; 
+            flex-wrap: wrap; 
+            gap: 20px; 
+            padding: 20px;
+        }
+
+        .block {
+            width: 30%; 
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+            background-color: #f9f9f9;
         }
 
         .image img {
             width: 100%;
-            float: left;
+            border-radius: 10px;
+        }
+
+        .header {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
 
         .description {
-            width: 100%;
-            float: left;
+            font-size: 1em;
+            color: #555;
+            margin-top: 10px;
         }
 
     .container
         .block
             .header Aim Trainer
             .image 
-                img(src="https://tr.rbxcdn.com/180DAY-11680b41dbbed0d4d49b13d4c39c02ce/768/432/Image/Webp/noFilter" alt="")
+                img(src="https://tr.rbxcdn.com/180DAY-11680b41dbbed0d4d49b13d4c39c02ce/768/432/Image/Webp/noFilter" alt="Aim Trainer")
             .description Test your Aim!
 
         .block
             .header Reaction Test
             .image 
-                img(src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZl7w16PU6k0UltqcwlobWihA9HNsqteamcw&s" alt="")
+                img(src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZl7w16PU6k0UltqcwlobWihA9HNsqteamcw&s" alt="Reaction Test")
             .description Test your reaction speed 
 
         .block
             .header Memory Test
             .image 
-                img(src="https://hips.hearstapps.com/hmg-prod/images/thumbnail-1-1461101041.jpg" alt="")
+                img(src="https://hips.hearstapps.com/hmg-prod/images/thumbnail-1-1461101041.jpg" alt="Memory Test")
             .description Test your memory
