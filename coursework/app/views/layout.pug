@@ -16,7 +16,7 @@ html
         background: #2c2c2c;
         display: flex;
         align-items: center;
-        padding: 10px 20px;
+        padding: 10px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       }
       .navbar img {
@@ -24,6 +24,9 @@ html
         height: 40px;
         margin: 0 15px;
         padding: 0px 20px 0px 0px;
+      }
+      #cat {
+        padding: 0px;
       }
       .navbar .buttons {
         flex-grow: 1;
@@ -59,7 +62,7 @@ html
   body
     .navbar
       a(href="/")
-        img(src="/images/sillycat.jpg", alt="Logo Icon") 
+        img(src="/images/sillycat.jpg", alt="Logo Icon", id="cat") 
       .buttons
         button(onclick="window.location.href='/tasks'") Tasks
         button(onclick="window.location.href='/leaderboard'") Leaderboard
