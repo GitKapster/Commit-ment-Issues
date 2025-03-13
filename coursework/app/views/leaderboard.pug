@@ -1,33 +1,63 @@
 extends layout
 
 block content
-  html
-    head
-      title Leaderboard
-      style.
-        body {
-          font-family: Arial, sans-serif;
-          background: #3f3f3f;
-          color: white;
-          text-align: center;
-          margin: 0;
-          height: 100vh;
-        }
-        .leaderboard {
-          max-width: 400px;
-          margin: 0 auto; /* Ensures it's centered horizontally */
-          background: #5dc5c1;
-          padding: 20px;
-          border-radius: 10px;
-          box-shadow: 0 0 10px rgba(0, 16, 66, 0.1);
-        }
-        .leaderboard-item {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 10px;
-          border-bottom: 1px solid #444;
-        }
-    body
-      .content
-        .leaderboard
+  head
+    title Leaderboard
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        background: #3f3f3f;
+        color: white;
+        text-align: center;
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .container {
+        width: 50%;
+        background: #5dc5c1;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 16, 66, 0.1);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th, td {
+        padding: 10px;
+        border-bottom: 1px solid #444;
+        text-align: left;
+      }
+      th {
+        background: #3b8686;
+        color: white;
+      }
+      tr:nth-child(even) {
+        background: #69c8c6;
+      }
+      tr:nth-child(odd) {
+        background: #5dc5c1;
+      }
+      .title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+  body
+    .container
+      .title Leaderboard
+      table
+        tr
+          th Rank
+          th Username
+          th Score
+        each player, index in players
+          tr
+            td #{index + 1}
+            td #{player.Username}
+            td #{player.Score}
