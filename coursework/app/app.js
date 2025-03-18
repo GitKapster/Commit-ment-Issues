@@ -213,14 +213,17 @@ app.get("/forum", async function(req, res) {
 // Leaderboard Route - Fetch Data from MySQL
 app.get("/leaderboard", async (req, res) => {
   try {
-    const players = await db.query(
-      `SELECT Users.Username, Leaderboard.Score 
-       FROM Leaderboard 
-       JOIN Users ON Leaderboard.UserID = Users.UserID 
-       ORDER BY Score DESC 
-       LIMIT 10`
-    );
+    const query = `
+      SELECT Users.Username, Leaderboard.Score, Tasks.TaskType
+      FROM Leaderboard
+      JOIN Users ON Leaderboard.UserID = Users.UserID
+      JOIN Tasks ON Leaderboard.TaskID = Tasks.TaskID
+      ORDER BY Leaderboard.Score DESC;
+    `;
+
+    const players = await db.query(query);
     res.render("leaderboard", { players });
+
   } catch (err) {
     console.error("Database Error:", err);
     res.status(500).send("Error loading leaderboard");

@@ -14,10 +14,11 @@ block content
         display: flex;
         justify-content: center;
         align-items: center;
+        flex-direction: column;
       }
       .container {
-        width: 50%;
-        background:0 0 10px rgba(0, 16, 66, 0.1);
+        width: 60%;
+        background: #5dc5c1;
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0 0 10px rgba(0, 16, 66, 0.1);
@@ -33,7 +34,7 @@ block content
         text-align: left;
       }
       th {
-        background:rgb(59, 134, 134);
+        background: #3b8686;
         color: white;
       }
       tr:nth-child(even) {
@@ -47,17 +48,59 @@ block content
         font-weight: bold;
         margin-bottom: 10px;
       }
+      .filter-buttons {
+        margin-bottom: 20px;
+      }
+      .filter-buttons button {
+        background: #3b8686;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        margin: 5px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+      .filter-buttons button:hover {
+        background: #276d6d;
+      }
 
   body
     .container
       .title Leaderboard
+
+      // Filter buttons
+      .filter-buttons
+        button(onclick="filterLeaderboard('all')") Show All
+        button(onclick="filterLeaderboard('Aim')") Aim Leaderboard
+        button(onclick="filterLeaderboard('Memory')") Memory Leaderboard
+        button(onclick="filterLeaderboard('Reaction')") Reaction Leaderboard
+
+      // Leaderboard table
       table
         tr
           th Rank
           th Username
           th Score
+          th Game
         each player, index in players
-          tr
+          tr(class=player.TaskType)
             td #{index + 1}
             td #{player.Username}
             td #{player.Score}
+            td #{player.TaskType} 
+
+    script.
+      function filterLeaderboard(game) {
+        const rows = document.querySelectorAll("tr");
+        rows.forEach(row => {
+          if (game === "all") {
+            row.style.display = "";
+          } else {
+            if (row.classList.contains(game)) {
+              row.style.display = "";
+            } else {
+              row.style.display = "none";
+            }
+          }
+        });
+      }
