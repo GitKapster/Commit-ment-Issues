@@ -1,0 +1,24 @@
+look at lab 6 - models - improve code structure
+app.js is clutered with database queries
+implement oop models that represent data
+do all the queries in OOP models to populate an object then send that object to appjs
+
+model a player : populate all the aim/memory/reaction in that oop model
+appjs should only have routes
+refractor backend
+
+use github projects 
+make a ticket for each task we need to do
+
+remove the database from the public github repo
+
+SPRINT 4
+
+Get start on games page - link scores to the database
+finish tasks page
+update the leaderboards page so that we can see 
+- task id
+- task name
+- task difficulty
+
+make a list of features we want (by next week)
