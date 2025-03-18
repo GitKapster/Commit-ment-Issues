@@ -222,6 +222,7 @@ app.get("/leaderboard", async (req, res) => {
     `;
 
     const players = await db.query(query);
+    console.log("Fetched leaderboard data:", players); // Debugging log
     res.render("leaderboard", { players });
 
   } catch (err) {
