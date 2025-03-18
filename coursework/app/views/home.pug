@@ -6,9 +6,23 @@ block content
       display: flex;
       justify-content: center;
       margin-top: 50px;
+      gap: 10px;
     }
 
     .login-button {
+      padding: 12px 24px;
+      font-size: 18px;
+      font-weight: bold;
+      color: white;
+      background: #43c6c1;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .signup-button {
       padding: 12px 24px;
       font-size: 18px;
       font-weight: bold;
@@ -28,6 +42,15 @@ block content
 
     .login-button:active {
       transform: scale(0.98);
+    }
+
+    .signup-button:hover {
+      background: #37a09c;
+      transform: scale(1.02);
+    }
+
+    .signup-button:active{
+        transform: scale(0.98);
     }
 
     .list-container {
@@ -60,6 +83,7 @@ block content
 
   .login-container
     button.login-button(onclick="window.location.href='/login'") Login
+    button.signup-button() Sign Up
 
   .list-container
     button.list-button(onclick="window.location.href='/account-list'") Accounts
