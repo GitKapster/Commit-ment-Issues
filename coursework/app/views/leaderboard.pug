@@ -17,11 +17,17 @@ block content
         flex-direction: column;
       }
       .container {
-        width: 60%;
+        width: 80%; /* Adjust width to 80% of viewport */
+        max-width: 1000px; /* Optional: max-width to prevent it from being too wide */
         background: #5dc5c1;
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0 0 10px rgba(0, 16, 66, 0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center; /* Centering contents */
+        margin: 0 auto; /* Ensures the container is centered horizontally */
       }
       .title {
         font-size: 24px;
@@ -44,14 +50,15 @@ block content
         background: #276d6d;
       }
       table {
-        width: 100%;
+        width: 100%; /* Ensure the table takes full width of the container */
         border-collapse: collapse;
         margin-top: 20px;
+        margin-bottom: 20px; /* Add margin at the bottom */
+        text-align: left; /* Align table content to the left */
       }
       th, td {
         padding: 10px;
         border-bottom: 1px solid #444;
-        text-align: left;
       }
       th {
         background: #3b8686;
@@ -77,17 +84,19 @@ block content
 
       // Leaderboard table
       table
-        tr
-          th Rank
-          th Username
-          th Score
-          th Game
-        each player, index in players
-          tr(class=player.TaskType)
-            td #{index + 1}
-            td #{player.Username}
-            td #{player.Score}
-            td #{player.TaskType} 
+        thead
+          tr
+            th Rank
+            th Username
+            th Score
+            th Game
+        tbody
+          each player, index in players
+            tr(class=player.TaskType)
+              td #{index + 1}
+              td #{player.Username}
+              td #{player.Score}
+              td #{player.TaskType} 
 
     script.
       function filterLeaderboard(game) {
