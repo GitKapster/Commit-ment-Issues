@@ -23,26 +23,6 @@ block content
         border-radius: 10px;
         box-shadow: 0 0 10px rgba(0, 16, 66, 0.1);
       }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-      }
-      th, td {
-        padding: 10px;
-        border-bottom: 1px solid #444;
-        text-align: left;
-      }
-      th {
-        background: #3b8686;
-        color: white;
-      }
-      tr:nth-child(even) {
-        background: #69c8c6;
-      }
-      tr:nth-child(odd) {
-        background: #5dc5c1;
-      }
       .title {
         font-size: 24px;
         font-weight: bold;
@@ -62,6 +42,26 @@ block content
       }
       .filter-buttons button:hover {
         background: #276d6d;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th, td {
+        padding: 10px;
+        border-bottom: 1px solid #444;
+        text-align: left;
+      }
+      th {
+        background: #3b8686;
+        color: white;
+      }
+      tr:nth-child(even) {
+        background: #69c8c6;
+      }
+      tr:nth-child(odd) {
+        background: #5dc5c1;
       }
 
   body
@@ -91,7 +91,7 @@ block content
 
     script.
       function filterLeaderboard(game) {
-        const rows = document.querySelectorAll("tr");
+        const rows = document.querySelectorAll("tbody tr");
         rows.forEach(row => {
           if (game === "all") {
             row.style.display = "";

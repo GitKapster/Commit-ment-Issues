@@ -214,17 +214,16 @@ app.get("/forum", async function(req, res) {
 app.get("/leaderboard", async (req, res) => {
   try {
     const query = `
-      SELECT Users.Username, Leaderboard.Score, Tasks.TaskType
+      SELECT Leaderboard.Score, Users.Username, Tasks.TaskType
       FROM Leaderboard
       JOIN Users ON Leaderboard.UserID = Users.UserID
       JOIN Tasks ON Leaderboard.TaskID = Tasks.TaskID
-      ORDER BY Leaderboard.Score DESC;
+      ORDER BY Leaderboard.Score DESC
     `;
 
     const players = await db.query(query);
-    console.log("Fetched leaderboard data:", players); // Debugging log
+    
     res.render("leaderboard", { players });
-
   } catch (err) {
     console.error("Database Error:", err);
     res.status(500).send("Error loading leaderboard");
