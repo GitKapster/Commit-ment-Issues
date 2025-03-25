@@ -100,17 +100,40 @@ block content
               td #{player.Score}
               td #{player.TaskType} 
 
+      // Button to add test data
+      button(onclick="addPlayer('NewPlayer', Math.floor(Math.random() * 300), 'Aim')") Add Random Player
+
     script.
+      function updateLeaderboard() {
+        const rows = document.querySelectorAll("tbody tr");
+        let currentFilter = document.querySelector(".filter-buttons button.active")?.dataset.filter || "all";
+        filterLeaderboard(currentFilter);
+      }
+
       function filterLeaderboard(game) {
         const rows = document.querySelectorAll("tbody tr");
-        let visibleIndex = 0; // Track the rank dynamically
+        let visibleIndex = 0;
 
         rows.forEach(row => {
           if (game === "all" || row.classList.contains(game)) {
             row.style.display = "table-row";
-            row.querySelector(".rank").textContent = ++visibleIndex; // Update rank dynamically
+            row.querySelector(".rank").textContent = ++visibleIndex;
           } else {
             row.style.display = "none";
           }
         });
+      }
+
+      function addPlayer(username, score, gameType) {
+        const tbody = document.querySelector("tbody");
+        const newRow = document.createElement("tr");
+        newRow.classList.add(gameType);
+        newRow.innerHTML = `
+          <td><span class="rank"></span></td>
+          <td>${username}</td>
+          <td>${score}</td>
+          <td>${gameType}</td>
+        `;
+        tbody.appendChild(newRow);
+        updateLeaderboard(); // Update ranking after adding data
       }
