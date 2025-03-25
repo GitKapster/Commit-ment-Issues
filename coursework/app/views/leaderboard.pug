@@ -100,9 +100,6 @@ block content
               td #{player.Score}
               td #{player.TaskType} 
 
-      // Button to add test data
-      button(onclick="addPlayer('NewPlayer', Math.floor(Math.random() * 300), 'Aim')") Add Random Player
-
     script.
       function updateLeaderboard() {
         const rows = document.querySelectorAll("tbody tr");
@@ -124,16 +121,33 @@ block content
         });
       }
 
-      function addPlayer(username, score, gameType) {
-        const tbody = document.querySelector("tbody");
-        const newRow = document.createElement("tr");
-        newRow.classList.add(gameType);
-        newRow.innerHTML = `
-          <td><span class="rank"></span></td>
-          <td>${username}</td>
-          <td>${score}</td>
-          <td>${gameType}</td>
-        `;
-        tbody.appendChild(newRow);
-        updateLeaderboard(); // Update ranking after adding data
+      // Fetch new leaderboard data periodically (if using API)
+      function fetchLeaderboard() {
+        fetch('/api/leaderboard') // Replace with your actual API endpoint
+          .then(response => response.json())
+          .then(data => {
+            const tbody = document.querySelector("tbody");
+            tbody.innerHTML = ""; // Clear existing rows
+
+            data.forEach((player, index) => {
+              const newRow = document.createElement("tr");
+              newRow.classList.add(player.TaskType);
+              newRow.innerHTML = `
+                <td><span class="rank">${index + 1}</span></td>
+                <td>${player.Username}</td>
+                <td>${player.Score}</td>
+                <td>${player.TaskType}</td>
+              `;
+              tbody.appendChild(newRow);
+            });
+
+            updateLeaderboard();
+          })
+          .catch(error => console.error("Error fetching leaderboard:", error));
       }
+
+      // Auto-refresh leaderboard every 5 seconds (optional)
+      setInterval(fetchLeaderboard, 5000);
+
+      // Fetch data when the page loads
+      fetchLeaderboard();
