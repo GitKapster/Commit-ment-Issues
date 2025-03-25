@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  h1 Reaction Test - #{difficulty} Mode
+
+  .reaction-container
+    button#start-button Start Test
+    p#reaction-time Time: 0.00 seconds
+    div#reaction-box(style="width: 100px; height: 100px; border: 1px solid black;") 
+      // Reaction area box
+    
+  script(src="/js/reaction-test.js")  // Link to JavaScript file
+
+  // Optional: You can display additional instructions based on difficulty
+  if difficulty === 'easy'
+    p The test will start in 3 seconds. Click as fast as you can when the color turns green!
+  
+  if difficulty === 'medium'
+    p The test will start in 3 seconds. The box will change colors randomly, click when it turns green!
+
+  if difficulty === 'hard'
+    p The test will start in 3 seconds. The box will change colors quickly, click when it turns green!

@@ -234,3 +234,18 @@ app.get("/leaderboard", async (req, res) => {
 app.get("/tasks", (req, res) => {
   res.render("tasks"); // Render the tasks.pug template
 });
+
+// Reaction Test Route for Easy Mode
+app.get("/reaction-test/easy", (req, res) => {
+  res.render("reaction-test", { difficulty: "easy" });
+});
+
+// Reaction Test Route for Medium Mode
+app.get("/reaction-test/medium", (req, res) => {
+  res.render("reaction-test", { difficulty: "medium" });
+});
+
+// Reaction Test Route for Hard Mode
+app.get("/reaction-test/hard", (req, res) => {
+  res.render("reaction-test", { difficulty: "hard" });
+});

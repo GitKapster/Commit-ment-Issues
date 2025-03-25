@@ -73,9 +73,9 @@ block content
                 img(src="https://static.vecteezy.com/system/resources/previews/002/332/796/non_2x/stopwatch-icon-free-vector.jpg" alt="Reaction Test")
             .description Test your reaction speed 
             .difficulty-buttons
-                button.easy Easy 
-                button.medium Medium 
-                button.hard Hard 
+                button.easy(onclick="window.location='/reaction-test/easy'") Easy
+                button.medium(onclick="window.location='/reaction-test/medium'") Medium 
+                button.hard(onclick="window.location='/reaction-test/hard'") Hard
 
         .block
             .header Memory Test
