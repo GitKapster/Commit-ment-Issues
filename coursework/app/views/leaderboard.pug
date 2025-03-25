@@ -17,8 +17,8 @@ block content
         flex-direction: column;
       }
       .container {
-        width: 80%; /* Adjust width to 80% of viewport */
-        max-width: 1000px; /* Optional: max-width to prevent it from being too wide */
+        width: 80%;
+        max-width: 1000px;
         background: #5dc5c1;
         padding: 20px;
         border-radius: 10px;
@@ -26,8 +26,8 @@ block content
         display: flex;
         flex-direction: column;
         justify-content: center;
-        align-items: center; /* Centering contents */
-        margin: 0 auto; /* Ensures the container is centered horizontally */
+        align-items: center;
+        margin: 0 auto;
       }
       .title {
         font-size: 24px;
@@ -45,16 +45,17 @@ block content
         margin: 5px;
         cursor: pointer;
         border-radius: 5px;
+        font-weight: bold;
       }
       .filter-buttons button:hover {
         background: #276d6d;
       }
       table {
-        width: 100%; /* Ensure the table takes full width of the container */
+        width: 100%;
         border-collapse: collapse;
         margin-top: 20px;
-        margin-bottom: 20px; /* Add margin at the bottom */
-        text-align: left; /* Align table content to the left */
+        margin-bottom: 20px;
+        text-align: left;
       }
       th, td {
         padding: 10px;
@@ -92,8 +93,9 @@ block content
             th Game
         tbody
           each player, index in players
-            tr(class=player.TaskType)
-              td #{index + 1}
+            tr(data-game=player.TaskType class=player.TaskType)
+              td 
+                span.rank #{index + 1}  // Dynamic ranking
               td #{player.Username}
               td #{player.Score}
               td #{player.TaskType} 
@@ -101,15 +103,14 @@ block content
     script.
       function filterLeaderboard(game) {
         const rows = document.querySelectorAll("tbody tr");
+        let visibleIndex = 0; // Track the rank dynamically
+
         rows.forEach(row => {
-          if (game === "all") {
-            row.style.display = "";
+          if (game === "all" || row.classList.contains(game)) {
+            row.style.display = "table-row";
+            row.querySelector(".rank").textContent = ++visibleIndex; // Update rank dynamically
           } else {
-            if (row.classList.contains(game)) {
-              row.style.display = "";
-            } else {
-              row.style.display = "none";
-            }
+            row.style.display = "none";
           }
         });
       }
