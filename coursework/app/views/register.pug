@@ -1,0 +1,68 @@
+extends layout 
+
+block content
+  h1 Sign-Up to XPTrainer
+  .signup-container
+    form#loginForm()
+      input(type="text", name="username", placeholder="Username", required)
+      input(type="password", name="password", placeholder="Password", required)
+      input(type="re_password", name="re_password", placeholder="Retype-Password", required)
+      button(type="submit") Sign-Up
+
+  style.
+    h1 {
+      color: white;
+    }
+    /* Scope the styles to login container */
+    .signup-container {
+      background: #1e1e1e;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 400px;
+      margin: 50px auto;
+      text-align: center;
+    }
+
+    .signup-container input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 14px;
+      margin: 10px 0;
+      border: 2px solid transparent;
+      border-radius: 6px;
+      font-size: 16px;
+      background: #333;
+      color: white;
+      transition: 0.3s;
+    }
+
+    .signup-container input:focus {
+      border-color: #67d9dc;
+      outline: none;
+      background: #444;
+    }
+
+    .signup-container button, {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 14px;
+      margin: 10px 0;
+      background-color: #67d9dc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .signup-container button:hover {
+      background-color: #5dc5c1;
+      transform: scale(1.05);
+    }

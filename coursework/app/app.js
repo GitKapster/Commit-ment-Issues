@@ -160,41 +160,6 @@ app.get("/logout", (req,res) => {
   });
 });
 
-
-
-// Start server on port 3000
-app.listen(3000,function(){
-  console.log(`Server running at http://127.0.0.1:3000/`);
-});
-
-
-// Trying to add the webhook for esports updates
-
-// Using an RSS to JSON service
-async function getEsportsNews() {
-  try {
-    const response = await axios.get('https://api.rss2json.com/v1/api.json', {
-      params: {
-        rss_url: 'https://www.hltv.org/rss/news',  // HLTV news RSS feed
-        api_key: 'hioxghhkhlbzgtbsgorqr3jz6m25fqeujxj8cok9', // I got this api key from rss2json, idk if it will work
-        count: 10
-      }
-    });
-    
-    return response.data.items.map(item => ({
-      title: item.title,
-      date: new Date(item.pubDate).toLocaleDateString()
-    }));
-  } catch (error) {
-    // Incase api key gets deleted (i might have to update the api key once in a while)
-    return [
-      { title: "Team Liquid advances to finals", date: "Feb 27, 2025" },
-      { title: "New Valorant tournament announced", date: "Feb 26, 2025" },
-      { title: "CS2 patch brings major weapon changes", date: "Feb 25, 2025" }
-    ];
-  }
-}
-
 // Forum main page
 app.get("/forum", async function(req, res) {
   try {
@@ -249,3 +214,36 @@ app.get("/reaction-test/medium", (req, res) => {
 app.get("/reaction-test/hard", (req, res) => {
   res.render("reaction-test", { difficulty: "hard" });
 });
+
+// Start server on port 3000
+app.listen(3000,function(){
+  console.log(`Server running at http://127.0.0.1:3000/`);
+});
+
+
+// Trying to add the webhook for esports updates
+
+// Using an RSS to JSON service
+async function getEsportsNews() {
+  try {
+    const response = await axios.get('https://api.rss2json.com/v1/api.json', {
+      params: {
+        rss_url: 'https://www.hltv.org/rss/news',  // HLTV news RSS feed
+        api_key: 'hioxghhkhlbzgtbsgorqr3jz6m25fqeujxj8cok9', // I got this api key from rss2json, idk if it will work
+        count: 10
+      }
+    });
+    
+    return response.data.items.map(item => ({
+      title: item.title,
+      date: new Date(item.pubDate).toLocaleDateString()
+    }));
+  } catch (error) {
+    // Incase api key gets deleted (i might have to update the api key once in a while)
+    return [
+      { title: "Team Liquid advances to finals", date: "Feb 27, 2025" },
+      { title: "New Valorant tournament announced", date: "Feb 26, 2025" },
+      { title: "CS2 patch brings major weapon changes", date: "Feb 25, 2025" }
+    ];
+  }
+}
