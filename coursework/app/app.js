@@ -159,9 +159,13 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// register page
 app.post("/register", async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, re_password } = req.body;
+
+  // Check if passwords match
+  if (password !== re_password) {
+    return res.send("Error: Passwords do not match");
+  }
 
   try {
     // Check if user already exists
