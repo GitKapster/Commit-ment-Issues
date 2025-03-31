@@ -5,7 +5,7 @@ USE AimTrainer;  -- This selects which database to create all the tables in
 CREATE TABLE IF NOT EXISTS Users ( 
   UserID int PRIMARY KEY AUTO_INCREMENT,
   Username varchar(25),
-  Password varchar(25)
+  Password varchar(255)
 );
 
 -- Tasks Info

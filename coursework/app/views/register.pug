@@ -3,12 +3,11 @@ extends layout
 block content
   h1 Sign-Up to XPTrainer
   .signup-container
-    form#loginForm()
+    form#signupForm(action="/register", method="POST", enctype="application/x-www-form-urlencoded")
       input(type="text", name="username", placeholder="Username", required)
       input(type="password", name="password", placeholder="Password", required)
-      input(type="re_password", name="re_password", placeholder="Retype-Password", required)
+      input(type="password", name="re_password", placeholder="Retype-Password", required)
       button(type="submit") Sign-Up
-
   style.
     h1 {
       color: white;
