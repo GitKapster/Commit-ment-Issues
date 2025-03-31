@@ -102,6 +102,10 @@ app.get("/Games", (req, res) => {
   res.render("Games"); // Render the games.pug template
 });
 
+app.get("/register", (req, res) => {
+  res.render("register");
+});
+
 // account list page
 app.get("/account-list", async (req, res) => {
   try {
@@ -143,6 +147,43 @@ app.post("/login", async (req, res) => {
     console.log("Password incorrect.");
     res.send("Invalid username or password");
 
+  } catch (error) {
+    console.error("Database error:", error);
+    res.status(500).send("Server error");
+  }
+});
+
+// register page
+app.post("/register", async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    // Check if user already exists
+    const existingUser = await db.query("SELECT * FROM Users WHERE Username = ?", [username]);
+
+    // Check if the result has any rows
+    if (existingUser && existingUser.length > 0) {
+      return res.send("Error: Account Already Exists");
+    }
+
+    // Hash the password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Insert new user into the database
+    // Note: We're not manually providing a UserID as it's likely auto-incremented in the database
+    const insertResult = await db.query(
+      "INSERT INTO Users (Username, Password) VALUES (?, ?)",
+      [username, hashedPassword]
+    );
+
+    // Check if insert was successful
+    if (insertResult && insertResult.affectedRows > 0) {
+      // Redirect to login page after successful registration
+      res.redirect("/login?registered=true");
+    } else {
+      res.status(500).send("Failed to create account");
+    }
   } catch (error) {
     console.error("Database error:", error);
     res.status(500).send("Server error");
