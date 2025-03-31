@@ -45,19 +45,6 @@ CREATE TABLE IF NOT EXISTS Posts (
   Key UserID (UserID)
 );
 
--- Temporary logins for everyone (Insert users first)
-INSERT INTO Users (Username, Password) 
-VALUES ('Kapi', 'Password');
-
-INSERT INTO Users (Username, Password) 
-VALUES ('Erin', 'Goonan123');
-
-INSERT INTO Users (Username, Password) 
-VALUES ('Taran', 'Password');
-
-INSERT INTO Users (Username, Password) 
-VALUES ('Oskar', 'Password');
-
 -- Leaderboard Sample Data
 
 -- Task 1, UserID 1 (Kapi) - Score 999
