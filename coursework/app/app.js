@@ -121,13 +121,12 @@ app.get("/account-list", async (req, res) => {
 // login function fetching from database
 app.post("/login", async (req, res) => {
   const { username, password } = req.body; // username and password taken from user input
-  console.log(`Received login attempt - Username: ${username}, Password: ${password}`); // console logging for debugging
+  console.log(`Received login attempt - Username: ${username}`); // removed password from logs for security
 
   try {
     const result = await db.query("SELECT * FROM Users WHERE Username = ?", [username]); // matching given username to db username
     const rows = Array.isArray(result) ? result : [result]; // make sure its an array
-    console.log("Raw database response:", rows); // print database response for debugging
-
+    
     // check if user is not found in database
     if (rows.length === 0) {
       console.log("User not found in database.");
@@ -136,11 +135,18 @@ app.post("/login", async (req, res) => {
 
     // user = first user found from query
     const user = rows[0];
-    console.log(`Found user: ${JSON.stringify(user)}`); // debugging
+    console.log(`Found user with ID: ${user.UserID}`); // Don't log full user object with password
 
-    if (password === user.Password) {  // Direct password comparison, no hashing
-      req.session.user = user; // storing user in session
-      console.log("Login successful, redirecting..."); // debugging
+    // Compare the provided password with the stored hash
+    const passwordMatch = await bcrypt.compare(password, user.Password);
+    
+    if (passwordMatch) {
+      req.session.user = {
+        UserID: user.UserID,
+        Username: user.Username
+        // Don't include password in session
+      }; 
+      console.log("Login successful, redirecting..."); 
       return res.redirect(`/account/${user.UserID}`); 
     }
 
