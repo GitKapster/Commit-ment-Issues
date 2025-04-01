@@ -217,14 +217,212 @@ app.get("/forum", async function(req, res) {
     // Get news (or fallback to default news)
     const news = await getEsportsNews();
     
-    // Render the forum page with news data
-    res.render("forum", { esportsNews: news });
+    // Add sample topics - in a real app, you would fetch these from the database
+    const topics = [
+      {
+        id: 1,
+        title: "Is Amin Team 1 Material?",
+        author: "Admin",
+        date: "Feb 25, 2025",
+        replies: 2,
+        content: "Amin has shown great progress in recent games. His aim accuracy has improved by 25% and his reaction time is consistently under 200ms."
+      },
+      {
+        id: 2,
+        title: "How to stop shaking when i aim?",
+        author: "Kasper",
+        date: "Feb 26, 2025",
+        replies: 1,
+        content: "I noticed my hands shake when I'm trying to make precise shots. Any tips to improve stability during aim training?"
+      },
+      {
+        id: 3,
+        title: "Is Nova227 the rookie of the year 2025?",
+        author: "RoehamptonEsports",
+        date: "Feb 26, 2025",
+        replies: 1,
+        content: "Nova227 has dominated the scene with record-breaking performance in aim challenges. His stats show a 15% lead over the next best rookie."
+      },
+      {
+        id: 4,
+        title: "How do i improve my reaction speed?",
+        author: "Virtus.Roe",
+        date: "Feb 26, 2025",
+        replies: 1,
+        content: "My reaction time is currently around 300ms but I need to get it below 250ms to compete at a higher level. What are the best training methods?"
+      }
+    ];
+    
+    // Render the forum page with news data AND topics
+    res.render("forum", { 
+      esportsNews: news,
+      topics: topics
+    });
   } catch (error) {
     console.error("Error loading forum:", error);
-    // If there's an error, pass an empty array
-    res.render("forum", { esportsNews: [] });
+    // If there's an error, pass empty arrays
+    res.render("forum", { 
+      esportsNews: [],
+      topics: [] 
+    });
   }
-});1
+});
+
+// Forum topic view - shows a single topic with all replies
+app.get("/forum/topic/:id", async function(req, res) {
+  try {
+    const topicId = req.params.id;
+    const replyAdded = req.query.reply === 'added';
+    
+    // In a real app, you'd fetch the topic and its replies from the database
+    // For now, we'll use sample data
+    const sampleTopics = {
+      "1": {
+        id: 1,
+        title: "Is Amin Team 1 Material?",
+        author: "Admin",
+        date: "Feb 25, 2025",
+        content: "Amin has shown great progress in recent games. His aim accuracy has improved by 25% and his reaction time is consistently under 200ms.",
+        replies: [
+          { author: "Coach", date: "Feb 25, 2025", content: "I've been monitoring his progress. His decision-making has also improved significantly." },
+          { author: "TeamCaptain", date: "Feb 26, 2025", content: "We need to see how he performs under pressure in the next tournament." }
+        ]
+      },
+      "2": {
+        id: 2,
+        title: "How to stop shaking when i aim?",
+        author: "Kasper",
+        date: "Feb 26, 2025",
+        content: "I noticed my hands shake when I'm trying to make precise shots. Any tips to improve stability during aim training?",
+        replies: [
+          { author: "AimTrainer", date: "Feb 26, 2025", content: "Try lowering your sensitivity and make sure you're in a comfortable position. Also, regular breaks help reduce tension." }
+        ]
+      },
+      "3": {
+        id: 3,
+        title: "Is Nova227 the rookie of the year 2025?",
+        author: "RoehamptonEsports",
+        date: "Feb 26, 2025",
+        content: "Nova227 has dominated the scene with record-breaking performance in aim challenges. His stats show a 15% lead over the next best rookie.",
+        replies: [
+          { author: "Analyst", date: "Feb 27, 2025", content: "His consistency is what sets him apart. Most rookies have high variance in their performance." }
+        ]
+      },
+      "4": {
+        id: 4,
+        title: "How do i improve my reaction speed?",
+        author: "Virtus.Roe",
+        date: "Feb 26, 2025",
+        content: "My reaction time is currently around 300ms but I need to get it below 250ms to compete at a higher level. What are the best training methods?",
+        replies: [
+          { author: "ProPlayer", date: "Feb 27, 2025", content: "Use our reaction test tool daily. Start with easy mode and gradually move to harder difficulties. Also, make sure you get enough sleep!" }
+        ]
+      }
+    };
+    
+    // If a reply was just added, let's add it to the sample data
+    if (replyAdded && req.session.user && req.session.lastReply) {
+      const topic = sampleTopics[topicId];
+      
+      if (topic) {
+        // Add the actual reply from the current user
+        const newReply = {
+          author: req.session.user.Username,
+          date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+          content: req.session.lastReply // Use the actual content from the form
+        };
+        
+        // Add the new reply to the end of the replies array
+        topic.replies.push(newReply);
+        
+        // Clear the stored reply from the session
+        delete req.session.lastReply;
+      }
+    }
+    
+    const topic = sampleTopics[topicId];
+    
+    if (!topic) {
+      return res.status(404).send("Topic not found");
+    }
+    
+    // Pass the user session to the template
+    res.render("topic", { 
+      topic: topic,
+      user: req.session.user || null
+    });
+  } catch (error) {
+    console.error("Error loading topic:", error);
+    res.status(500).send("Error loading topic");
+  }
+});
+
+// Route for creating a new topic
+app.get("/forum/new-topic", (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect("/login?redirect=forum/new-topic");
+  }
+  
+  res.render("new-topic");
+});
+
+// Process new topic submission
+app.post("/forum/new-topic", (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.status(401).send("You must be logged in to create a topic");
+  }
+  
+  const { title, content, category } = req.body;
+  
+  // In a real app, you would save this to the database
+  // For now, just redirect back to the forum
+  res.redirect("/forum");
+});
+
+// Process reply submission
+app.post("/forum/topic/:id/reply", (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.status(401).send("You must be logged in to reply");
+  }
+  
+  const topicId = req.params.id;
+  const { content } = req.body;
+  
+  // Store the reply content in the session so we can access it after redirect
+  req.session.lastReply = content;
+  
+  // In a real app, you would save this to the database
+  // For now, just redirect back to the topic with a query parameter
+  res.redirect(`/forum/topic/${topicId}?reply=added`);
+  
+  /* 
+  // In a real implementation with a database, you would do something like this:
+  
+  try {
+    // Get the current user information
+    const userId = req.session.user.UserID;
+    const username = req.session.user.Username;
+    
+    // Create a timestamp for the reply
+    const timestamp = new Date();
+    
+    // Insert the reply into the database
+    await db.query(
+      "INSERT INTO TopicReplies (topic_id, user_id, content, created_at) VALUES (?, ?, ?, ?)",
+      [topicId, userId, content, timestamp]
+    );
+    
+    // Redirect back to the topic page to see the new reply
+    res.redirect(`/forum/topic/${topicId}`);
+  } catch (error) {
+    console.error("Error posting reply:", error);
+    res.status(500).send("Error posting reply");
+  }
+  */
+});
 
 // Leaderboard Route - Fetch Data from MySQL
 app.get("/leaderboard", async (req, res) => {
