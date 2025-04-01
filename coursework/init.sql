@@ -46,16 +46,16 @@ CREATE TABLE IF NOT EXISTS Posts (
 );
 
 INSERT INTO Users (UserID, Username, Password)
-VALUES (1, "Erin", "$2b$10$yH01cJkD6KchtY0YgOXBb.NJoKXEF46BSn.4QsEvFh4JFyRVQrgk6");
+VALUES (1, 'Erin', '$2b$10$yH01cJkD6KchtY0YgOXBb.NJoKXEF46BSn.4QsEvFh4JFyRVQrgk6');
 
 INSERT INTO Users (UserID, Username, Password)
-VALUES (2, "Kapi", "$2b$10$4oAhkdnYRJqxbZYUt.dfN.hDL0XZk3D9z9wyjISG5NJDKQEFAzkmO");
+VALUES (2, 'Kapi', '$2b$10$4oAhkdnYRJqxbZYUt.dfN.hDL0XZk3D9z9wyjISG5NJDKQEFAzkmO');
 
 INSERT INTO Users (UserID, Username, Password)
-VALUES (3, "Taran", "$2b$10$6e1HQIAUyYVHZkVdmkyGeOXIr.5gZPAQcSH8LWh8AGWHwzPq6RP22");
+VALUES (3, 'Taran', '$2b$10$6e1HQIAUyYVHZkVdmkyGeOXIr.5gZPAQcSH8LWh8AGWHwzPq6RP22');
 
 INSERT INTO Users (UserID, Username, Password)
-VALUES (4, "Oskar", "$2b$10$QupFA2CvnryD7rplTNYXUuIIwtLBlfLOrWzEEkQjdmFMVPnocH0CO");
+VALUES (4, 'Oskar', '$2b$10$QupFA2CvnryD7rplTNYXUuIIwtLBlfLOrWzEEkQjdmFMVPnocH0CO');
 
 
 -- Leaderboard Sample Data
