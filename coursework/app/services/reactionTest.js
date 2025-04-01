@@ -1,40 +1,38 @@
 document.addEventListener("DOMContentLoaded", function() {
-    console.log("DOM fully loaded and parsed");
-    
     const reactionBox = document.getElementById("reaction-box");
     const reactionTimeDisplay = document.getElementById("reaction-time");
     
     if (!reactionBox || !reactionTimeDisplay) {
-        console.error("Could not find required elements:", {
-            reactionBox: !!reactionBox,
-            reactionTimeDisplay: !!reactionTimeDisplay
-        });
-        return; // Exit if elements not found
+        console.error("Could not find required elements");
+        return;
     }
     
-    console.log("Found required elements, initializing game");
-    
     let startTime;
+    
+    // Try to get difficulty from the page heading
+    let difficulty = "Medium"; // Default
+    try {
+        const heading = document.querySelector('h1');
+        if (heading) {
+            difficulty = heading.textContent.split('-')[1].trim().split(' ')[0];
+            console.log("Detected difficulty:", difficulty);
+        }
+    } catch (e) {
+        console.log("Using default difficulty:", difficulty);
+    }
     
     // Initialize the box with proper state
     reactionBox.dataset.state = "ready";
     
     // Main click handler for the reaction box
-    reactionBox.addEventListener("click", function(e) {
+    reactionBox.addEventListener("click", function() {
         console.log("Box clicked. Current state:", reactionBox.dataset.state);
         
-        // Prevent any default behaviors
-        e.preventDefault();
-        e.stopPropagation();
-        
         if (reactionBox.dataset.state === "ready") {
-            console.log("Starting countdown");
             startCountdown();
         } else if (reactionBox.dataset.state === "waiting" && reactionBox.style.backgroundColor === "green") {
-            console.log("Recording reaction time");
             recordReaction();
         } else if (reactionBox.dataset.state === "finished") {
-            console.log("Resetting game");
             resetGame();
         }
     });
@@ -54,66 +52,97 @@ document.addEventListener("DOMContentLoaded", function() {
         reactionBox.dataset.state = "countdown";
         
         let countdown = 3;
-        console.log("Countdown started:", countdown);
         
         let countdownInterval = setInterval(function() {
             reactionBox.textContent = countdown.toString();
-            console.log("Countdown:", countdown);
             countdown--;
             
             if (countdown < 0) {
                 clearInterval(countdownInterval);
-                console.log("Countdown complete, starting test");
                 startReactionTest();
             }
         }, 1000);
     }
     
-    // Start the reaction test with a random delay
+    // Start the reaction test
     function startReactionTest() {
         reactionBox.style.backgroundColor = "red";
         reactionBox.textContent = "Wait...";
         reactionBox.dataset.state = "waiting";
         
-        // Get delay based on difficulty 
-        let minDelay = 3000;
-        let maxDelay = 5000;
-        
-        // Try to parse difficulty from heading
-        try {
-            const heading = document.querySelector('h1');
-            if (heading) {
-                const difficultyText = heading.textContent.split('-')[1].trim().split(' ')[0];
-                console.log("Detected difficulty:", difficultyText);
-                
-                if (difficultyText === "Easy") {
-                    minDelay = 4000;
-                    maxDelay = 6000;
-                } else if (difficultyText === "Hard") {
-                    minDelay = 2000;
-                    maxDelay = 4000;
-                }
-            }
-        } catch (e) {
-            console.log("Using default difficulty", e);
-        }
-        
-        let delay = Math.floor(Math.random() * (maxDelay - minDelay)) + minDelay;
-        console.log("Waiting for", delay, "ms before showing green");
+        // Initial wait time (red screen)
+        const initialDelay = getRandomDelay(2000, 4000);
+        console.log("Initial delay:", initialDelay);
         
         setTimeout(function() {
-            reactionBox.style.backgroundColor = "green";
-            reactionBox.textContent = "CLICK!";
-            startTime = Date.now();
-            console.log("Box turned green at", startTime);
-        }, delay);
+            // After initial delay, show color sequence based on difficulty
+            if (difficulty === "Easy") {
+                // Easy mode: directly to green
+                showGreen();
+            } else if (difficulty === "Medium") {
+                // Medium mode: 1-2 distractor colors
+                const numColors = Math.floor(Math.random() * 2) + 1;
+                const colors = pickRandomColors(["purple", "yellow"], numColors);
+                console.log("Medium mode colors:", colors);
+                showColorSequence(colors);
+            } else if (difficulty === "Hard") {
+                // Hard mode: 1-4 distractor colors
+                const numColors = Math.floor(Math.random() * 4) + 1;
+                const colors = pickRandomColors(["purple", "yellow", "pink", "orange"], numColors);
+                console.log("Hard mode colors:", colors);
+                showColorSequence(colors);
+            } else {
+                showGreen();
+            }
+        }, initialDelay);
+    }
+    
+    // Show the sequence of distractor colors
+    function showColorSequence(colors) {
+        if (colors.length === 0) {
+            showGreen();
+            return;
+        }
+        
+        let colorIndex = 0;
+        
+        function nextColor() {
+            if (colorIndex < colors.length) {
+                const color = colors[colorIndex];
+                console.log("Showing color:", color);
+                
+                reactionBox.style.backgroundColor = color;
+                reactionBox.textContent = "Not Yet!";
+                
+                // Delay before next color
+                const colorDuration = (difficulty === "Hard") ? 
+                    getRandomDelay(300, 800) : 
+                    getRandomDelay(500, 1300);
+                
+                colorIndex++;
+                setTimeout(nextColor, colorDuration);
+            } else {
+                // End of sequence, show green
+                showGreen();
+            }
+        }
+        
+        // Start the color sequence
+        nextColor();
+    }
+    
+    // Show the green box and start timing
+    function showGreen() {
+        console.log("Showing green");
+        reactionBox.style.backgroundColor = "green";
+        reactionBox.textContent = "CLICK!";
+        startTime = Date.now();
     }
     
     // Record the reaction time when the user clicks the green box
     function recordReaction() {
-        let endTime = Date.now();
-        let reactionTime = (endTime - startTime) / 1000;
-        console.log("Reaction recorded at", endTime, "Reaction time:", reactionTime);
+        const reactionTime = (Date.now() - startTime) / 1000;
+        console.log("Reaction time:", reactionTime);
         
         reactionTimeDisplay.textContent = `Time: ${reactionTime.toFixed(3)} seconds`;
         reactionBox.style.backgroundColor = "lightblue";
@@ -121,7 +150,17 @@ document.addEventListener("DOMContentLoaded", function() {
         reactionBox.dataset.state = "finished";
     }
     
+    // Helper function to get random delay
+    function getRandomDelay(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    
+    // Helper function to pick random colors from the array
+    function pickRandomColors(array, count) {
+        const shuffled = [...array].sort(() => 0.5 - Math.random());
+        return shuffled.slice(0, count);
+    }
+    
     // Start the game
-    console.log("Initializing game");
     resetGame();
 });

@@ -1,21 +1,18 @@
 extends layout
 
 block content
-  h1 Reaction Test - #{difficulty} Mode
-
   style.
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: rgb(48, 47, 47);
-      margin: 0;
-    }
-
     .reaction-container {
       text-align: center;
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+      padding-top: 20px;
+    }
+
+    h1 {
+      color: white;
+      margin-bottom: 30px;
     }
 
     #reaction-box {
@@ -29,27 +26,50 @@ block content
       border-radius: 10px;
       font-size: 24px;
       font-weight: bold;
-      transition: background-color 0.3s ease-in-out;
+      transition: background-color 0.2s ease;
       text-align: center;
       color: black;
-      user-select: none; /* Prevent text selection */
+      user-select: none;
+      margin: 0 auto;
     }
 
     #reaction-time {
       font-size: 22px;
       font-weight: bold;
       color: white;
-      margin-bottom: 20px;
+      margin: 20px 0;
+    }
+    
+    .difficulty-info {
+      color: #ccc;
+      font-size: 16px;
+      margin-top: 20px;
+      text-align: left;
+      padding: 15px;
+      background-color: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      max-width: 500px;
+      margin: 20px auto;
     }
 
   .reaction-container
     p#reaction-time Ready to Start!
     div#reaction-box Click to Start
+    
+    .difficulty-info
+      h3 Difficulty Settings:
+      if difficulty === "Easy"
+        p Easy Mode: The box will turn directly from red to green.
+      else if difficulty === "Medium"
+        p Medium Mode: The box will show 1-2 random colors (purple or yellow) before turning green.
+      else
+        p Hard Mode: The box will show 1-4 random colors (purple, yellow, pink, or orange) before turning green.
+      
+      p Remember to only click when the box is GREEN!
 
+  //- Include the script inline
   script.
     document.addEventListener("DOMContentLoaded", function() {
-        console.log("DOM fully loaded and parsed");
-        
         const reactionBox = document.getElementById("reaction-box");
         const reactionTimeDisplay = document.getElementById("reaction-time");
         
@@ -58,25 +78,21 @@ block content
             return;
         }
         
-        console.log("Found required elements, initializing game");
-        
         let startTime;
+        let difficulty = "#{difficulty}"; // Get from template variable
         
         // Initialize the box with proper state
         reactionBox.dataset.state = "ready";
         
         // Main click handler for the reaction box
-        reactionBox.addEventListener("click", function(e) {
-            console.log("Box clicked. Current state:", reactionBox.dataset.state);
+        reactionBox.addEventListener("click", function() {
+            console.log("Box clicked. State:", reactionBox.dataset.state);
             
             if (reactionBox.dataset.state === "ready") {
-                console.log("Starting countdown");
                 startCountdown();
             } else if (reactionBox.dataset.state === "waiting" && reactionBox.style.backgroundColor === "green") {
-                console.log("Recording reaction time");
                 recordReaction();
             } else if (reactionBox.dataset.state === "finished") {
-                console.log("Resetting game");
                 resetGame();
             }
         });
@@ -96,64 +112,116 @@ block content
             reactionBox.dataset.state = "countdown";
             
             let countdown = 3;
-            console.log("Countdown started:", countdown);
             
             let countdownInterval = setInterval(function() {
                 reactionBox.textContent = countdown.toString();
-                console.log("Countdown:", countdown);
                 countdown--;
                 
                 if (countdown < 0) {
                     clearInterval(countdownInterval);
-                    console.log("Countdown complete, starting test");
                     startReactionTest();
                 }
             }, 1000);
         }
         
-        // Start the reaction test with a random delay
+        // Start the reaction test
         function startReactionTest() {
             reactionBox.style.backgroundColor = "red";
             reactionBox.textContent = "Wait...";
             reactionBox.dataset.state = "waiting";
             
-            let minDelay = 3000;
-            let maxDelay = 5000;
-            
-            try {
-                const heading = document.querySelector('h1');
-                if (heading) {
-                    const difficultyText = heading.textContent.split('-')[1].trim().split(' ')[0];
-                    console.log("Detected difficulty:", difficultyText);
-                    
-                    if (difficultyText === "Easy") {
-                        minDelay = 4000;
-                        maxDelay = 6000;
-                    } else if (difficultyText === "Hard") {
-                        minDelay = 2000;
-                        maxDelay = 4000;
-                    }
-                }
-            } catch (e) {
-                console.log("Using default difficulty");
-            }
-            
-            let delay = Math.floor(Math.random() * (maxDelay - minDelay)) + minDelay;
-            console.log("Waiting for", delay, "ms before showing green");
+            // Initial wait time (red screen)
+            const initialDelay = Math.floor(Math.random() * 2000) + 3000; // 3-5 seconds
             
             setTimeout(function() {
-                reactionBox.style.backgroundColor = "green";
-                reactionBox.textContent = "CLICK!";
-                startTime = Date.now();
-                console.log("Box turned green at", startTime);
-            }, delay);
+                // After initial delay, show color sequence based on difficulty
+                if (difficulty === "Easy") {
+                    // Easy mode: directly to green
+                    showGreen();
+                } else if (difficulty === "Medium") {
+                    // Medium mode: 1-2 distractor colors
+                    const numColors = Math.floor(Math.random() * 2) + 1;
+                    const colors = ["purple", "yellow"];
+                    const selectedColors = [];
+                    
+                    // Select random colors without repeating
+                    for (let i = 0; i < numColors; i++) {
+                        if (colors.length > 0) {
+                            const randomIndex = Math.floor(Math.random() * colors.length);
+                            selectedColors.push(colors[randomIndex]);
+                            colors.splice(randomIndex, 1);
+                        }
+                    }
+                    
+                    console.log("Medium colors:", selectedColors);
+                    showColorSequence(selectedColors);
+                } else {
+                    // Hard mode: 1-4 distractor colors
+                    const numColors = Math.floor(Math.random() * 4) + 1;
+                    const colors = ["purple", "yellow", "pink", "orange"];
+                    const selectedColors = [];
+                    
+                    // Select random colors without repeating
+                    for (let i = 0; i < numColors; i++) {
+                        if (colors.length > 0) {
+                            const randomIndex = Math.floor(Math.random() * colors.length);
+                            selectedColors.push(colors[randomIndex]);
+                            colors.splice(randomIndex, 1);
+                        }
+                    }
+                    
+                    console.log("Hard colors:", selectedColors);
+                    showColorSequence(selectedColors);
+                }
+            }, initialDelay);
+        }
+        
+        // Show the sequence of distractor colors
+        function showColorSequence(colors) {
+            if (colors.length === 0) {
+                showGreen();
+                return;
+            }
+            
+            let colorIndex = 0;
+            
+            function nextColor() {
+                if (colorIndex < colors.length) {
+                    const color = colors[colorIndex];
+                    console.log("Showing color:", color);
+                    
+                    reactionBox.style.backgroundColor = color;
+                    reactionBox.textContent = "Not Yet!";
+                    
+                    // Delay before next color
+                    const colorDuration = (difficulty === "Hard") ? 
+                        Math.floor(Math.random() * 500) + 300 : // 300-800ms for Hard
+                        Math.floor(Math.random() * 800) + 500;  // 500-1300ms for Medium
+                    
+                    colorIndex++;
+                    setTimeout(nextColor, colorDuration);
+                } else {
+                    // End of sequence, show green
+                    showGreen();
+                }
+            }
+            
+            // Start the color sequence
+            nextColor();
+        }
+        
+        // Show the green box and start timing
+        function showGreen() {
+            console.log("Showing green");
+            reactionBox.style.backgroundColor = "green";
+            reactionBox.textContent = "CLICK!";
+            startTime = Date.now();
         }
         
         // Record the reaction time when the user clicks the green box
         function recordReaction() {
-            let endTime = Date.now();
-            let reactionTime = (endTime - startTime) / 1000;
-            console.log("Reaction recorded at", endTime, "Reaction time:", reactionTime);
+            const reactionTime = (Date.now() - startTime) / 1000;
+            console.log("Reaction time:", reactionTime);
             
             reactionTimeDisplay.textContent = `Time: ${reactionTime.toFixed(3)} seconds`;
             reactionBox.style.backgroundColor = "lightblue";
@@ -162,6 +230,5 @@ block content
         }
         
         // Start the game
-        console.log("Initializing game");
         resetGame();
     });

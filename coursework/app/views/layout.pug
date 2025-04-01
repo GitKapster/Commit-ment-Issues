@@ -19,14 +19,41 @@ html
         padding: 10px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       }
+      .logo-container {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        width: 180px; /* Fixed width for logo container */
+      }
       .navbar img {
         width: 40px;
         height: 40px;
-        margin: 0 15px;
-        padding: 0px 20px 0px 0px;
       }
       #cat {
         padding: 0px;
+        margin-right: 10px;
+      }
+      .logo-text {
+        font-family: 'Arial', sans-serif;
+        font-weight: 800;
+        font-size: 24px;
+        letter-spacing: 1px;
+        margin: 0;
+        background: linear-gradient(90deg, #67d9dc, #5dc5c1);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        position: relative;
+        white-space: nowrap;
+      }
+      .logo-text::after {
+        content: "XPTrainer";
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        z-index: -1;
+        color: rgba(0, 0, 0, 0.3);
+        filter: blur(2px);
       }
       .navbar .buttons {
         flex-grow: 1;
@@ -53,6 +80,14 @@ html
         color: #67d9dc;
         transform: scale(1.02);
       }
+      .account-container {
+        width: 180px; /* Match logo container width for symmetry */
+        display: flex;
+        justify-content: flex-end;
+      }
+      .account-container img {
+        margin-right: 15px;
+      }
       .content {
         margin-top: 80px; /* Push content down so it's not hidden under navbar */
         text-align: center;
@@ -61,15 +96,17 @@ html
 
   body
     .navbar
-      a(href="/")
-        img(src="/images/sillycat.jpg", alt="Logo Icon", id="cat") 
+      a.logo-container(href="/")
+        img(src="/images/sillycat.jpg", alt="Logo Icon", id="cat")
+        .logo-text XPTrainer
       .buttons
         button(onclick="window.location.href='/tasks'") Tasks
         button(onclick="window.location.href='/leaderboard'") Leaderboard
         button(onclick="window.location.href='/games'") Games
         button(onclick="window.location.href='/forum'") Forum
-      a(href="/account")
-        img(src="/images/accounticon.png", alt="Account Icon")
+      .account-container
+        a(href="/account")
+          img(src="/images/accounticon.png", alt="Account Icon")
 
     //- Content area
     .content
