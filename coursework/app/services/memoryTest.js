@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-   
-    const urlParams = new URLSearchParams(window.location.search);
-    const difficulty = urlParams.get('difficulty') || 'easy'; // Default to easy if not specified
+    // Get difficulty from server-side rendered template
+    const difficulty = document.currentScript.getAttribute('data-difficulty') || 'easy';
     
     const gameContainer = document.querySelector('.game-container');
     const gameInfo = document.querySelector('.game-info');
@@ -185,11 +184,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (restartBtn) {
         restartBtn.addEventListener('click', () => {
             clearInterval(timerInterval);
-            // Redirect back to the main page
-            window.location.href = 'index.html';
+            // Redirect back to the tasks page
+            window.location.href = '/tasks';
         });
     }
 
-    // Initialize game on page load with difficulty from URL parameter
+    // Initialize game on page load with difficulty
     initGame(difficulty);
 });
