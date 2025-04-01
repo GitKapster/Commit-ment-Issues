@@ -1,23 +1,18 @@
 extends layout
 
 block content
-  h1 Reaction Test - #{difficulty} Mode
-
   style.
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: rgb(48, 47, 47);
-      margin: 0;
-    }
-
     .reaction-container {
       text-align: center;
       width: 100%;
       max-width: 500px;
+      margin: 0 auto;
+      padding-top: 20px;
+    }
+
+    h1 {
+      color: white;
+      margin-bottom: 30px;
     }
 
     #reaction-box {
@@ -42,7 +37,7 @@ block content
       font-size: 22px;
       font-weight: bold;
       color: white;
-      margin-bottom: 20px;
+      margin: 20px 0;
     }
     
     .difficulty-info {
@@ -53,6 +48,8 @@ block content
       padding: 15px;
       background-color: rgba(0,0,0,0.2);
       border-radius: 8px;
+      max-width: 500px;
+      margin: 20px auto;
     }
 
   .reaction-container
