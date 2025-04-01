@@ -1,0 +1,18 @@
+extends layout
+
+html
+     body
+    .game-container
+      .game-info
+        .timer Time: 0s
+        .moves Moves: 0
+      .game-board
+      button.restart-btn Restart Game
+      .game-over.hidden
+        h2 Congratulations!
+        p You completed the game in 
+          span.final-time
+          |  with 
+          span.final-moves
+          |  moves.
+    script(src="script.js")
