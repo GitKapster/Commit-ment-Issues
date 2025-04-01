@@ -67,11 +67,29 @@ html
         button(onclick="window.location.href='/tasks'") Tasks
         button(onclick="window.location.href='/leaderboard'") Leaderboard
         button(onclick="window.location.href='/games'") Games
-        button(onclick="window.location.href='/forum'") Forum  <!-- CHANGED: Now links to /forum instead of showing alert -->
+        button(onclick="window.location.href='/forum'") Forum
       a(href="/account")
         img(src="/images/accounticon.png", alt="Account Icon")
 
-
-    //- Move block content OUTSIDE the navbar
+    //- Content area
     .content
       block content
+
+    //- Add JavaScript at the end of the body
+    script.
+      // Simple function to toggle topic content visibility
+      function toggleTopic(topicId) {
+        console.log("Toggling topic: " + topicId);
+        const contentElement = document.getElementById("topic-" + topicId + "-content");
+        if (contentElement) {
+          if (contentElement.classList.contains("hidden")) {
+            contentElement.classList.remove("hidden");
+            console.log("Showing topic content");
+          } else {
+            contentElement.classList.add("hidden");
+            console.log("Hiding topic content");
+          }
+        } else {
+          console.error("Could not find element with id: topic-" + topicId + "-content");
+        }
+      }

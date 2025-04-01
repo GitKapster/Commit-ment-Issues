@@ -1,6 +1,4 @@
 //- Forum Page
-
-//- views/forum.pug
 extends layout
 
 block content
@@ -27,39 +25,55 @@ block content
       .topic-list
         // Sample topic 1
         .topic-item
-          .topic-title
-            a(href='/forum/topic/1') Is Amin Team 1 Material?
-          .topic-details
-            span.topic-author Posted by Admin
-            span.topic-date Feb 25, 2025
-            span.topic-replies 2 replies
+          .topic-header(onclick="toggleTopic(1)")
+            .topic-title Is Amin Team 1 Material?
+            .topic-details
+              span.topic-author Posted by Admin
+              span.topic-date Feb 25, 2025
+              span.topic-replies 2 replies
+          #topic-1-content.topic-content.hidden
+            p Amin has shown great progress in recent games. His aim accuracy has improved by 25% and his reaction time is consistently under 200ms.
+            .topic-actions
+              a.view-more(href='/forum/topic/1') View Full Discussion
         
         // Sample topic 2
         .topic-item
-          .topic-title
-            a(href='/forum/topic/2') How to stop shaking when i aim?
-          .topic-details
-            span.topic-author Posted by Kasper
-            span.topic-date Feb 26, 2025
-            span.topic-replies 1 reply
+          .topic-header(onclick="toggleTopic(2)")
+            .topic-title How to stop shaking when i aim?
+            .topic-details
+              span.topic-author Posted by Kasper
+              span.topic-date Feb 26, 2025
+              span.topic-replies 1 reply
+          #topic-2-content.topic-content.hidden
+            p I noticed my hands shake when I'm trying to make precise shots. Any tips to improve stability during aim training?
+            .topic-actions
+              a.view-more(href='/forum/topic/2') View Full Discussion
 
         // Sample topic 3
         .topic-item
-          .topic-title
-            a(href='/forum/topic/2') Is Nova227 the rookie of the year 2025?
-          .topic-details
-            span.topic-author Posted by RoehamptonEsports
-            span.topic-date Feb 26, 2025
-            span.topic-replies 1 reply
+          .topic-header(onclick="toggleTopic(3)")
+            .topic-title Is Nova227 the rookie of the year 2025?
+            .topic-details
+              span.topic-author Posted by RoehamptonEsports
+              span.topic-date Feb 26, 2025
+              span.topic-replies 1 reply
+          #topic-3-content.topic-content.hidden
+            p Nova227 has dominated the scene with record-breaking performance in aim challenges. His stats show a 15% lead over the next best rookie.
+            .topic-actions
+              a.view-more(href='/forum/topic/3') View Full Discussion
 
         // Sample topic 4
         .topic-item
-          .topic-title
-            a(href='/forum/topic/2') How do i improve my reaction speed?
-          .topic-details
-            span.topic-author Posted by Virtus.Roe
-            span.topic-date Feb 26, 2025
-            span.topic-replies 1 reply    
+          .topic-header(onclick="toggleTopic(4)")
+            .topic-title How do i improve my reaction speed?
+            .topic-details
+              span.topic-author Posted by Virtus.Roe
+              span.topic-date Feb 26, 2025
+              span.topic-replies 1 reply
+          #topic-4-content.topic-content.hidden
+            p My reaction time is currently around 300ms but I need to get it below 250ms to compete at a higher level. What are the best training methods?
+            .topic-actions
+              a.view-more(href='/forum/topic/4') View Full Discussion    
     
     // Create new topic button
     .create-topic
@@ -146,15 +160,20 @@ block content
       background: #333;
     }
     
-    .topic-title a {
+    .topic-header {
+      cursor: pointer;
+    }
+    
+    .topic-header:hover .topic-title {
+      color: #5dc5c1;
+    }
+    
+    .topic-title {
       color: white;
       font-weight: bold;
       text-decoration: none;
       font-size: 16px;
-    }
-    
-    .topic-title a:hover {
-      color: #5dc5c1;
+      transition: color 0.2s ease;
     }
     
     .topic-details {
@@ -163,6 +182,34 @@ block content
       color: #aaa;
       display: flex;
       gap: 15px;
+    }
+    
+    /* Topic content styles */
+    .topic-content {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #444;
+      color: #ccc;
+    }
+    
+    .topic-content.hidden {
+      display: none;
+    }
+    
+    .topic-actions {
+      margin-top: 10px;
+      text-align: right;
+    }
+    
+    .view-more {
+      color: #5dc5c1;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    
+    .view-more:hover {
+      text-decoration: underline;
     }
     
     .create-topic {
