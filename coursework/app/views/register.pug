@@ -8,9 +8,18 @@ block content
       input(type="password", name="password", placeholder="Password", required)
       input(type="password", name="re_password", placeholder="Retype-Password", required)
       button(type="submit") Sign-Up
+      span 
+        | Already have an account? 
+        a(href="/login") Sign In
   style.
     h1 {
       color: white;
+    }
+    span {
+      color: white;
+    }
+    a {
+      color: #67d9dc; 
     }
     /* Scope the styles to login container */
     .signup-container {

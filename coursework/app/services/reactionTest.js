@@ -1,47 +1,59 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const startButton = document.getElementById("start-button");
+document.addEventListener("DOMContentLoaded", function() {
     const reactionBox = document.getElementById("reaction-box");
     const reactionTimeDisplay = document.getElementById("reaction-time");
-
+  
     let startTime;
-    let timeoutID;
-
-    if (!startButton || !reactionBox || !reactionTimeDisplay) {
-        console.error("Missing required elements!");
-        return;
+  
+    // Reset game to initial state
+    function resetGame() {
+      reactionBox.style.backgroundColor = "turquoise";
+      reactionBox.innerText = "Click to Start";
+      reactionTimeDisplay.innerText = "Ready to Start!";
+      
+      // Set up click listener for the first click to start the countdown
+      reactionBox.addEventListener("click", startCountdown, { once: true });
     }
-
-    startButton.addEventListener("click", () => {
-        // Reset state
-        reactionBox.style.backgroundColor = "red";
-        reactionBox.innerText = "Wait...";
-        reactionTimeDisplay.innerText = "Time: 0.00 seconds";
-
-        // Remove previous click listener to prevent multiple triggers
-        reactionBox.removeEventListener("click", recordReaction);
-
-        // Random delay before turning green
-        let delay = Math.floor(Math.random() * 2000) + 3000; // 3-5 sec
-
-        timeoutID = setTimeout(() => {
-            reactionBox.style.backgroundColor = "green";
-            reactionBox.innerText = "CLICK!";
-            startTime = Date.now();
-
-            // Add click event once reaction box turns green
-            reactionBox.addEventListener("click", recordReaction, { once: true });
-        }, delay);
-    });
-
+  
+    // Start the countdown after the first click
+    function startCountdown() {
+      reactionBox.style.backgroundColor = "turquoise";
+      reactionBox.innerText = "Get Ready!";
+      
+      let countdown = 3;
+      let countdownInterval = setInterval(function() {
+        reactionBox.innerText = countdown;
+        countdown--;
+        if (countdown < 0) {
+          clearInterval(countdownInterval);
+          startReactionTest();
+        }
+      }, 1000);
+    }
+  
+    // Start the reaction test with a random delay
+    function startReactionTest() {
+      reactionBox.style.backgroundColor = "red";
+      reactionBox.innerText = "Wait...";
+  
+      let delay = Math.floor(Math.random() * 2000) + 3000; // Random delay between 3 and 5 seconds
+  
+      setTimeout(function() {
+        reactionBox.style.backgroundColor = "green";
+        reactionBox.innerText = "CLICK!";
+        startTime = Date.now();
+        
+        // Set up listener to track when the box is clicked
+        reactionBox.addEventListener("click", recordReaction, { once: true });
+      }, delay);
+    }
+  
+    // Record the reaction time when the user clicks the green box
     function recordReaction() {
-        let reactionTime = (Date.now() - startTime) / 1000;
-        reactionTimeDisplay.innerText = `Time: ${reactionTime.toFixed(3)} seconds`;
-
-        // Reset game after displaying result
-        setTimeout(() => {
-            reactionBox.style.backgroundColor = "red";
-            reactionBox.innerText = "Wait...";
-            reactionTimeDisplay.innerText = "Click Start to Begin";
-        }, 2000);
+      let reactionTime = (Date.now() - startTime) / 1000;
+      reactionTimeDisplay.innerText = `Time: ${reactionTime.toFixed(3)} seconds`;
+      setTimeout(resetGame, 2000); // Reset the game after 2 seconds
     }
-});
+  
+    // Start the game
+    resetGame();
+  });  

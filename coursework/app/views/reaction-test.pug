@@ -3,20 +3,44 @@ extends layout
 block content
   h1 Reaction Test - #{difficulty} Mode
 
+  style.
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color:rgb(48, 47, 47);
+      margin: 0;
+    }
+
+    .reaction-container {
+      text-align: center;
+    }
+
+    #reaction-box {
+      width: 300px;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: turquoise;
+      cursor: pointer;
+      border-radius: 10px;
+      font-size: 24px;
+      font-weight: bold;
+      transition: background-color 0.3s ease-in-out;
+      text-align: center;
+    }
+
+    #reaction-time {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
   .reaction-container
-    button#start-button Start Test
-    p#reaction-time Time: 0.00 seconds
-    div#reaction-box(style="width: 150px; height: 150px; border: 2px solid black; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; background-color: red; cursor: pointer; user-select: none;") 
-      | Wait...
+    p#reaction-time Ready to Start!
+    div#reaction-box 
+      | Click to Start
 
-  script(src="/services/reactionTest.js")  // JavaScript file link
-
-  // Instructions based on difficulty level
-  if difficulty === 'easy'
-    p The test will start in 3 seconds. Click as fast as you can when the color turns green!
-
-  if difficulty === 'medium'
-    p The test will start in 3 seconds. The box will change colors randomly, click when it turns green!
-
-  if difficulty === 'hard'
-    p The test will start in 3 seconds. The box will change colors quickly, click when it turns green!
+  script(src="/coursework\app\services\reactionTest.js") // Link to JavaScript file
