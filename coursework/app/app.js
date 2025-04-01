@@ -464,6 +464,20 @@ app.get("/reaction-test/hard", (req, res) => {
   res.render("reaction-test", { difficulty: "hard" });
 });
 
+app.get("/memory-test/easy", (req, res) => {
+  res.render("memory-test", { difficulty: "easy" });
+});
+
+// Memory Test Route for Medium Mode
+app.get("/memory-test/medium", (req, res) => {
+  res.render("memory-test", { difficulty: "medium" });
+});
+
+// Memory Test Route for Hard Mode
+app.get("/memory-test/hard", (req, res) => {
+  res.render("memory-test", { difficulty: "hard" });
+});
+
 // Start server on port 3000
 app.listen(3000,function(){
   console.log(`Server running at http://127.0.0.1:3000/`);
