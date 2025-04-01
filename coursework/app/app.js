@@ -464,6 +464,7 @@ app.get("/reaction-test/hard", (req, res) => {
   res.render("reaction-test", { difficulty: "hard" });
 });
 
+//Memory Test for Easy mode
 app.get("/memory-test/easy", (req, res) => {
   res.render("memory-test", { difficulty: "easy" });
 });
