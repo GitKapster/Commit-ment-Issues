@@ -6,15 +6,15 @@ block content
   .reaction-container
     button#start-button Start Test
     p#reaction-time Time: 0.00 seconds
-    div#reaction-box(style="width: 100px; height: 100px; border: 1px solid black;") 
-      // Reaction area box
-    
-  script(src="/js/reaction-test.js")  // Link to JavaScript file
+    div#reaction-box(style="width: 150px; height: 150px; border: 2px solid black; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; background-color: red; cursor: pointer; user-select: none;") 
+      | Wait...
 
-  // Optional: You can display additional instructions based on difficulty
+  script(src="/services/reactionTest.js")  // JavaScript file link
+
+  // Instructions based on difficulty level
   if difficulty === 'easy'
     p The test will start in 3 seconds. Click as fast as you can when the color turns green!
-  
+
   if difficulty === 'medium'
     p The test will start in 3 seconds. The box will change colors randomly, click when it turns green!
 
