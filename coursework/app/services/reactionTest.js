@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let startTime;
     let timeoutID;
 
+    // Initial state: Turquoise, waiting for click
     function resetGame() {
         reactionBox.style.backgroundColor = "turquoise";
         reactionBox.innerText = "Ready to Start";
@@ -12,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
         reactionBox.addEventListener("click", startCountdown); // Reattach event listener
     }
 
+    // Start countdown on first click
     function startCountdown() {
         reactionBox.removeEventListener("click", startCountdown); // Prevent multiple starts
         reactionBox.style.backgroundColor = "turquoise";
@@ -29,11 +31,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 1000);
     }
 
+    // Change color to red, then wait for the green color
     function startReactionTest() {
         reactionBox.style.backgroundColor = "red";
         reactionBox.innerText = "Wait...";
 
-        let delay = Math.floor(Math.random() * 2000) + 3000; // 3-5 sec delay
+        let delay = Math.floor(Math.random() * 2000) + 3000; // Random delay 3-5 sec
 
         timeoutID = setTimeout(() => {
             reactionBox.style.backgroundColor = "green";
@@ -45,6 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, delay);
     }
 
+    // Record the reaction time when the user clicks the green box
     function recordReaction() {
         let reactionTime = (Date.now() - startTime) / 1000;
         reactionTimeDisplay.innerText = `Time: ${reactionTime.toFixed(3)} seconds`;
@@ -53,6 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(resetGame, 2000);
     }
 
-    // Initialize the game with the first event listener
+    // Initialize the game
     resetGame();
 });
