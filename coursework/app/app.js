@@ -33,8 +33,31 @@ app.use(session({
 
 
 // home page / root page
-app.get("/", function (req, res) {
-  res.render("home");  // Render the 'index.pug' template
+app.get("/", async function (req, res) {
+  try {
+    // SQL Query to get the top 5 scores for TaskID = 10
+    const query = `
+      SELECT Users.Username, Leaderboard.Score
+      FROM Leaderboard
+      JOIN Users ON Leaderboard.UserID = Users.UserID
+      WHERE Leaderboard.TaskID = 10
+      ORDER BY Leaderboard.Score DESC
+      LIMIT 5;
+    `;
+
+    // Execute SQL query
+    const result = await db.query(query);
+    const topScores = Array.isArray(result[0]) ? result[0] : result; // Ensure it's an array
+
+    // Debugging: Log the actual returned data
+    console.log("Leaderboard Data:", topScores);
+
+    // Pass data to the template
+    res.render("home", { topScores });
+  } catch (err) {
+    console.error("Database query error:", err);
+    res.status(500).send("Error retrieving leaderboard data.");
+  }
 });
 
 // account page
