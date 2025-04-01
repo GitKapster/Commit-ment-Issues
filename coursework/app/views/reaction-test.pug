@@ -3,54 +3,44 @@ extends layout
 block content
   h1 Reaction Test - #{difficulty} Mode
 
-  // Inline CSS for styling
   style.
     body {
       font-family: Arial, sans-serif;
-      background-color:rgb(41, 41, 41);
       display: flex;
-      align-items: center;
       justify-content: center;
-      height: 100vh; /* Full viewport height */
+      align-items: center;
+      height: 100vh;
+      background-color:rgb(48, 47, 47);
       margin: 0;
     }
 
-    /* Container for the reaction test */
     .reaction-container {
       text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 20px;
     }
 
-    /* Styling the reaction box */
     #reaction-box {
-      width: 250px;
-      height: 250px;
-      border: 3px solid black;
+      width: 300px;
+      height: 300px;
       display: flex;
-      align-items: center;
       justify-content: center;
-      font-size: 24px;
-      font-weight: bold;
-      background-color: turquoise; /* Initial color */
+      align-items: center;
+      background-color: turquoise;
       cursor: pointer;
       border-radius: 10px;
-      transition: background-color 0.3s ease-in-out; /* Smooth color transitions */
+      font-size: 24px;
+      font-weight: bold;
+      transition: background-color 0.3s ease-in-out;
+      text-align: center;
     }
 
-    /* Reaction time display */
     #reaction-time {
       font-size: 22px;
       font-weight: bold;
-      color: #333;
     }
 
   .reaction-container
-    p#reaction-time Click to Start!
+    p#reaction-time Ready to Start!
     div#reaction-box 
-      | Ready to Start
+      | Click to Start
 
   script(src="/coursework\app\services\reactionTest.js") // Link to JavaScript file
