@@ -1,78 +1,34 @@
+//- views/memory-test.pug
 extends layout
 
 block content
-  h1 Memory Test
-  
   style.
-    body {
-      font-family: Arial, sans-serif;
-      flex-direction: column;
-      align-items: center;
-      background-color: #f0f0f0;
-      margin: 0;
-    }
-
-    .game-container {
+    .memory-game-container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      background-color: white;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      max-width: 800px;
-      width: 100%;
-    }
-
-    .game-info {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      margin-bottom: 20px;
-    }
-
-    .timer, .moves {
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #333;
-    }
-
-    .game-board {
-      display: grid;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .card {
-      width: 80px;
-      height: 120px;
-      background-color: #2196F3;
-      border-radius: 5px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 2rem;
+      margin-top: 20px;
       color: white;
-      cursor: pointer;
-      transition: transform 0.6s;
-      transform-style: preserve-3d;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-
-    .card-inner {
+    
+    .cards-grid {
+      display: grid;
+      gap: 15px;
+      margin: 30px 0;
+      perspective: 1000px;
+    }
+    
+    .card {
+      width: 100px;
+      height: 100px;
       position: relative;
-      width: 100%;
-      height: 100%;
-      text-align: center;
-      transition: transform 0.6s;
       transform-style: preserve-3d;
+      transition: transform 0.5s;
+      cursor: pointer;
+      border-radius: 8px;
     }
-
-    .card.flipped .card-inner {
-      transform: rotateY(180deg);
-    }
-
-    .card-front, .card-back {
+    
+    .card-face {
       position: absolute;
       width: 100%;
       height: 100%;
@@ -80,61 +36,231 @@ block content
       display: flex;
       justify-content: center;
       align-items: center;
-      border-radius: 5px;
+      border-radius: 8px;
+      font-size: 36px;
     }
-
+    
     .card-front {
-      background-color: #2196F3;
+      background: #555;
+      color: transparent;
     }
-
+    
     .card-back {
-      background-color: white;
-      transform: rotateY(180deg);
+      background: #f9f9f9;
       color: #333;
-      font-size: 2.5rem;
+      transform: rotateY(180deg);
     }
-
-    .matched {
-      background-color: #4CAF50;
-      cursor: default;
+    
+    .card.flipped {
+      transform: rotateY(180deg);
     }
-
-    .restart-btn {
-      padding: 10px 20px;
-      background-color: #f44336;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      margin-top: 10px;
+    
+    .card.matched .card-back {
+      background: #8BC34A;
     }
-
-    .restart-btn:hover {
-      background-color: #d32f2f;
+    
+    .game-info {
+      margin-bottom: 20px;
+      font-size: 18px;
     }
-
-    .hidden {
-      display: none;
+    
+    .timer {
+      font-size: 20px;
+      margin-bottom: 10px;
     }
-
-    .game-over {
-      text-align: center;
+    
+    .game-stats {
       margin-top: 20px;
+      font-size: 18px;
     }
 
-  .game-container
-    .game-info
-      .timer Time: 0s
-      .moves Moves: 0
-    .game-board
-    button.restart-btn Return to Games
-    .game-over.hidden
-      h2 Congratulations!
-      p You completed the game in 
-        span.final-time
-        |  with 
-        span.final-moves
-        |  moves.
+  .memory-game-container
+    h1 Memory Test - #{difficulty.toUpperCase()}
+    .timer Time: #[span#time 0]s
+    .game-info#gameInfo Memorize the cards! They'll flip back in 3 seconds...
+    .cards-grid#cardsGrid
+    .game-stats#gameStats
 
-  script(src="/services/memoryTest.js")
+  script.
+    const symbols = ['★', '☀', '♫', '☂', '♠', '♥', '♦', '♣', '☎', '✈', '☯', '⚓'];
+    const difficulty = '#{difficulty}';
+    const gameState = {
+        cards: [],
+        flippedCards: [],
+        matchedPairs: 0,
+        canFlip: false,
+        startTime: null,
+        timerInterval: null,
+        moves: 0
+    };
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        let rows = 2;
+        let cols;
+        
+        switch(difficulty) {
+            case 'easy':
+                cols = 3;
+                break;
+            case 'medium':
+                cols = 4;
+                break;
+            case 'hard':
+                cols = 5;
+                break;
+            default:
+                cols = 3;
+        }
+        
+        initGame(rows, cols);
+    });
+    
+    function initGame(rows, cols) {
+        const totalCards = rows * cols;
+        const cardsGrid = document.getElementById('cardsGrid');
+        
+        // Clear previous game
+        cardsGrid.innerHTML = '';
+        gameState.cards = [];
+        gameState.flippedCards = [];
+        gameState.matchedPairs = 0;
+        gameState.canFlip = false;
+        gameState.moves = 0;
+        document.getElementById('time').textContent = '0';
+        
+        // Set grid style
+        cardsGrid.style.gridTemplateColumns = `repeat(${cols}, 100px)`;
+        
+        // Create pairs of symbols
+        const pairsNeeded = totalCards / 2;
+        const selectedSymbols = symbols.slice(0, pairsNeeded);
+        const cardValues = [...selectedSymbols, ...selectedSymbols];
+        
+        // Shuffle the cards
+        shuffleArray(cardValues);
+        
+        // Create card elements
+        cardValues.forEach((value, index) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.dataset.index = index;
+            
+            const cardFront = document.createElement('div');
+            cardFront.className = 'card-face card-front';
+            
+            const cardBack = document.createElement('div');
+            cardBack.className = 'card-face card-back';
+            cardBack.textContent = value;
+            
+            card.appendChild(cardFront);
+            card.appendChild(cardBack);
+            
+            card.addEventListener('click', () => handleCardClick(card));
+            
+            cardsGrid.appendChild(card);
+            gameState.cards.push({
+                element: card,
+                value: value,
+                isFlipped: false,
+                isMatched: false
+            });
+        });
+        
+        // Show cards for memorization
+        flipAllCards(true);
+        
+        // Start timer for memorization
+        setTimeout(() => {
+            flipAllCards(false);
+            gameState.canFlip = true;
+            document.getElementById('gameInfo').textContent = "Find all matching pairs!";
+            startTimer();
+            updateStats();
+        }, 3000);
+    }
+    
+    function handleCardClick(card) {
+        if (!gameState.canFlip) return;
+        
+        const index = parseInt(card.dataset.index);
+        const cardState = gameState.cards[index];
+        
+        // Don't allow flipping if already flipped or matched
+        if (cardState.isFlipped || cardState.isMatched) return;
+        
+        // Flip the card
+        flipCard(cardState, true);
+        gameState.flippedCards.push(cardState);
+        gameState.moves++;
+        updateStats();
+        
+        // Check for match if two cards are flipped
+        if (gameState.flippedCards.length === 2) {
+            gameState.canFlip = false;
+            
+            if (gameState.flippedCards[0].value === gameState.flippedCards[1].value) {
+                // Match found
+                gameState.flippedCards.forEach(card => {
+                    card.isMatched = true;
+                    card.element.classList.add('matched');
+                });
+                gameState.matchedPairs++;
+                gameState.flippedCards = [];
+                gameState.canFlip = true;
+                
+                // Check if game is complete
+                if (gameState.matchedPairs === gameState.cards.length / 2) {
+                    endGame();
+                }
+            } else {
+                // No match, flip back after delay
+                setTimeout(() => {
+                    gameState.flippedCards.forEach(card => flipCard(card, false));
+                    gameState.flippedCards = [];
+                    gameState.canFlip = true;
+                }, 1000);
+            }
+        }
+    }
+    
+    function flipCard(cardState, isFlipped) {
+        cardState.isFlipped = isFlipped;
+        cardState.element.classList.toggle('flipped', isFlipped);
+    }
+    
+    function flipAllCards(show) {
+        gameState.cards.forEach(card => {
+            flipCard(card, show);
+        });
+    }
+    
+    function updateStats() {
+        document.getElementById('gameStats').textContent = 
+            `Moves: ${gameState.moves} | Matched: ${gameState.matchedPairs}/${gameState.cards.length/2}`;
+    }
+    
+    function startTimer() {
+        gameState.startTime = new Date();
+        gameState.timerInterval = setInterval(updateTimer, 1000);
+    }
+    
+    function updateTimer() {
+        const currentTime = new Date();
+        const elapsedSeconds = Math.floor((currentTime - gameState.startTime) / 1000);
+        document.getElementById('time').textContent = elapsedSeconds;
+    }
+    
+    function endGame() {
+        clearInterval(gameState.timerInterval);
+        const finalTime = document.getElementById('time').textContent;
+        document.getElementById('gameInfo').textContent = 
+            `Congratulations! You completed the game in ${finalTime} seconds with ${gameState.moves} moves!`;
+        gameState.canFlip = false;
+    }
+    
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
