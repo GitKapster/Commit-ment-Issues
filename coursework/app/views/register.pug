@@ -1,23 +1,19 @@
-//- views/login.pug
-extends layout
+extends layout 
 
 block content
-  h1 Login to XPTrainer
-  .login-container
-    form#loginForm(action="/login", method="POST", enctype="application/x-www-form-urlencoded")
+  h1 Sign-Up to XPTrainer
+  .signup-container
+    form#signupForm(action="/register", method="POST", enctype="application/x-www-form-urlencoded")
       input(type="text", name="username", placeholder="Username", required)
       input(type="password", name="password", placeholder="Password", required)
-      button(type="submit") Login
-      span OR
-      a.create-account(href="/register") Create Account
-
-  //- Styles for the login page
+      input(type="password", name="re_password", placeholder="Retype-Password", required)
+      button(type="submit") Sign-Up
   style.
     h1 {
       color: white;
     }
     /* Scope the styles to login container */
-    .login-container {
+    .signup-container {
       background: #1e1e1e;
       padding: 40px;
       border-radius: 12px;
@@ -28,7 +24,7 @@ block content
       text-align: center;
     }
 
-    .login-container input {
+    .signup-container input {
       width: 100%;
       box-sizing: border-box;
       padding: 14px;
@@ -41,14 +37,13 @@ block content
       transition: 0.3s;
     }
 
-    .login-container input:focus {
+    .signup-container input:focus {
       border-color: #67d9dc;
       outline: none;
       background: #444;
     }
 
-    .login-container button, 
-    .login-container .create-account {
+    .signup-container button {
       display: block;
       width: 100%;
       box-sizing: border-box;
@@ -66,38 +61,7 @@ block content
       transition: 0.3s;
     }
 
-    .login-container button:hover, 
-    .login-container .create-account:hover {
+    .signup-container button:hover {
       background-color: #5dc5c1;
       transform: scale(1.05);
     }
-
-    /* Styling for OR span */
-    .login-container span {
-      display: block;
-      color: #67d9dc;
-      font-size: 14px;
-      font-weight: bold;
-      margin: 10px 0;
-      position: relative;
-    }
-
-    .login-container span::before,
-    .login-container span::after {
-      content: "";
-      display: block;
-      width: 40%;
-      height: 1px;
-      background: #67d9dc;
-      position: absolute;
-      top: 50%;
-    }
-
-    .login-container span::before {
-      left: 0;
-    }
-
-    .login-container span::after {
-      right: 0;
-    }
-

@@ -102,6 +102,10 @@ app.get("/Games", (req, res) => {
   res.render("Games"); // Render the games.pug template
 });
 
+app.get("/register", (req, res) => {
+  res.render("register");
+});
+
 // account list page
 app.get("/account-list", async (req, res) => {
   try {
@@ -117,13 +121,12 @@ app.get("/account-list", async (req, res) => {
 // login function fetching from database
 app.post("/login", async (req, res) => {
   const { username, password } = req.body; // username and password taken from user input
-  console.log(`Received login attempt - Username: ${username}, Password: ${password}`); // console logging for debugging
+  console.log(`Received login attempt - Username: ${username}`); // removed password from logs for security
 
   try {
     const result = await db.query("SELECT * FROM Users WHERE Username = ?", [username]); // matching given username to db username
     const rows = Array.isArray(result) ? result : [result]; // make sure its an array
-    console.log("Raw database response:", rows); // print database response for debugging
-
+    
     // check if user is not found in database
     if (rows.length === 0) {
       console.log("User not found in database.");
@@ -132,17 +135,65 @@ app.post("/login", async (req, res) => {
 
     // user = first user found from query
     const user = rows[0];
-    console.log(`Found user: ${JSON.stringify(user)}`); // debugging
+    console.log(`Found user with ID: ${user.UserID}`); // Don't log full user object with password
 
-    if (password === user.Password) {  // Direct password comparison, no hashing
-      req.session.user = user; // storing user in session
-      console.log("Login successful, redirecting..."); // debugging
+    // Compare the provided password with the stored hash
+    const passwordMatch = await bcrypt.compare(password, user.Password);
+    
+    if (passwordMatch) {
+      req.session.user = {
+        UserID: user.UserID,
+        Username: user.Username
+        // Don't include password in session
+      }; 
+      console.log("Login successful, redirecting..."); 
       return res.redirect(`/account/${user.UserID}`); 
     }
 
     console.log("Password incorrect.");
     res.send("Invalid username or password");
 
+  } catch (error) {
+    console.error("Database error:", error);
+    res.status(500).send("Server error");
+  }
+});
+
+app.post("/register", async (req, res) => {
+  const { username, password, re_password } = req.body;
+
+  // Check if passwords match
+  if (password !== re_password) {
+    return res.send("Error: Passwords do not match");
+  }
+
+  try {
+    // Check if user already exists
+    const existingUser = await db.query("SELECT * FROM Users WHERE Username = ?", [username]);
+
+    // Check if the result has any rows
+    if (existingUser && existingUser.length > 0) {
+      return res.send("Error: Account Already Exists");
+    }
+
+    // Hash the password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Insert new user into the database
+    // Note: We're not manually providing a UserID as it's likely auto-incremented in the database
+    const insertResult = await db.query(
+      "INSERT INTO Users (Username, Password) VALUES (?, ?)",
+      [username, hashedPassword]
+    );
+
+    // Check if insert was successful
+    if (insertResult && insertResult.affectedRows > 0) {
+      // Redirect to login page after successful registration
+      res.redirect("/login?registered=true");
+    } else {
+      res.status(500).send("Failed to create account");
+    }
   } catch (error) {
     console.error("Database error:", error);
     res.status(500).send("Server error");
@@ -159,41 +210,6 @@ app.get("/logout", (req,res) => {
     res.redirect("/login"); // Redirect user to login page
   });
 });
-
-
-
-// Start server on port 3000
-app.listen(3000,function(){
-  console.log(`Server running at http://127.0.0.1:3000/`);
-});
-
-
-// Trying to add the webhook for esports updates
-
-// Using an RSS to JSON service
-async function getEsportsNews() {
-  try {
-    const response = await axios.get('https://api.rss2json.com/v1/api.json', {
-      params: {
-        rss_url: 'https://www.hltv.org/rss/news',  // HLTV news RSS feed
-        api_key: 'hioxghhkhlbzgtbsgorqr3jz6m25fqeujxj8cok9', // I got this api key from rss2json, idk if it will work
-        count: 10
-      }
-    });
-    
-    return response.data.items.map(item => ({
-      title: item.title,
-      date: new Date(item.pubDate).toLocaleDateString()
-    }));
-  } catch (error) {
-    // Incase api key gets deleted (i might have to update the api key once in a while)
-    return [
-      { title: "Team Liquid advances to finals", date: "Feb 27, 2025" },
-      { title: "New Valorant tournament announced", date: "Feb 26, 2025" },
-      { title: "CS2 patch brings major weapon changes", date: "Feb 25, 2025" }
-    ];
-  }
-}
 
 // Forum main page
 app.get("/forum", async function(req, res) {
@@ -249,3 +265,36 @@ app.get("/reaction-test/medium", (req, res) => {
 app.get("/reaction-test/hard", (req, res) => {
   res.render("reaction-test", { difficulty: "hard" });
 });
+
+// Start server on port 3000
+app.listen(3000,function(){
+  console.log(`Server running at http://127.0.0.1:3000/`);
+});
+
+
+// Trying to add the webhook for esports updates
+
+// Using an RSS to JSON service
+async function getEsportsNews() {
+  try {
+    const response = await axios.get('https://api.rss2json.com/v1/api.json', {
+      params: {
+        rss_url: 'https://www.hltv.org/rss/news',  // HLTV news RSS feed
+        api_key: 'hioxghhkhlbzgtbsgorqr3jz6m25fqeujxj8cok9', // I got this api key from rss2json, idk if it will work
+        count: 10
+      }
+    });
+    
+    return response.data.items.map(item => ({
+      title: item.title,
+      date: new Date(item.pubDate).toLocaleDateString()
+    }));
+  } catch (error) {
+    // Incase api key gets deleted (i might have to update the api key once in a while)
+    return [
+      { title: "Team Liquid advances to finals", date: "Feb 27, 2025" },
+      { title: "New Valorant tournament announced", date: "Feb 26, 2025" },
+      { title: "CS2 patch brings major weapon changes", date: "Feb 25, 2025" }
+    ];
+  }
+}

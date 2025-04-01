@@ -16,32 +16,36 @@ block content
         align-items: center;
         flex-direction: column;
       }
+
       .container {
         width: 80%;
         max-width: 1000px;
-        background: #5dc5c1;
+        background: #2c2c2c;
         padding: 20px;
-        padding-top: 40px; /* Added extra padding to avoid title being covered */
         border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 16, 66, 0.1);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         margin: 0 auto;
       }
+
       .title {
         font-size: 24px;
         font-weight: bold;
         margin-bottom: 10px;
-        margin-top: 20px; /* Added extra margin to push it down */
+        margin-top: 20px;
+        color: #67d9dc;
       }
+
       .filter-buttons {
         margin-bottom: 20px;
       }
+
       .filter-buttons button {
-        background: #3b8686;
-        color: white;
+        background: #1e1e1e;
+        color: #67d9dc;
         border: none;
         padding: 10px 15px;
         margin: 5px;
@@ -49,30 +53,44 @@ block content
         border-radius: 5px;
         font-weight: bold;
       }
+
       .filter-buttons button:hover {
-        background: #276d6d;
+        background: #3a3a3a;
       }
+
       table {
         width: 100%;
+        max-width: 800px;
+        margin: auto;
         border-collapse: collapse;
-        margin-top: 20px;
-        margin-bottom: 20px;
-        text-align: left;
+        background: #2c2c2c;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        overflow: hidden;
       }
+
       th, td {
-        padding: 10px;
-        border-bottom: 1px solid #444;
+        padding: 12px;
+        border: 1px solid #444;
+        text-align: left;
+        color: #e0e0e0;
       }
+
       th {
-        background: #3b8686;
-        color: white;
+        background-color: #1e1e1e;
+        color: #67d9dc;
+        font-size: 16px;
       }
+
       tr:nth-child(even) {
-        background: #69c8c6;
+        background-color: #3a3a3a;
       }
-      tr:nth-child(odd) {
-        background: #5dc5c1;
+
+      tr:hover {
+        background-color: #4a4a4a;
+        transition: 0.3s;
       }
+
 
   body
     .container
@@ -97,7 +115,8 @@ block content
           each player, index in players
             tr(data-game=player.TaskType class=player.TaskType)
               td 
-                span.rank #{index + 1}  // Dynamic ranking
+                // dynamic ranking
+                span.rank #{index + 1}
               td #{player.Username}
               td #{player.Score}
               td #{player.TaskType} 

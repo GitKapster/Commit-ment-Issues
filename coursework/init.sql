@@ -5,7 +5,7 @@ USE AimTrainer;  -- This selects which database to create all the tables in
 CREATE TABLE IF NOT EXISTS Users ( 
   UserID int PRIMARY KEY AUTO_INCREMENT,
   Username varchar(25),
-  Password varchar(25)
+  Password varchar(255)
 );
 
 -- Tasks Info
@@ -44,19 +44,6 @@ CREATE TABLE IF NOT EXISTS Posts (
   KEY ForumID (ForumID),
   Key UserID (UserID)
 );
-
--- Temporary logins for everyone (Insert users first)
-INSERT INTO Users (Username, Password) 
-VALUES ('Kapi', 'Password');
-
-INSERT INTO Users (Username, Password) 
-VALUES ('Erin', 'Goonan123');
-
-INSERT INTO Users (Username, Password) 
-VALUES ('Taran', 'Password');
-
-INSERT INTO Users (Username, Password) 
-VALUES ('Oskar', 'Password');
 
 -- Leaderboard Sample Data
 
