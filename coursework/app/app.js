@@ -464,20 +464,15 @@ app.get("/reaction-test/hard", (req, res) => {
   res.render("reaction-test", { difficulty: "hard" });
 });
 
-//Memory Test for Easy mode
-app.get("/memory-test/easy", (req, res) => {
-  res.render("memory-test", { difficulty: "easy" });
+// Add this route
+app.get('/memory-test/:difficulty', (req, res) => {
+  const difficulty = req.params.difficulty;
+  if (!['easy', 'medium', 'hard'].includes(difficulty)) {
+    return res.redirect('/tasks');
+  }
+  res.render('memory-test', { difficulty });
 });
 
-// Memory Test Route for Medium Mode
-app.get("/memory-test/medium", (req, res) => {
-  res.render("memory-test", { difficulty: "medium" });
-});
-
-// Memory Test Route for Hard Mode
-app.get("/memory-test/hard", (req, res) => {
-  res.render("memory-test", { difficulty: "hard" });
-});
 
 // Start server on port 3000
 app.listen(3000,function(){
