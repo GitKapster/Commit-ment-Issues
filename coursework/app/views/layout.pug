@@ -32,6 +32,7 @@ html
         font-weight: 800;
         font-size: 24px;
         letter-spacing: 1px;
+        padding: 0 0 0 10px;
         background: linear-gradient(90deg, #67d9dc, #5dc5c1);
         background-clip: text;
         -webkit-background-clip: text;
@@ -69,16 +70,21 @@ html
         gap: 10px;
       }
       .login-button {
-        background: #67d9dc;
-        color: #2c2c2c;
+        background: none;
+        color: white;
         font-weight: bold;
-        padding: 10px 15px;
-        border-radius: 5px;
+        padding: 0 30px 0 0;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 16px;
       }
       .login-button:hover {
-        background: #5dc5c1;
+        color: #67d9dc;
       }
-
+      .account-icon {
+        padding: 0 15px 0 0;
+      }
   body
     .navbar
       a.logo-container(href="/")
@@ -90,11 +96,11 @@ html
         button(onclick="window.location.href='/games'") Games
         button(onclick="window.location.href='/forum'") Forum
       .account-container
-        if !user
-          button.login-button(onclick="window.location.href='/login'") Login
-        a(href="/account")
+        a.account-icon(href="/account")
           img(src="/images/accounticon.png", alt="Account Icon")
-
+        if !user
+          a.login-button(href="/login") Login
+    
     .content
       block content
 
