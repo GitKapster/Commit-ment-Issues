@@ -31,6 +31,10 @@ app.use(session({
   cookie: { secure: false }  
 }));
 
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null; // Make user session available to all templates
+  next();
+});
 
 // home page / root page
 app.get("/", async function (req, res) {
