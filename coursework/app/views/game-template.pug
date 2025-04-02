@@ -1,0 +1,211 @@
+extends layout
+
+block content
+  style.
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1a1a1a;
+      margin: 0;
+      padding: 0;
+      color: white;
+    }
+    .forum-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      color: white;
+      text-align: left;
+    }
+    h1 {
+      color: white;
+      margin-bottom: 30px;
+    }
+    h2 {
+      color: #5dc5c1;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #555;
+      padding-bottom: 10px;
+    }
+  .forum-container
+    h1 Game Mechanics Guide
+    
+    // Quick Navigation Section
+    .nav-container
+      .nav-title Quick Navigation
+      .nav-links
+        a(href='#aiming') Aiming Mechanics
+        a(href='#movement') Movement Techniques
+        a(href='#abilities') Abilities & Skills
+        a(href='#weapons') Weapons & Equipment
+        a(href='#maps') Map Knowledge
+        a(href='#teamwork') Teamwork Strategies
+        a(href='#economy') Economy Management
+        a(href='#improvement') Self-Improvement
+    
+    // Introduction Section
+    .section
+      h2 Introduction
+      .content-placeholder
+        | [Fill in your introduction to the game and this guide.]
+      .image-placeholder Game Screenshot Placeholder
+    
+    // Aiming Section
+    .section#aiming
+      h2 Aiming Mechanics
+      .content-placeholder
+        | [Describe the game's aiming mechanics.]
+      h3 Sensitivity Settings
+      .content-placeholder
+        | [Explain recommended sensitivity settings.]
+      .image-placeholder Aiming Diagram Placeholder
+      h3 Crosshair Placement
+      .content-placeholder
+        | [Detail proper crosshair placement techniques.]
+      .tip-box
+        .tip-title Pro Tip
+        .content-placeholder
+          | [Share a professional player's tip about aiming technique.]
+    
+    // Movement Section
+    .section#movement
+      h2 Movement Techniques
+      .content-placeholder
+        | [Explain various movement mechanics.]
+      h3 Basic Movement
+      .content-placeholder
+        | [Detail fundamental movement controls.]
+      h3 Advanced Techniques
+      .content-placeholder
+        | [Describe advanced movement techniques.]
+      .image-placeholder Movement Techniques Diagram
+      .video-embed Movement Tutorial Video Placeholder
+    
+    // Abilities Section
+    .section#abilities
+      h2 Abilities & Skills
+      .content-placeholder
+        | [Overview of character abilities.]
+      h3 Character Abilities
+      table
+        thead
+          tr
+            th Ability
+            th Description
+            th Cooldown
+            th Best Uses
+        tbody
+          tr
+            td [Ability Name]
+            td [Description Placeholder]
+            td [Cooldown]
+            td [Tactical Uses]
+      h3 Ability Combos
+      .content-placeholder
+        | [Explain effective ability combinations.]
+      .image-placeholder Ability Usage Visualization
+    
+    // Weapons Section
+    .section#weapons
+      h2 Weapons & Equipment
+      .content-placeholder
+        | [Overview of the game's weapons system.]
+      h3 Weapon Categories
+      .content-placeholder
+        | [Detail different weapon categories.]
+      h3 Weapon Stats Comparison
+      table
+        thead
+          tr
+            th Weapon
+            th Damage
+            th Fire Rate
+            th Range
+            th Mobility
+            th Best For
+        tbody
+          tr
+            td [Weapon Name]
+            td [Damage]
+            td [Fire Rate]
+            td [Range]
+            td [Mobility]
+            td [Playstyle]
+      .image-placeholder Weapon Comparison Chart
+    
+    // Maps Section  
+    .section#maps
+      h2 Map Knowledge
+      .content-placeholder
+        | [Explain the importance of map knowledge.]
+      h3 Map Callouts
+      .content-placeholder
+        | [Detail common callout locations.]
+      .image-placeholder Map Callouts Diagram
+      h3 Map Control Strategies
+      .content-placeholder
+        | [Explain strategies for controlling maps.]
+      .tip-box
+        .tip-title Map Tip
+        .content-placeholder
+          | [Share a specific map tip.]
+    
+    // Teamwork Section
+    .section#teamwork
+      h2 Teamwork Strategies
+      .content-placeholder
+        | [Overview of teamwork aspects.]
+      h3 Communication
+      .content-placeholder
+        | [Explain effective communication techniques.]
+      h3 Team Compositions
+      .content-placeholder
+        | [Detail effective team compositions.]
+      .image-placeholder Team Positioning Diagram
+      .tip-box
+        .tip-title Communication Tip
+        .content-placeholder
+          | [Share a tip about team communication.]
+    
+    // Economy Section
+    .section#economy
+      h2 Economy Management
+      .content-placeholder
+        | [Explain the game's economy system.]
+      h3 Economy Rounds
+      .content-placeholder
+        | [Detail strategies for eco rounds.]
+      h3 Resource Optimization
+      .content-placeholder
+        | [Explain how to maximize resources.]
+      .image-placeholder Economy Flowchart
+    
+    // Improvement Section
+    .section#improvement
+      h2 Self-Improvement
+      .content-placeholder
+        | [Provide techniques for improvement.]
+      h3 Training Routines
+      .content-placeholder
+        | [Detail effective training routines.]
+      h3 VOD Review
+      .content-placeholder
+        | [Explain reviewing your own gameplay.]
+      h3 Tracking Progress
+      .content-placeholder
+        | [Provide methods for tracking progress.]
+      .video-embed Training Tutorial Video Placeholder
+      .tip-box
+        .tip-title Improvement Tip
+        .content-placeholder
+          | [Share professional advice on improvement.]
+    
+    // Conclusion Section
+    .section
+      h2 Conclusion
+      .content-placeholder
+        | [Summarize the key points covered.]
+      .tip-box
+        .tip-title Final Advice
+        .content-placeholder
+          | [Share one final important piece of advice.]

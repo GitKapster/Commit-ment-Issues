@@ -124,6 +124,10 @@ app.get("/login", (req, res) => {
   res.render("login"); // Render the login.pug template
 });
 
+app.get("/games/Valorant", (req, res) => {
+  res.render("game-template"); // Render the login.pug template
+});
+
 // Games page
 app.get("/Games", (req, res) => {
   res.render("Games"); // Render the games.pug template
