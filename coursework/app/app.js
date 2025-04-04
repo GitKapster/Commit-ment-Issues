@@ -124,9 +124,27 @@ app.get("/login", (req, res) => {
   res.render("login"); // Render the login.pug template
 });
 
+// valorant page
 app.get("/games/Valorant", (req, res) => {
-  res.render("game-template"); // Render the login.pug template
+  res.render("valorant"); // Render the login.pug template
 });
+
+// CS2 page
+app.get("/games/Counter-Strike2", (req, res) => {
+  res.render("cs2"); // Render the login.pug template
+});
+
+// siege page
+app.get("/games/Siege", (req, res) => {
+  res.render("6siege"); // Render the login.pug template
+});
+
+// rivals page
+app.get("/games/Marvel-Rivals", (req, res) => {
+  res.render("rivals"); // Render the login.pug template
+});
+
+
 
 // Games page
 app.get("/Games", (req, res) => {
