@@ -331,8 +331,8 @@ block content
           <div style="font-size: 36px; font-weight: bold; color: #5dc5c1;">${finalScore}</div>
           <div style="margin-bottom: 30px;">Game Mode: ${difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}</div>
           <div class="button-container" style="margin-top: 30px; display: flex; justify-content: center; gap: 20px;">
-            <button onclick="window.location.href='/tasks'" style="background-color: #5dc5c1; color: white; border: none; padding: 10px 25px; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; z-index: 20;">Back to Tasks</button>
-            <button onclick="window.location.reload()" style="background-color: #5dc5c1; color: white; border: none; padding: 10px 25px; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; z-index: 20;">Play Again</button>
+            <button class="game-button" onclick="window.location.href='/tasks'" style="background-color: #5dc5c1; color: white; border: none; padding: 10px 25px; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer !important; z-index: 20;">Back to Tasks</button>
+            <button class="game-button" onclick="window.location.reload()" style="background-color: #5dc5c1; color: white; border: none; padding: 10px 25px; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer !important; z-index: 20;">Play Again</button>
           </div>
         `;
         
