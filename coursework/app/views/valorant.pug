@@ -10,11 +10,11 @@ block navigation
         block navLinks
           .nav-links
             a(href='#aiming') Aim Overview
-            a(href='#movement') Mouse Control
-            a(href='#abilities') Crosshair Placement
-            a(href='#weapons') Movement Mechanics
-            a(href='#maps') Practice Routine
-            a(href='#teamwork') Overview
+            a(href='#mouse') Mouse Control
+            a(href='#crosshair') Crosshair Placement
+            a(href='#movement') Movement Mechanics
+            a(href='#practice') Practice Routine
+            a(href='#overview') Overview
 
 block section_introduction
   | Welcome to our comprehensive guide on different mechanics within Valorant
@@ -25,23 +25,66 @@ block intro_image
     .image-caption Valorant Gameplay
 
 block section_aiming_overview
-  | Aiming is the most fundamental skill in FPS games. While natural talent plays a role,
-  | proper technique and consistent practice can dramatically improve anyone's aim.
-  | This guide breaks down the key components of elite-level aiming.
+  | Aiming in Valorant is much more static than in other games
+  | Instead of fast paced movement, Valorant relies more on calm, steady crosshair placement and strong micro-adjustments
+  | All guns in the game have a movement error (you can't shoot properly while moving) while also dealing very high headshot damage 
+  | This puts a huge emphasis on headshot accuracy, positioning and crosshair placement in order to be successful within duels
 
-block section_aiming_sensitivity
-  | Finding your perfect sensitivity is crucial. We recommend starting with a medium-low
-  | sensitivity that allows you to comfortably do a 180-degree turn with one full swipe
-  | across your mousepad. For most players, an eDPI between 200-400 is ideal.
-  |
-  | Formula: eDPI = DPI × In-game sensitivity
-
-block section_aiming_crosshair
-  | Always keep your crosshair at head level and pre-position it where enemies are likely
-  | to appear. This reduces the distance you need to move your mouse when an enemy appears,
-  | giving you a crucial time advantage in firefights.
+block section_aiming_styles
+  | Different aiming styles appear depending on a multitude of factors, such as: the agent you're playing, the weight of your mouse, the guns you prefer to use
+  | Players opting to main the Duelist class often prefer to use a higher sensitivity as it allows for faster adjustments in high stress situations when entrying a site 
+  | Similarly, players opting to play more static characters like Sentinel agents often prefer a lower sensitivity and a controlled approach to aiming as their role revolves around holding space, not taking it
 
 block section_aiming_tip
-  | "I spend 15 minutes before every practice session in the aim trainer focusing only on
-  | micro-adjustments. Small corrections are what separate good aimers from great ones."
-  | - Professional Player ZyLa2K
+  | some quote from some pro here
+
+block section_mouse_control 
+  | Steady mouse control is important for Valorant, as duels are mainly won off of crosshair placement, reaction time and headshots
+  | The chosen sensitivity can still widely differ, but it is important to end on a final sens that allows you to maintain consistent control of your mouse
+
+block section_sensitivity 
+  | Ideally the lowest possible sensitivity you should have is one that allows you to do a 180 turn across one swipe of your mousepad 
+  | Anything slower than that makes large adjustments very hard and is not recommended
+  | Your sensitivity should also take into account your mouse weight, with slower sens being more ideal for lighter mice, and higher sens for heavier ones 
+  | In terms of average player sens for Valorant it falls somewhere between 0.24 - 0.5 800 DPI depending on factors such as mouse, character class, etc
+
+block section_crosshair_placement
+  | In order to improve your aim you must always focus on crosshair placement
+  | At all times your crosshair should be placed at head level, while also pre-aiming potential places enemies can peek from 
+  | This gives you a consistent advantage in all gun fights
+
+block crosshair_placement_image
+  .image-container 
+    img.img-large(src="https://cdn.sanity.io/images/ccckgjf9/production/fb6507c971a41ee9dd218dcd6d2f39ae4ac23cbc-1920x1080.jpg?max-h=1080&max-w=1920&q=50&fit=scale&auto=format" alt="")
+    .image-caption Crosshair Placement in Valorant
+
+block crosshair_design
+  | Valorant typically favours smaller crosshairs, as they allow for precise aim and accuracy 
+  | Since tracking/spraying are not nearly as frequently needed crosshairs with wider spreads are not needed and generally clutter the screen
+
+block crosshair_image
+  .image-container
+    img.img-med(src="/images/valcrosshairs.png" alt="Valorant Crosshairs")
+    .image-caption Examples of popular crosshairs https://www.vcrdb.net/
+
+block section_movement_overview
+  | Movement in Valorant is relatively different from other FPS games
+  | As most gun fights require you to stand still the bulk of the movement comes in strafing between your shots and how you open into an angle
+  | It is important to open in a way to throw your oponent off guard, for example, swing for an extra second to surprise your enemy 
+  | It is also important to only open an angle using A or D movement key as your movement inaccuracy resets faster
+
+block movement_practice
+  .video-container
+    iframe(
+      src="https://www.youtube.com/embed/jgUo4jBhniA?start=92",
+      frameborder="0",
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+      allowfullscreen
+    )
+
+block practice_overview
+  | In this practice routine we are going to primarily focus on key areas such as: Crosshair Placement, Accuracy, Movement and Burst Firing
+
+block practice_routine 
+
+block section_overview
