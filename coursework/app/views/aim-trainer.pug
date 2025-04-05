@@ -6,6 +6,7 @@ block content
     h1 AIM TRAINER
     
     .game-area#game-area
+      .timer-display#timer-display TIME: 60s
       .score-display#score-display SCORES: 0
       .accuracy-display#accuracy-display ACCURACY: 0%
     
@@ -32,6 +33,18 @@ block content
       position: relative;
       cursor: crosshair !important;
       overflow: hidden;
+    }
+    
+    .timer-display {
+      position: absolute;
+      bottom: 80px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      z-index: 10;
     }
     
     .score-display {
@@ -64,10 +77,78 @@ block content
       height: 40px;
       background-color: #64b998;
       border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .middle-target {
+      width: 25px;
+      height: 25px;
+      background-color: #3a9080;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .inner-target {
+      width: 12px;
+      height: 12px;
+      background-color: #2a7d6b;
+      border-radius: 50%;
     }
     
     .game-area * {
       cursor: crosshair !important;
+    }
+    
+    .score-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #444;
+      border: 3px solid #5dc5c1;
+      border-radius: 10px;
+      padding: 20px;
+      z-index: 100;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      max-width: 300px;
+      animation: popIn 0.5s forwards;
+    }
+    
+    @keyframes popIn {
+      0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+    
+    .score-popup h2 {
+      margin-top: 0;
+      color: #5dc5c1;
+    }
+    
+    .score-popup .final-score {
+      font-size: 48px;
+      font-weight: bold;
+      margin: 10px 0;
+      color: #fff;
+    }
+    
+    .score-popup button {
+      background-color: #5dc5c1;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    
+    .score-popup button:hover {
+      background-color: #4ba09d;
     }
 
   script.
@@ -76,10 +157,13 @@ block content
       let score = 0;
       let shots = 0;
       let hits = 0;
+      let accuracyPoints = 0;
       let accuracy = 0;
-      const maxTargets = 30;
-      let targetsCreated = 0;
+      let timeLeft = 60;
+      let gameTimer;
+      let targetInterval;
       const gameArea = document.getElementById('game-area');
+      const timerDisplay = document.getElementById('timer-display');
       const scoreDisplay = document.getElementById('score-display');
       const accuracyDisplay = document.getElementById('accuracy-display');
       
@@ -93,7 +177,7 @@ block content
       } else if (difficulty === 'medium') {
         speed = 1200; // 1.2 seconds for medium
       } else { // hard
-        speed = 800; // 0.8 seconds for hard
+        speed = 600; // 0.6 seconds for hard (faster than before)
       }
       
       // Listen for clicks on the game area to track misses
@@ -105,18 +189,21 @@ block content
         }
       });
       
-      // Start creating targets
-      const targetInterval = setInterval(function() {
-        if (targetsCreated < maxTargets) {
-          createTarget();
-          targetsCreated++;
-        } else {
-          // If all targets are created, check if any are left
-          if (document.querySelectorAll('.target').length === 0) {
-            clearInterval(targetInterval);
-            endGame();
-          }
+      // Start the game timer
+      gameTimer = setInterval(function() {
+        timeLeft--;
+        timerDisplay.textContent = 'TIME: ' + timeLeft + 's';
+        
+        if (timeLeft <= 0) {
+          clearInterval(gameTimer);
+          clearInterval(targetInterval);
+          endGame();
         }
+      }, 1000);
+      
+      // Start creating targets
+      targetInterval = setInterval(function() {
+        createTarget();
       }, speed);
       
       // Create a target at a random position
@@ -124,32 +211,74 @@ block content
         const target = document.createElement('div');
         target.className = 'target';
         
+        // Create middle target (middle ring)
+        const middleTarget = document.createElement('div');
+        middleTarget.className = 'middle-target';
+        
+        // Create inner target (bullseye)
+        const innerTarget = document.createElement('div');
+        innerTarget.className = 'inner-target';
+        
         // Get dimensions
         const maxWidth = gameArea.offsetWidth;
         const maxHeight = gameArea.offsetHeight;
         
         // Set random position (with margins)
         const margin = 50;
-        const x = margin + Math.random() * (maxWidth - 80 - margin);
-        const y = margin + Math.random() * (maxHeight - 80 - margin);
+        // Adjust position to avoid targets appearing too low
+        const bottomSafeZone = 120; // Keep targets above score/accuracy displays
+        const x = margin + Math.random() * (maxWidth - 80);
+        const y = margin + Math.random() * (maxHeight - bottomSafeZone - 80);
         
         target.style.left = x + 'px';
         target.style.top = y + 'px';
         
-        // Add click event
+        // Add middle target to target
+        target.appendChild(middleTarget);
+        
+        // Add inner target to middle target
+        middleTarget.appendChild(innerTarget);
+        
+        // Add click event for the outer target (100 points, 50% accuracy)
         target.addEventListener('click', function(e) {
+          // Prevent handling if it was the middle or inner target that was clicked
+          if (e.target !== middleTarget && e.target !== innerTarget) {
+            e.stopPropagation();
+            score += 100; // 100 points
+            hits++;
+            shots++;
+            accuracyPoints += 0.5; // 50% accuracy for outer ring
+            updateAccuracy();
+            scoreDisplay.textContent = 'SCORES: ' + score;
+            target.remove();
+          }
+        });
+        
+        // Add click event for middle target (150 points, 75% accuracy)
+        middleTarget.addEventListener('click', function(e) {
+          // Prevent handling if it was the inner target that was clicked
+          if (e.target !== innerTarget) {
+            e.stopPropagation();
+            score += 150; // 150 points
+            hits++;
+            shots++;
+            accuracyPoints += 0.75; // 75% accuracy for middle ring
+            updateAccuracy();
+            scoreDisplay.textContent = 'SCORES: ' + score;
+            target.remove();
+          }
+        });
+        
+        // Add click event for inner target (bullseye - 200 points, 100% accuracy)
+        innerTarget.addEventListener('click', function(e) {
           e.stopPropagation();
-          score++;
+          score += 200; // 200 points
           hits++;
           shots++;
+          accuracyPoints += 1.0; // 100% accuracy for bullseye
           updateAccuracy();
           scoreDisplay.textContent = 'SCORES: ' + score;
           target.remove();
-          
-          // If this was the last target and we've created all targets, end game
-          if (targetsCreated >= maxTargets && document.querySelectorAll('.target').length === 0) {
-            endGame();
-          }
         });
         
         gameArea.appendChild(target);
@@ -157,7 +286,7 @@ block content
       
       // Update accuracy calculation
       function updateAccuracy() {
-        accuracy = shots > 0 ? Math.round((hits / shots) * 100) : 0;
+        accuracy = shots > 0 ? Math.round((accuracyPoints / shots) * 100) : 0;
         accuracyDisplay.textContent = 'ACCURACY: ' + accuracy + '%';
       }
       
@@ -165,6 +294,21 @@ block content
       function endGame() {
         // Clear the game area
         gameArea.innerHTML = '';
+        
+        // Calculate final score with accuracy as a bonus
+        // If accuracy is 50%, add 50% of base score as bonus
+        const accuracyBonus = Math.round(score * (accuracy / 100));
+        const finalScore = score + accuracyBonus;
+        
+        // Create score popup
+        const scorePopup = document.createElement('div');
+        scorePopup.className = 'score-popup';
+        scorePopup.innerHTML = `
+          <h2>FINAL SCORE</h2>
+          <div class="final-score">${finalScore}</div>
+          <button onclick="this.parentNode.style.display='none';">OK</button>
+        `;
+        document.body.appendChild(scorePopup);
         
         // Create result container
         const resultContainer = document.createElement('div');
@@ -175,10 +319,14 @@ block content
         // Add results
         resultContainer.innerHTML = `
           <h1>AIM TRAINER</h1>
-          <div style="margin: 20px 0; font-size: 18px;">Scores:</div>
+          <div style="margin: 20px 0; font-size: 18px;">Base Score:</div>
           <div style="font-size: 36px; font-weight: bold;">${score}</div>
-          <div style="margin-bottom: 20px;">/30</div>
-          <div style="margin-bottom: 10px;">Accuracy: ${accuracy}%</div>
+          <div style="margin: 10px 0; font-size: 18px;">Accuracy:</div>
+          <div style="font-size: 24px; font-weight: bold;">${accuracy}%</div>
+          <div style="margin: 10px 0; font-size: 18px;">Accuracy Bonus:</div>
+          <div style="font-size: 24px; font-weight: bold; color: #64b998;">+${accuracyBonus}</div>
+          <div style="margin: 10px 0; font-size: 18px;">Final Score:</div>
+          <div style="font-size: 36px; font-weight: bold; color: #5dc5c1;">${finalScore}</div>
           <div style="margin-bottom: 30px;">Game Mode: ${difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}</div>
           <button onclick="window.location.href='/tasks'" style="background-color: #5dc5c1; color: white; border: none; padding: 10px 25px; border-radius: 5px; font-size: 16px; cursor: pointer;">Go Back</button>
         `;
@@ -186,7 +334,7 @@ block content
         gameArea.appendChild(resultContainer);
         
         // Save score
-        saveScore(score, difficulty, accuracy);
+        saveScore(finalScore, difficulty, accuracy);
       }
       
       // Save score to database
