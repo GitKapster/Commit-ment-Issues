@@ -1,142 +1,135 @@
-function mode(e){
-    if(e.className != 'active mode'){
-      document.querySelectorAll('.modes .mode')[0].className = 'mode';
-      document.querySelectorAll('.modes .mode')[1].className = 'mode';
-      e.className = 'active mode';
-      app.$data.mode = e.innerText;
-    }
-    else {
-      e.className = 'active mode';
-      app.$data.mode = e.innerText;
-    }
-  }
-  
-  function sensitivity(e){
-    if(e.className != 'active sensitivity'){
-      document.querySelectorAll('.sensitivities .sensitivity')[0].className = 'sensitivity';
-      document.querySelectorAll('.sensitivities .sensitivity')[1].className = 'sensitivity';
-      document.querySelectorAll('.sensitivities .sensitivity')[2].className = 'sensitivity';
-      e.className = 'active sensitivity';
-      app.$data.sensitivity = e.innerText;
-    }
-    else {
-      e.className = 'active sensitivity';
-      app.$data.sensitivity = e.innerText;
-    }
-  }
-  
-  var app = new Vue({
-      el: '#app',
-      data: {
-        x: 0,
-        y: 0,
-        scoresCount: 0,
-        finalScores: 0,
-        started: false,
-        finished: false,
-        mode: 'Easy',
-        sensitivity: 'Medium'
-      },
-      methods: {
-        startGame: function(){
-            this.started = true;
-            
-            let circuleContainer = document.querySelector('.circules');
-            let container = document.querySelector('.container');
-            
-            // Clear any existing circles
-            circuleContainer.innerHTML = '';
-            
-            // Setup game area
-            container.style.height = '80vh';
-            container.style.width = '90%';
-            
-            // Calculate positions for targets
-            const containerWidth = container.clientWidth;
-            const containerHeight = container.clientHeight;
-            
-            // Get game speed based on difficulty
-            let speed = this.mode === 'Easy' ? 2000 : 1500;
-            
-            // Start creating targets
-            let counter = 0;
-            let interval = setInterval(() => {
-              if(counter < 30){
-                // Create a new target
-                this.createTarget(containerWidth, containerHeight);
-                counter++;
-              } else {
-                // Game finished
-                clearInterval(interval);
-                this.finishGame();
-              }
-            }, speed);
-        },
+var app = new Vue({
+    el: '#app',
+    data: {
+      started: false,
+      finished: false,
+      scoresCount: 0,
+      finalScores: 0,
+      mode: 'Easy', // Default
+      targetsCreated: 0,
+      maxTargets: 30,
+      targetInterval: null
+    },
+    mounted() {
+      // Set the mode based on the URL difficulty
+      this.mode = gameDifficulty.charAt(0).toUpperCase() + gameDifficulty.slice(1);
+      
+      // Start the game automatically
+      this.startGame();
+    },
+    methods: {
+      startGame: function() {
+        this.started = true;
+        this.scoresCount = 0;
+        this.targetsCreated = 0;
         
-        createTarget: function(containerWidth, containerHeight){
-          let circuleContainer = document.querySelector('.circules');
-          
-          // Ensure targets aren't too close to edges
-          const margin = 40; 
-          const x = margin + Math.random() * (containerWidth - 2 * margin);
-          const y = margin + Math.random() * (containerHeight - 2 * margin);
-          
-          // Create target element
-          const target = document.createElement('div');
-          target.className = 'hitMe';
-          target.style.left = `${x}px`;
-          target.style.top = `${y}px`;
-          
-          // Handle clicks on target
-          target.addEventListener('mousedown', (e) => {
-            e.stopPropagation(); // Prevent container click
-            this.scoresCount++;
-            circuleContainer.removeChild(target);
-          });
-          
-          circuleContainer.appendChild(target);
-        },
+        // Get game area dimensions
+        const gameArea = document.querySelector('.game-area');
+        const targetsContainer = document.querySelector('.targets-container');
         
-        finishGame: function(){
-          this.finalScores = this.scoresCount;
-          this.scoresCount = 0;
-          
-          // Save score to database if user is logged in
-          const saveScore = async () => {
-            try {
-              const response = await fetch('/aim-trainer/save-score', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  score: this.finalScores,
-                  difficulty: this.mode.toLowerCase()
-                })
-              });
-              
-              const result = await response.json();
-              console.log('Score saved:', result);
-            } catch (error) {
-              console.error('Error saving score:', error);
+        // Set speed based on difficulty
+        const speed = this.mode.toLowerCase() === 'easy' ? 1500 : 1000;
+        
+        // Start creating targets
+        this.targetInterval = setInterval(() => {
+          if (this.targetsCreated < this.maxTargets) {
+            this.createTarget(gameArea.offsetWidth, gameArea.offsetHeight, targetsContainer);
+            this.targetsCreated++;
+          } else {
+            // Game finished
+            clearInterval(this.targetInterval);
+            
+            if (document.querySelectorAll('.target').length === 0) {
+              // If all targets were hit, end the game
+              this.endGame();
             }
-          };
-          
-          saveScore();
-          
-          setTimeout(() => {
-            this.finished = true;
-          }, 500);
-        },
+          }
+        }, speed);
+      },
+      
+      createTarget: function(maxWidth, maxHeight, container) {
+        // Create a new target at random position
+        const target = document.createElement('div');
+        target.className = 'target';
         
-        mouseMove: function(e){
-          this.x = e.offsetX;
-          this.y = e.offsetY;
-        },
+        // Ensure targets aren't too close to edges
+        const margin = 50;
+        const size = 40;
         
-        mouseDown: function(){
-          // This handles clicks on the container (missed targets)
-          // Target clicks are handled by the target elements themselves
+        // Random position
+        const x = margin + Math.random() * (maxWidth - size - (margin * 2));
+        const y = margin + Math.random() * (maxHeight - size - (margin * 2));
+        
+        // Set position
+        target.style.left = `${x}px`;
+        target.style.top = `${y}px`;
+        
+        // Add click event
+        target.addEventListener('mousedown', (e) => {
+          e.stopPropagation();
+          this.scoresCount++;
+          target.remove();
+          
+          // If all targets are gone and we've created the max number, end the game
+          if (this.targetsCreated >= this.maxTargets && document.querySelectorAll('.target').length === 0) {
+            this.endGame();
+          }
+        });
+        
+        // Add to container
+        container.appendChild(target);
+      },
+      
+      mouseDown: function(e) {
+        // Handle clicks on game area (misses)
+        if (e.target.classList.contains('game-area') || e.target.classList.contains('score-display')) {
+          // Misses don't do anything in this version
         }
+      },
+      
+      endGame: function() {
+        // End the game and show results
+        this.finalScores = this.scoresCount;
+        this.started = false;
+        this.finished = true;
+        
+        // Save score to database
+        this.saveScore();
+      },
+      
+      saveScore: function() {
+        // Only try to save if score is greater than 0
+        if (this.finalScores > 0) {
+          fetch('/aim-trainer/save-score', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              score: this.finalScores,
+              difficulty: this.mode.toLowerCase()
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Score saved:', data);
+          })
+          .catch(error => {
+            console.error('Error saving score:', error);
+          });
+        }
+      },
+      
+      resetGame: function() {
+        // Reset game state
+        clearInterval(this.targetInterval);
+        this.started = false;
+        this.finished = false;
+        this.scoresCount = 0;
+        this.targetsCreated = 0;
+        
+        // Redirect back to tasks page
+        window.location.href = '/tasks';
       }
-  });
+    }
+});

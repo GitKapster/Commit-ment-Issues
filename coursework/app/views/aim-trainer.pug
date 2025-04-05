@@ -3,166 +3,213 @@ extends layout
 
 block content
   .game-container
-    div(id="app")
-      div(v-show="started != true" class="window" id="start")
-        div
-          h2 Aim Trainer
-        div.modes
-          span Game Mode
-          span.active.mode(onclick="mode(this)") Easy
-          span.mode(onclick="mode(this)") Hard
-        div.sensitivities
-          span Sensitivity
-          span.sensitivity(onclick="sensitivity(this)") Low
-          span.active.sensitivity(onclick="sensitivity(this)") Medium
-          span.sensitivity(onclick="sensitivity(this)") High
-        
-        button.startBtn(@click="startGame()") START
-      
-      div(v-show="finished" class="finished window" id="finish")
-        div
-          h2 Aim Trainer
-        div.scoresVal Scores: 
-          span {{finalScores}}
-          span.none /30
-        p Game Mode: 
-          span {{mode}}
-        button.goBack(@click="started = false, finished = false") Go Back
-      
-      div(v-show="started" class="container" @mousemove="mouseMove($event)" @mousedown="mouseDown()")
-        div.scores SCORES: 
-          span {{scoresCount}}
-        div.circules
-
-  script(src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js")
-  script(src="/js/aimtest.js")
-
+    h1 AIM TRAINER
+    
+    .game-area#game-area
+      .score-display#score-display SCORES: 0
+      .accuracy-display#accuracy-display ACCURACY: 0%
+    
   style.
-    * {
-      box-sizing: border-box;
-      font-family: arial;
-    }
     .game-container {
       width: 100%;
+      height: calc(100vh - 120px);
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      min-height: 80vh;
-    }
-    .container {
-      user-select: none;
-      border: 1px solid #cccccc;
-      margin: auto;
-      position: relative;
-      box-shadow: 0px 0px 2px #a3a3a3;
       background-color: #333;
-      width: 90%;
-      height: 80vh;
+      color: white;
+      position: relative;
     }
-    .container .hitMe {
+    
+    h1 {
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    .game-area {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      cursor: crosshair !important;
+      overflow: hidden;
+    }
+    
+    .score-display {
+      position: absolute;
+      bottom: 50px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      z-index: 10;
+    }
+    
+    .accuracy-display {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      z-index: 10;
+    }
+    
+    .target {
+      position: absolute;
       width: 40px;
       height: 40px;
       background-color: #64b998;
-      box-shadow: 5px 5px 10px black;
-      position: absolute;
-      border-radius: 100%;
-      animation: showCircule 0.5s ease;
-      cursor: pointer;
+      border-radius: 50%;
     }
-    @keyframes showCircule {
-      from {
-          opacity: 0;
+    
+    .game-area * {
+      cursor: crosshair !important;
+    }
+
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      // Game variables
+      let score = 0;
+      let shots = 0;
+      let hits = 0;
+      let accuracy = 0;
+      const maxTargets = 30;
+      let targetsCreated = 0;
+      const gameArea = document.getElementById('game-area');
+      const scoreDisplay = document.getElementById('score-display');
+      const accuracyDisplay = document.getElementById('accuracy-display');
+      
+      // Get difficulty from URL and set speed
+      const difficulty = "#{difficulty}";
+      let speed;
+      
+      // Set different speeds based on difficulty
+      if (difficulty === 'easy') {
+        speed = 2000; // 2 seconds for easy
+      } else if (difficulty === 'medium') {
+        speed = 1200; // 1.2 seconds for medium
+      } else { // hard
+        speed = 800; // 0.8 seconds for hard
       }
-      to {
-          opacity: 1;
+      
+      // Listen for clicks on the game area to track misses
+      gameArea.addEventListener('click', function(e) {
+        // Only count as a miss if clicking directly on the game area (not on targets)
+        if (e.target === gameArea) {
+          shots++;
+          updateAccuracy();
+        }
+      });
+      
+      // Start creating targets
+      const targetInterval = setInterval(function() {
+        if (targetsCreated < maxTargets) {
+          createTarget();
+          targetsCreated++;
+        } else {
+          // If all targets are created, check if any are left
+          if (document.querySelectorAll('.target').length === 0) {
+            clearInterval(targetInterval);
+            endGame();
+          }
+        }
+      }, speed);
+      
+      // Create a target at a random position
+      function createTarget() {
+        const target = document.createElement('div');
+        target.className = 'target';
+        
+        // Get dimensions
+        const maxWidth = gameArea.offsetWidth;
+        const maxHeight = gameArea.offsetHeight;
+        
+        // Set random position (with margins)
+        const margin = 50;
+        const x = margin + Math.random() * (maxWidth - 80 - margin);
+        const y = margin + Math.random() * (maxHeight - 80 - margin);
+        
+        target.style.left = x + 'px';
+        target.style.top = y + 'px';
+        
+        // Add click event
+        target.addEventListener('click', function(e) {
+          e.stopPropagation();
+          score++;
+          hits++;
+          shots++;
+          updateAccuracy();
+          scoreDisplay.textContent = 'SCORES: ' + score;
+          target.remove();
+          
+          // If this was the last target and we've created all targets, end game
+          if (targetsCreated >= maxTargets && document.querySelectorAll('.target').length === 0) {
+            endGame();
+          }
+        });
+        
+        gameArea.appendChild(target);
       }
-    }
-    .scores {
-      font-weight: bold;
-      color: white;
-      text-align: center;
-      padding: 10px;
-      position: absolute;
-      width: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 10;
-    }
-    .scores span{
-      color: white;
-      font-size: 24px;
-      margin-left: 10px;
-    }
-    .window {
-      width: 45%;
-      padding: 40px 10px;
-      background-color: #333;
-      color: white;
-      text-align: center;
-      margin: auto;
-      border-radius: 10px;
-    }
-    .window > div {
-      padding: 5px;
-      margin-bottom: 20px;
-      letter-spacing: 1px;
-    }
-    .window > div:nth-child(1){
-      font-weight: bold;
-      font-size: 30px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-bottom: 40px;
-    }
-    .window > div:not(:first-child) > span:not(:first-child) {
-      margin: 5px;
-      box-shadow: 0px 0px 1px #ccc;
-      padding: 5px;
-      cursor: pointer;
-      user-select: none;
-    }
-    .window > div > span:first-child {
-      font-size: 20px;
-    }
-    .window > button {
-      background-color: #5dc5c1;
-      color: white;
-      border: none;
-      outline: none;
-      padding: 10px 20px;
-      cursor: pointer;
-      font-size: 16px;
-      border-radius: 5px;
-    }
-    .window > div .active {
-      background-color: #5dc5c1;
-      box-shadow: 0px 0px 1px #5dc5c1;
-      color: white;
-    }
-    .window > div:not(:first-child) > span:not(:first-child):not(.active):hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-    .finished > div:last-child {
-      font-size: 20px;
-    }
-    .finished > .scoresVal > span:last-child {
-      box-shadow: 0px 0px 0px black!important;
-      cursor: default!important;
-      font-size: 20px;
-    }
-    .finished > .scoresVal > .none:hover {
-      background: none!important;
-    }
-    .finished p {
-      font-size: 14px;
-    }
-    .finished p span {
-      font-weight: bold;
-    }
-    .finished > .scoresVal > span:first-child {
-      font-size: 30px;
-    }
-    @media screen and (max-width: 800px) {
-      .window {
-          width: 90%;
+      
+      // Update accuracy calculation
+      function updateAccuracy() {
+        accuracy = shots > 0 ? Math.round((hits / shots) * 100) : 0;
+        accuracyDisplay.textContent = 'ACCURACY: ' + accuracy + '%';
       }
-    }
+      
+      // End the game and show results
+      function endGame() {
+        // Clear the game area
+        gameArea.innerHTML = '';
+        
+        // Create result container
+        const resultContainer = document.createElement('div');
+        resultContainer.className = 'result-container';
+        resultContainer.style.textAlign = 'center';
+        resultContainer.style.paddingTop = '20%';
+        
+        // Add results
+        resultContainer.innerHTML = `
+          <h1>AIM TRAINER</h1>
+          <div style="margin: 20px 0; font-size: 18px;">Scores:</div>
+          <div style="font-size: 36px; font-weight: bold;">${score}</div>
+          <div style="margin-bottom: 20px;">/30</div>
+          <div style="margin-bottom: 10px;">Accuracy: ${accuracy}%</div>
+          <div style="margin-bottom: 30px;">Game Mode: ${difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}</div>
+          <button onclick="window.location.href='/tasks'" style="background-color: #5dc5c1; color: white; border: none; padding: 10px 25px; border-radius: 5px; font-size: 16px; cursor: pointer;">Go Back</button>
+        `;
+        
+        gameArea.appendChild(resultContainer);
+        
+        // Save score
+        saveScore(score, difficulty, accuracy);
+      }
+      
+      // Save score to database
+      function saveScore(finalScore, gameDifficulty, finalAccuracy) {
+        if (finalScore > 0) {
+          fetch('/aim-trainer/save-score', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              score: finalScore,
+              difficulty: gameDifficulty,
+              accuracy: finalAccuracy
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Score saved:', data);
+          })
+          .catch(error => {
+            console.error('Error saving score:', error);
+          });
+        }
+      }
+    });
