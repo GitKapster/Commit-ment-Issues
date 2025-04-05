@@ -441,6 +441,9 @@ app.post("/forum/new-topic", (req, res) => {
   sampleTopics.unshift(newTopic); // Add to the beginning so it appears first
   
   console.log("New topic added:", newTopic);
+  
+  // In a real app, you would save this to the database
+  // For now, just redirect back to the forum
   res.redirect("/forum");
 });
 
@@ -474,6 +477,9 @@ app.post("/forum/post-topic", (req, res) => {
   sampleTopics.unshift(newTopic); // Add to the beginning so it appears first
   
   console.log("New topic added via modal:", newTopic);
+  
+  // In a real app, you would save this to the database
+  // For now, just redirect back to the forum
   res.redirect("/forum");
 });
 
@@ -489,8 +495,10 @@ app.post("/forum/topic/:id/reply", (req, res) => {
   
   // Store the reply content in the session so we can access it after redirect
   req.session.lastReply = content;
+  
+  // In a real app, you would save this to the database
+  // For now, just redirect back to the topic with a query parameter
   res.redirect(`/forum/topic/${topicId}?reply=added`);
-
 });
 
 // Leaderboard Route - Fetch Data from MySQL
@@ -513,6 +521,11 @@ app.get("/leaderboard", async (req, res) => {
   }
 });
 
+// Tasks Route - Detching data from the SQL
+app.get("/tasks", (req, res) => {
+  res.render("tasks"); // Render the tasks.pug template
+});
+
 // Aim Trainer Routes for different difficulties
 app.get("/aim-trainer/easy", (req, res) => {
   res.render("aim-trainer", { difficulty: "easy" });
@@ -526,9 +539,31 @@ app.get("/aim-trainer/hard", (req, res) => {
   res.render("aim-trainer", { difficulty: "hard" });
 });
 
-// Tasks Route - Detching data from the SQL
-app.get("/tasks", (req, res) => {
-  res.render("tasks"); // Render the tasks.pug template
+// Route to handle saving scores
+app.post("/aim-trainer/save-score", async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ success: false, message: "Not logged in" });
+  }
+
+  try {
+    const { score, difficulty } = req.body;
+    const userID = req.session.user.UserID;
+    
+    // Map difficulty to TaskID (assuming 1 is for aim trainer)
+    const taskID = 1;
+    
+    // Insert the score into the database
+    await db.query(
+      "INSERT INTO Leaderboard (UserID, TaskID, Score) VALUES (?, ?, ?) " +
+      "ON DUPLICATE KEY UPDATE Score = GREATEST(Score, VALUES(Score))",
+      [userID, taskID, score]
+    );
+    
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error saving score:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
 });
 
 // Reaction Test Route for Easy Mode
@@ -546,7 +581,7 @@ app.get("/reaction-test/hard", (req, res) => {
   res.render("reaction-test", { difficulty: "hard" });
 });
 
-//memory test route
+// Add this route
 app.get('/memory-test/:difficulty', (req, res) => {
   const difficulty = req.params.difficulty;
   if (!['easy', 'medium', 'hard'].includes(difficulty)) {
@@ -555,37 +590,6 @@ app.get('/memory-test/:difficulty', (req, res) => {
   res.render('memory-test', { difficulty });
 });
 
-//idk if this section will work
-
-// Route to handle saving scores
-app.post("/aim-trainer/save-score", async (req, res) => {
-  if (!req.session.user) {
-    return res.status(401).json({ success: false, message: "Not logged in" });
-  }
-
-  try {
-    const { score, difficulty } = req.body;
-    const userID = req.session.user.UserID;
-    
-    // Map difficulty to TaskID (assuming 1 is for aim trainer)
-    // In a real app, you would have a more sophisticated way to handle this
-    const taskID = 1; 
-    
-    // Insert the score into the database
-    await db.query(
-      "INSERT INTO Leaderboard (UserID, TaskID, Score) VALUES (?, ?, ?) " +
-      "ON DUPLICATE KEY UPDATE Score = GREATEST(Score, VALUES(Score))",
-      [userID, taskID, score]
-    );
-    
-    res.json({ success: true });
-  } catch (error) {
-    console.error("Error saving score:", error);
-    res.status(500).json({ success: false, message: "Server error" });
-  }
-});
-
-//idk if this section works fully yet
 
 // Start server on port 3000
 app.listen(3000,function(){
