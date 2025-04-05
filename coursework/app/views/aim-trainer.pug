@@ -1,0 +1,168 @@
+//- aim-trainer.pug
+extends layout
+
+block content
+  .game-container
+    div(id="app")
+      div(v-show="started != true" class="window" id="start")
+        div
+          h2 Aim Trainer
+        div.modes
+          span Game Mode
+          span.active.mode(onclick="mode(this)") Easy
+          span.mode(onclick="mode(this)") Hard
+        div.sensitivities
+          span Sensitivity
+          span.sensitivity(onclick="sensitivity(this)") Low
+          span.active.sensitivity(onclick="sensitivity(this)") Medium
+          span.sensitivity(onclick="sensitivity(this)") High
+        
+        button.startBtn(@click="startGame()") START
+      
+      div(v-show="finished" class="finished window" id="finish")
+        div
+          h2 Aim Trainer
+        div.scoresVal Scores: 
+          span {{finalScores}}
+          span.none /30
+        p Game Mode: 
+          span {{mode}}
+        button.goBack(@click="started = false, finished = false") Go Back
+      
+      div(v-show="started" class="container" @mousemove="mouseMove($event)" @mousedown="mouseDown()")
+        div.scores SCORES: 
+          span {{scoresCount}}
+        div.circules
+
+  script(src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js")
+  script(src="/js/aimtest.js")
+
+  style.
+    * {
+      box-sizing: border-box;
+      font-family: arial;
+    }
+    .game-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 80vh;
+    }
+    .container {
+      user-select: none;
+      border: 1px solid #cccccc;
+      margin: auto;
+      position: relative;
+      box-shadow: 0px 0px 2px #a3a3a3;
+      background-color: #333;
+      width: 90%;
+      height: 80vh;
+    }
+    .container .hitMe {
+      width: 40px;
+      height: 40px;
+      background-color: #64b998;
+      box-shadow: 5px 5px 10px black;
+      position: absolute;
+      border-radius: 100%;
+      animation: showCircule 0.5s ease;
+      cursor: pointer;
+    }
+    @keyframes showCircule {
+      from {
+          opacity: 0;
+      }
+      to {
+          opacity: 1;
+      }
+    }
+    .scores {
+      font-weight: bold;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      position: absolute;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 10;
+    }
+    .scores span{
+      color: white;
+      font-size: 24px;
+      margin-left: 10px;
+    }
+    .window {
+      width: 45%;
+      padding: 40px 10px;
+      background-color: #333;
+      color: white;
+      text-align: center;
+      margin: auto;
+      border-radius: 10px;
+    }
+    .window > div {
+      padding: 5px;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+    .window > div:nth-child(1){
+      font-weight: bold;
+      font-size: 30px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 40px;
+    }
+    .window > div:not(:first-child) > span:not(:first-child) {
+      margin: 5px;
+      box-shadow: 0px 0px 1px #ccc;
+      padding: 5px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .window > div > span:first-child {
+      font-size: 20px;
+    }
+    .window > button {
+      background-color: #5dc5c1;
+      color: white;
+      border: none;
+      outline: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+    .window > div .active {
+      background-color: #5dc5c1;
+      box-shadow: 0px 0px 1px #5dc5c1;
+      color: white;
+    }
+    .window > div:not(:first-child) > span:not(:first-child):not(.active):hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    .finished > div:last-child {
+      font-size: 20px;
+    }
+    .finished > .scoresVal > span:last-child {
+      box-shadow: 0px 0px 0px black!important;
+      cursor: default!important;
+      font-size: 20px;
+    }
+    .finished > .scoresVal > .none:hover {
+      background: none!important;
+    }
+    .finished p {
+      font-size: 14px;
+    }
+    .finished p span {
+      font-weight: bold;
+    }
+    .finished > .scoresVal > span:first-child {
+      font-size: 30px;
+    }
+    @media screen and (max-width: 800px) {
+      .window {
+          width: 90%;
+      }
+    }
