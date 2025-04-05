@@ -167,47 +167,6 @@ app.get("/login", (req, res) => {
   res.render("login"); // Render the login.pug template
 });
 
-// valorant page
-app.get("/games/Valorant", (req, res) => {
-  res.render("valorant"); // Render the login.pug template
-});
-
-// CS2 page
-app.get("/games/Counter-Strike2", (req, res) => {
-  res.render("cs2"); // Render the login.pug template
-});
-
-// siege page
-app.get("/games/Siege", (req, res) => {
-  res.render("6siege"); // Render the login.pug template
-});
-
-// rivals page
-app.get("/games/Marvel-Rivals", (req, res) => {
-  res.render("rivals"); // Render the login.pug template
-});
-
-// Games page
-app.get("/Games", (req, res) => {
-  res.render("Games"); // Render the games.pug template
-});
-
-app.get("/register", (req, res) => {
-  res.render("register");
-});
-
-// account list page
-app.get("/account-list", async (req, res) => {
-  try {
-    const results = await query("SELECT UserID, Username FROM Users");
-    console.log("Fetched users:", results); // Debugging
-    res.render("account-list", { users: results });
-  } catch (err) {
-    console.error("Database query error:", err.message);
-    res.status(500).send(`Database query failed: ${err.message}`);
-  }
-});
-
 // login function fetching from database
 app.post("/login", async (req, res) => {
   const { username, password } = req.body; // username and password taken from user input
@@ -246,6 +205,47 @@ app.post("/login", async (req, res) => {
   } catch (error) {
     console.error("Database error:", error);
     res.status(500).send("Server error");
+  }
+});
+
+// valorant page
+app.get("/games/Valorant", (req, res) => {
+  res.render("valorant"); // Render the login.pug template
+});
+
+// CS2 page
+app.get("/games/Counter-Strike2", (req, res) => {
+  res.render("cs2"); // Render the login.pug template
+});
+
+// siege page
+app.get("/games/Siege", (req, res) => {
+  res.render("6siege"); // Render the login.pug template
+});
+
+// rivals page
+app.get("/games/Marvel-Rivals", (req, res) => {
+  res.render("rivals"); // Render the login.pug template
+});
+
+// Games page
+app.get("/Games", (req, res) => {
+  res.render("Games"); // Render the games.pug template
+});
+
+app.get("/register", (req, res) => {
+  res.render("register");
+});
+
+// account list page
+app.get("/account-list", async (req, res) => {
+  try {
+    const results = await query("SELECT UserID, Username FROM Users");
+    console.log("Fetched users:", results); // Debugging
+    res.render("account-list", { users: results });
+  } catch (err) {
+    console.error("Database query error:", err.message);
+    res.status(500).send(`Database query failed: ${err.message}`);
   }
 });
 
@@ -546,16 +546,23 @@ app.post("/aim-trainer/save-score", async (req, res) => {
   }
 
   try {
-    const { score, difficulty } = req.body;
+    const { score, difficulty, accuracy } = req.body;
     const userID = req.session.user.UserID;
     
-    // Map difficulty to TaskID (assuming 1 is for aim trainer)
-    const taskID = 1;
+    // Aim trainer has TaskID = 10 based on the home page query
+    const taskID = 10;
+    
+    // Map string difficulty to numeric value in database
+    let difficultyNum = 2; // default to medium (2)
+    if (difficulty === 'easy') difficultyNum = 1;
+    if (difficulty === 'hard') difficultyNum = 3;
+    
+    console.log(`Saving score: UserID=${userID}, TaskID=${taskID}, Score=${score}, Difficulty=${difficultyNum}`);
     
     // Insert the score into the database
+    // This simple INSERT will just add the score to the database without any duplicate checks
     await db.query(
-      "INSERT INTO Leaderboard (UserID, TaskID, Score) VALUES (?, ?, ?) " +
-      "ON DUPLICATE KEY UPDATE Score = GREATEST(Score, VALUES(Score))",
+      "INSERT INTO Leaderboard (UserID, TaskID, Score) VALUES (?, ?, ?)",
       [userID, taskID, score]
     );
     
