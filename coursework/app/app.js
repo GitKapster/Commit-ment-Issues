@@ -20,8 +20,51 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 const bcrypt = require("bcryptjs");
 
-
 const session = require("express-session");
+
+// Create a topics array to store topics in memory
+// In a real app, you would use a database instead
+let sampleTopics = [
+  {
+    id: 1,
+    title: "Is Amin Team 1 Material?",
+    author: "Admin",
+    date: "Feb 25, 2025",
+    replies: 2,
+    content: "Amin has shown great progress in recent games. His aim accuracy has improved by 25% and his reaction time is consistently under 200ms."
+  },
+  {
+    id: 2,
+    title: "How to stop shaking when i aim?",
+    author: "Kasper",
+    date: "Feb 26, 2025",
+    replies: 1,
+    content: "I noticed my hands shake when I'm trying to make precise shots. Any tips to improve stability during aim training?"
+  },
+  {
+    id: 3,
+    title: "Is Nova227 the rookie of the year 2025?",
+    author: "RoehamptonEsports",
+    date: "Feb 26, 2025",
+    replies: 1,
+    content: "Nova227 has dominated the scene with record-breaking performance in aim challenges. His stats show a 15% lead over the next best rookie."
+  },
+  {
+    id: 4,
+    title: "How do i improve my reaction speed?",
+    author: "Virtus.Roe",
+    date: "Feb 26, 2025",
+    replies: 1,
+    content: "My reaction time is currently around 300ms but I need to get it below 250ms to compete at a higher level. What are the best training methods?"
+  }
+];
+
+// Helper function to format current date
+function formatDate() {
+  const date = new Date();
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+}
 
 // enables session storing for users
 app.use(session({
@@ -144,8 +187,6 @@ app.get("/games/Marvel-Rivals", (req, res) => {
   res.render("rivals"); // Render the login.pug template
 });
 
-
-
 // Games page
 app.get("/Games", (req, res) => {
   res.render("Games"); // Render the games.pug template
@@ -266,46 +307,10 @@ app.get("/forum", async function(req, res) {
     // Get news (or fallback to default news)
     const news = await getEsportsNews();
     
-    // Add sample topics - in a real app, you would fetch these from the database
-    const topics = [
-      {
-        id: 1,
-        title: "Is Amin Team 1 Material?",
-        author: "Admin",
-        date: "Feb 25, 2025",
-        replies: 2,
-        content: "Amin has shown great progress in recent games. His aim accuracy has improved by 25% and his reaction time is consistently under 200ms."
-      },
-      {
-        id: 2,
-        title: "How to stop shaking when i aim?",
-        author: "Kasper",
-        date: "Feb 26, 2025",
-        replies: 1,
-        content: "I noticed my hands shake when I'm trying to make precise shots. Any tips to improve stability during aim training?"
-      },
-      {
-        id: 3,
-        title: "Is Nova227 the rookie of the year 2025?",
-        author: "RoehamptonEsports",
-        date: "Feb 26, 2025",
-        replies: 1,
-        content: "Nova227 has dominated the scene with record-breaking performance in aim challenges. His stats show a 15% lead over the next best rookie."
-      },
-      {
-        id: 4,
-        title: "How do i improve my reaction speed?",
-        author: "Virtus.Roe",
-        date: "Feb 26, 2025",
-        replies: 1,
-        content: "My reaction time is currently around 300ms but I need to get it below 250ms to compete at a higher level. What are the best training methods?"
-      }
-    ];
-    
     // Render the forum page with news data AND topics
     res.render("forum", { 
       esportsNews: news,
-      topics: topics
+      topics: sampleTopics
     });
   } catch (error) {
     console.error("Error loading forum:", error);
@@ -325,71 +330,67 @@ app.get("/forum/topic/:id", async function(req, res) {
     
     // In a real app, you'd fetch the topic and its replies from the database
     // For now, we'll use sample data
-    const sampleTopics = {
-      "1": {
-        id: 1,
-        title: "Is Amin Team 1 Material?",
-        author: "Admin",
-        date: "Feb 25, 2025",
-        content: "Amin has shown great progress in recent games. His aim accuracy has improved by 25% and his reaction time is consistently under 200ms.",
-        replies: [
-          { author: "Coach", date: "Feb 25, 2025", content: "I've been monitoring his progress. His decision-making has also improved significantly." },
-          { author: "TeamCaptain", date: "Feb 26, 2025", content: "We need to see how he performs under pressure in the next tournament." }
-        ]
-      },
-      "2": {
-        id: 2,
-        title: "How to stop shaking when i aim?",
-        author: "Kasper",
-        date: "Feb 26, 2025",
-        content: "I noticed my hands shake when I'm trying to make precise shots. Any tips to improve stability during aim training?",
-        replies: [
-          { author: "AimTrainer", date: "Feb 26, 2025", content: "Try lowering your sensitivity and make sure you're in a comfortable position. Also, regular breaks help reduce tension." }
-        ]
-      },
-      "3": {
-        id: 3,
-        title: "Is Nova227 the rookie of the year 2025?",
-        author: "RoehamptonEsports",
-        date: "Feb 26, 2025",
-        content: "Nova227 has dominated the scene with record-breaking performance in aim challenges. His stats show a 15% lead over the next best rookie.",
-        replies: [
-          { author: "Analyst", date: "Feb 27, 2025", content: "His consistency is what sets him apart. Most rookies have high variance in their performance." }
-        ]
-      },
-      "4": {
-        id: 4,
-        title: "How do i improve my reaction speed?",
-        author: "Virtus.Roe",
-        date: "Feb 26, 2025",
-        content: "My reaction time is currently around 300ms but I need to get it below 250ms to compete at a higher level. What are the best training methods?",
-        replies: [
-          { author: "ProPlayer", date: "Feb 27, 2025", content: "Use our reaction test tool daily. Start with easy mode and gradually move to harder difficulties. Also, make sure you get enough sleep!" }
-        ]
-      }
-    };
+    const sampleTopicsMap = {};
+    sampleTopics.forEach(topic => {
+      sampleTopicsMap[topic.id] = {
+        ...topic,
+        replies: []
+      };
+    });
+    
+    // Add sample replies to existing topics
+    if (sampleTopicsMap["1"]) {
+      sampleTopicsMap["1"].replies = [
+        { author: "Coach", date: "Feb 25, 2025", content: "I've been monitoring his progress. His decision-making has also improved significantly." },
+        { author: "TeamCaptain", date: "Feb 26, 2025", content: "We need to see how he performs under pressure in the next tournament." }
+      ];
+    }
+    
+    if (sampleTopicsMap["2"]) {
+      sampleTopicsMap["2"].replies = [
+        { author: "AimTrainer", date: "Feb 26, 2025", content: "Try lowering your sensitivity and make sure you're in a comfortable position. Also, regular breaks help reduce tension." }
+      ];
+    }
+    
+    if (sampleTopicsMap["3"]) {
+      sampleTopicsMap["3"].replies = [
+        { author: "Analyst", date: "Feb 27, 2025", content: "His consistency is what sets him apart. Most rookies have high variance in their performance." }
+      ];
+    }
+    
+    if (sampleTopicsMap["4"]) {
+      sampleTopicsMap["4"].replies = [
+        { author: "ProPlayer", date: "Feb 27, 2025", content: "Use our reaction test tool daily. Start with easy mode and gradually move to harder difficulties. Also, make sure you get enough sleep!" }
+      ];
+    }
     
     // If a reply was just added, let's add it to the sample data
     if (replyAdded && req.session.user && req.session.lastReply) {
-      const topic = sampleTopics[topicId];
+      const topic = sampleTopicsMap[topicId];
       
       if (topic) {
         // Add the actual reply from the current user
         const newReply = {
           author: req.session.user.Username,
-          date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+          date: formatDate(),
           content: req.session.lastReply // Use the actual content from the form
         };
         
         // Add the new reply to the end of the replies array
         topic.replies.push(newReply);
         
+        // Update the reply count in the main topics list
+        const topicInList = sampleTopics.find(t => t.id == topicId);
+        if (topicInList) {
+          topicInList.replies += 1;
+        }
+        
         // Clear the stored reply from the session
         delete req.session.lastReply;
       }
     }
     
-    const topic = sampleTopics[topicId];
+    const topic = sampleTopicsMap[topicId];
     
     if (!topic) {
       return res.status(404).send("Topic not found");
@@ -425,6 +426,58 @@ app.post("/forum/new-topic", (req, res) => {
   
   const { title, content, category } = req.body;
   
+  // Create a new topic object
+  const newTopic = {
+    id: sampleTopics.length + 1, // Simple ID generation
+    title: title,
+    author: req.session.user.Username,
+    date: formatDate(),
+    replies: 0,
+    content: content,
+    category: category || "general"
+  };
+  
+  // Add to our sample topics list
+  sampleTopics.unshift(newTopic); // Add to the beginning so it appears first
+  
+  console.log("New topic added:", newTopic);
+  
+  // In a real app, you would save this to the database
+  // For now, just redirect back to the forum
+  res.redirect("/forum");
+});
+
+// Process new topic submission from modal
+app.post("/forum/post-topic", (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.status(401).send("You must be logged in to create a topic");
+  }
+  
+  const { title, category, content } = req.body;
+  
+  // Check if the content is within the word limit (200 words)
+  const words = content.trim().split(/\s+/).filter(Boolean).length;
+  if (words > 200) {
+    return res.status(400).send("Content exceeds the 200 word limit");
+  }
+  
+  // Create a new topic object
+  const newTopic = {
+    id: sampleTopics.length + 1, // Simple ID generation
+    title: title,
+    author: req.session.user.Username,
+    date: formatDate(),
+    replies: 0,
+    content: content,
+    category: category || "general"
+  };
+  
+  // Add to our sample topics list
+  sampleTopics.unshift(newTopic); // Add to the beginning so it appears first
+  
+  console.log("New topic added via modal:", newTopic);
+  
   // In a real app, you would save this to the database
   // For now, just redirect back to the forum
   res.redirect("/forum");
@@ -446,31 +499,6 @@ app.post("/forum/topic/:id/reply", (req, res) => {
   // In a real app, you would save this to the database
   // For now, just redirect back to the topic with a query parameter
   res.redirect(`/forum/topic/${topicId}?reply=added`);
-  
-  /* 
-  // In a real implementation with a database, you would do something like this:
-  
-  try {
-    // Get the current user information
-    const userId = req.session.user.UserID;
-    const username = req.session.user.Username;
-    
-    // Create a timestamp for the reply
-    const timestamp = new Date();
-    
-    // Insert the reply into the database
-    await db.query(
-      "INSERT INTO TopicReplies (topic_id, user_id, content, created_at) VALUES (?, ?, ?, ?)",
-      [topicId, userId, content, timestamp]
-    );
-    
-    // Redirect back to the topic page to see the new reply
-    res.redirect(`/forum/topic/${topicId}`);
-  } catch (error) {
-    console.error("Error posting reply:", error);
-    res.status(500).send("Error posting reply");
-  }
-  */
 });
 
 // Leaderboard Route - Fetch Data from MySQL

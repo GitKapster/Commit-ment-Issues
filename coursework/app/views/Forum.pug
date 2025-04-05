@@ -23,61 +23,22 @@ block content
     .recent-topics
       h2 Recent Topics
       .topic-list
-        // Sample topic 1
-        .topic-item
-          .topic-header(onclick="toggleTopic(1)")
-            .topic-title Is Amin Team 1 Material?
-            .topic-details
-              span.topic-author Posted by Admin
-              span.topic-date Feb 25, 2025
-              span.topic-replies 2 replies
-          #topic-1-content.topic-content.hidden
-            p Amin has shown great progress in recent games. His aim accuracy has improved by 25% and his reaction time is consistently under 200ms.
-            .topic-actions
-              a.view-more(href='/forum/topic/1') View Full Discussion
-        
-        // Sample topic 2
-        .topic-item
-          .topic-header(onclick="toggleTopic(2)")
-            .topic-title How to stop shaking when i aim?
-            .topic-details
-              span.topic-author Posted by Kasper
-              span.topic-date Feb 26, 2025
-              span.topic-replies 1 reply
-          #topic-2-content.topic-content.hidden
-            p I noticed my hands shake when I'm trying to make precise shots. Any tips to improve stability during aim training?
-            .topic-actions
-              a.view-more(href='/forum/topic/2') View Full Discussion
-
-        // Sample topic 3
-        .topic-item
-          .topic-header(onclick="toggleTopic(3)")
-            .topic-title Is Nova227 the rookie of the year 2025?
-            .topic-details
-              span.topic-author Posted by RoehamptonEsports
-              span.topic-date Feb 26, 2025
-              span.topic-replies 1 reply
-          #topic-3-content.topic-content.hidden
-            p Nova227 has dominated the scene with record-breaking performance in aim challenges. His stats show a 15% lead over the next best rookie.
-            .topic-actions
-              a.view-more(href='/forum/topic/3') View Full Discussion
-
-        // Sample topic 4
-        .topic-item
-          .topic-header(onclick="toggleTopic(4)")
-            .topic-title How do i improve my reaction speed?
-            .topic-details
-              span.topic-author Posted by Virtus.Roe
-              span.topic-date Feb 26, 2025
-              span.topic-replies 1 reply
-          #topic-4-content.topic-content.hidden
-            p My reaction time is currently around 300ms but I need to get it below 250ms to compete at a higher level. What are the best training methods?
-            .topic-actions
-              a.view-more(href='/forum/topic/4') View Full Discussion    
+        each topic in topics
+          .topic-item
+            .topic-header(onclick=`toggleTopic(${topic.id})`)
+              .topic-title= topic.title
+              .topic-details
+                span.topic-author Posted by #{topic.author}
+                span.topic-date= topic.date
+                span.topic-replies #{topic.replies} #{topic.replies === 1 ? 'reply' : 'replies'}
+            div(id=`topic-${topic.id}-content` class="topic-content hidden")
+              p= topic.content
+              .topic-actions
+                a.view-more(href=`/forum/topic/${topic.id}`) View Full Discussion
     
     // Create new topic button
     .create-topic
-      button.create-topic-btn(onclick="window.location.href='/forum/new-topic'") Create New Topic
+      button.create-topic-btn(onclick="openNewTopicModal()") Create New Topic
       
     // Esports News Section
     .esports-news
@@ -87,6 +48,85 @@ block content
           .news-item
             .news-title= news.title
             .news-date= news.date
+    
+    // New Topic Modal
+    #new-topic-modal.modal.hidden
+      .modal-content
+        .modal-header
+          h3 Create New Topic
+          span.close-modal(onclick="closeNewTopicModal()") &times;
+        .modal-body
+          form#new-topic-form(action="/forum/post-topic" method="POST")
+            .form-group
+              label(for="topic-title") Title:
+              input#topic-title(type="text" name="title" required)
+            
+            .form-group
+              label(for="topic-category") Category:
+              select#topic-category(name="category" required)
+                option(value="general") General
+                option(value="questions") Questions
+                option(value="announcements") Announcements
+            
+            .form-group
+              label(for="topic-content") Content:
+              textarea#topic-content(name="content" maxlength="1200" required)
+              .word-counter
+                span#word-count 0
+                span / 200 words
+            
+            .form-actions
+              button.submit-btn(type="submit") Post Topic
+              button.cancel-btn(type="button" onclick="closeNewTopicModal()") Cancel
+      
+  script.
+    // Toggle topic content visibility
+    function toggleTopic(id) {
+      const content = document.getElementById(`topic-${id}-content`);
+      content.classList.toggle('hidden');
+    }
+    
+    // Modal functions
+    function openNewTopicModal() {
+      document.getElementById('new-topic-modal').classList.remove('hidden');
+    }
+    
+    function closeNewTopicModal() {
+      document.getElementById('new-topic-modal').classList.add('hidden');
+      document.getElementById('new-topic-form').reset();
+      document.getElementById('word-count').textContent = '0';
+    }
+    
+    // Word counter
+    document.addEventListener('DOMContentLoaded', function() {
+      const textarea = document.getElementById('topic-content');
+      const wordCount = document.getElementById('word-count');
+      
+      textarea.addEventListener('input', function() {
+        // Count words - split by whitespace and filter out empty strings
+        const text = this.value.trim();
+        const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+        
+        wordCount.textContent = words;
+        
+        // Visual feedback if over the limit
+        if (words > 200) {
+          wordCount.style.color = 'red';
+        } else {
+          wordCount.style.color = '';
+        }
+      });
+      
+      // Form submission
+      document.getElementById('new-topic-form').addEventListener('submit', function(e) {
+        const words = textarea.value.trim().split(/\s+/).filter(Boolean).length;
+        
+        if (words > 200) {
+          e.preventDefault();
+          alert('Please limit your post to 200 words.');
+        }
+      });
+    });
       
   style.
     .forum-container {
@@ -283,4 +323,133 @@ block content
     .news-date {
       color: #aaa;
       font-size: 14px;
+    }
+    
+    /* Modal styles */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .modal.hidden {
+      display: none;
+    }
+    
+    .modal-content {
+      background: #1e1e1e;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      border-bottom: 1px solid #444;
+    }
+    
+    .modal-header h3 {
+      color: #5dc5c1;
+      margin: 0;
+    }
+    
+    .close-modal {
+      color: #aaa;
+      font-size: 24px;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    
+    .close-modal:hover {
+      color: #fff;
+    }
+    
+    .modal-body {
+      padding: 20px;
+    }
+    
+    /* Form styles */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #ddd;
+      font-weight: bold;
+    }
+    
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #444;
+      background: #2c2c2c;
+      color: #fff;
+      font-family: inherit;
+    }
+    
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    .word-counter {
+      margin-top: 5px;
+      text-align: right;
+      color: #aaa;
+      font-size: 14px;
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .submit-btn {
+      background: #5dc5c1;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .submit-btn:hover {
+      background: #4aa6a2;
+    }
+    
+    .cancel-btn {
+      background: #444;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .cancel-btn:hover {
+      background: #555;
     }
