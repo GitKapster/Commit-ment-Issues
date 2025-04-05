@@ -179,12 +179,12 @@ block content
           .nav-title Quick Navigation
         block navLinks
           .nav-links
-            a(href='#aiming') Aiming Mechanics
-            a(href='#movement') Movement Techniques
-            a(href='#abilities') Abilities & Skills
-            a(href='#weapons') Weapons & Equipment
-            a(href='#maps') Map Knowledge
-            a(href='#teamwork') Teamwork Strategies
+            a(href='#aiming') Aim Overview
+            a(href='#movement') Mouse Control
+            a(href='#abilities') Crosshair Placement
+            a(href='#weapons') Movement Mechanics
+            a(href='#maps') Practice Routine
+            a(href='#teamwork') Overview
     
     // Introduction Section
     .section
@@ -197,203 +197,73 @@ block content
     
     // Aiming Section
     .section#aiming
-      h2 Aiming Mechanics
+      h2 Aim Overview
       .content-placeholder
         block section_aiming_overview
           | [Describe the game's aiming mechanics.]
-      h3 Sensitivity Settings
+      h3 Aiming Styles
       .content-placeholder
-        block section_aiming_sensitivity
-          | [Explain recommended sensitivity settings.]
-      block aiming_diagram
-        .image-placeholder Aiming Diagram Placeholder
-      h3 Crosshair Placement
-      .content-placeholder
-        block section_aiming_crosshair
-          | [Detail proper crosshair placement techniques.]
+        block section_aiming_styles
+          | [Detail different aim styles.]
       .tip-box
         .tip-title Pro Tip
         .content-placeholder
           block section_aiming_tip
             | [Share a professional player's tip about aiming technique.]
     
-    // Movement Section
-    .section#movement
-      h2 Movement Techniques
+    // Mouse control section
+    .section#mouse
+      h2 Mouse Control
       .content-placeholder
-        block section_movement_overview
-          | [Explain various movement mechanics.]
-      h3 Basic Movement
+        block section_mouse_control
+          | [Explain game priorities]
+      h3 Sensitivity
       .content-placeholder
-        block section_movement_basic
-          | [Detail fundamental movement controls.]
-      h3 Advanced Techniques
-      .content-placeholder
-        block section_movement_advanced
-          | [Describe advanced movement techniques.]
-      block movement_diagram
-        .image-placeholder Movement Techniques Diagram
-      block movement_video
-        .video-embed Movement Tutorial Video Placeholder
+        block section_sensitivity
+          | [Explain different types of sensitivity and their uses]
     
-    // Abilities Section
-    .section#abilities
-      h2 Abilities & Skills
+    // crosshair section
+    .section#crosshair
+      h2 Crosshair Placement
       .content-placeholder
         block section_abilities_overview
           | [Overview of character abilities.]
-      h3 Character Abilities
-      block abilities_table
-        table
-          thead
-            tr
-              th Ability
-              th Description
-              th Cooldown
-              th Best Uses
-          tbody
-            tr
-              td [Ability Name]
-              td [Description Placeholder]
-              td [Cooldown]
-              td [Tactical Uses]
-      h3 Ability Combos
-      .content-placeholder
-        block section_abilities_combos
-          | [Explain effective ability combinations.]
-      block abilities_visualization
-        .image-placeholder Ability Usage Visualization
+        block crosshair_placement_image
+          .image-placeholder Game Screenshot Placeholder
+        h3 Crosshair Design
+        block crosshair_design
+          | [Overview of crosshairs]
     
-    // Weapons Section
-    .section#weapons
-      h2 Weapons & Equipment
+    // Movement section
+    .section#movement
+      h2 Movement
       .content-placeholder
-        block section_weapons_overview
-          | [Overview of the game's weapons system.]
-      h3 Weapon Categories
-      .content-placeholder
-        block section_weapons_categories
-          | [Detail different weapon categories.]
-      h3 Weapon Stats Comparison
-      block weapons_table
-        table
-          thead
-            tr
-              th Weapon
-              th Damage
-              th Fire Rate
-              th Range
-              th Mobility
-              th Best For
-          tbody
-            tr
-              td [Weapon Name]
-              td [Damage]
-              td [Fire Rate]
-              td [Range]
-              td [Mobility]
-              td [Playstyle]
-      block weapons_chart
-        .image-placeholder Weapon Comparison Chart
+        block section_movement_overview
+          | [Overview of the game's movement.]
+      h3 Movement Practice Guide
+        block movement_practice
+          | [Overview of movement practice]
+        .video-embed
     
-    // Maps Section  
-    .section#maps
-      h2 Map Knowledge
+    // Practice Routine Section 
+    .section#practice
+      h2 Practice Routine
       .content-placeholder
-        block section_maps_overview
-          | [Explain the importance of map knowledge.]
-      h3 Map Callouts
-      .content-placeholder
-        block section_maps_callouts
-          | [Detail common callout locations.]
-      block maps_diagram
-        .image-placeholder Map Callouts Diagram
-      h3 Map Control Strategies
-      .content-placeholder
-        block section_maps_control
-          | [Explain strategies for controlling maps.]
-      .tip-box
-        .tip-title Map Tip
-        .content-placeholder
-          block section_maps_tip
-            | [Share a specific map tip.]
+        block practice_overview
+          | [Explain the key areas focused on in routine]
+      h3 Routine
+        block practice_routine
+        .image-placeholder
+          | [step 1]
+        .image-placeholder
+          | [step 2]
+        .image-placeholder
+          | [step 3]
     
-    // Teamwork Section
-    .section#teamwork
-      h2 Teamwork Strategies
+    // Overview Section
+    .section#overview
+      h2 Overview
       .content-placeholder
         block section_teamwork_overview
-          | [Overview of teamwork aspects.]
-      h3 Communication
-      .content-placeholder
-        block section_teamwork_communication
-          | [Explain effective communication techniques.]
-      h3 Team Compositions
-      .content-placeholder
-        block section_teamwork_compositions
-          | [Detail effective team compositions.]
-      block teamwork_diagram
-        .image-placeholder Team Positioning Diagram
-      .tip-box
-        .tip-title Communication Tip
-        .content-placeholder
-          block section_teamwork_tip
-            | [Share a tip about team communication.]
+          | [Overview of the guide.]
     
-    // Economy Section
-    .section#economy
-      h2 Economy Management
-      .content-placeholder
-        block section_economy_overview
-          | [Explain the game's economy system.]
-      h3 Economy Rounds
-      .content-placeholder
-        block section_economy_rounds
-          | [Detail strategies for eco rounds.]
-      h3 Resource Optimization
-      .content-placeholder
-        block section_economy_optimization
-          | [Explain how to maximize resources.]
-      block economy_chart
-        .image-placeholder Economy Flowchart
-    
-    // Improvement Section
-    .section#improvement
-      h2 Self-Improvement
-      .content-placeholder
-        block section_improvement_overview
-          | [Provide techniques for improvement.]
-      h3 Training Routines
-      .content-placeholder
-        block section_improvement_training
-          | [Detail effective training routines.]
-      h3 VOD Review
-      .content-placeholder
-        block section_improvement_vod
-          | [Explain reviewing your own gameplay.]
-      h3 Tracking Progress
-      .content-placeholder
-        block section_improvement_tracking
-          | [Provide methods for tracking progress.]
-      block improvement_video
-        .video-embed Training Tutorial Video Placeholder
-      .tip-box
-        .tip-title Improvement Tip
-        .content-placeholder
-          block section_improvement_tip
-            | [Share professional advice on improvement.]
-    
-    // Conclusion Section
-    .section
-      h2 Conclusion
-      .content-placeholder
-        block section_conclusion
-          | [Summarize the key points covered.]
-      .tip-box
-        .tip-title Final Advice
-        .content-placeholder
-          block section_final_tip
-            | [Share one final important piece of advice.]
-    
-    // Additional Content Block
-    block additional_content
