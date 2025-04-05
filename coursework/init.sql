@@ -88,9 +88,18 @@ VALUES (2, 1, 920);
 INSERT INTO Leaderboard (TaskID, UserID, Score)
 VALUES (3, 4, 945);
 
--- Task 3, UserID 2 (Erin) - Score 800
+-- sample info for home page -- 
 INSERT INTO Leaderboard (TaskID, UserID, Score)
-VALUES (3, 2, 800);
+VALUES (7, 1, 800);
+
+INSERT INTO Leaderboard (TaskID, UserID, Score)
+VALUES (7, 2, 820);
+
+INSERT INTO Leaderboard (TaskID, UserID, Score)
+VALUES (7, 3, 900);
+
+INSERT INTO Leaderboard (TaskID, UserID, Score)
+VALUES (7, 4, 850);
 
 -- Sample Tasks for Task Table
 
@@ -123,15 +132,3 @@ VALUES ('Reaction', 3);
 
 INSERT INTO Tasks (TaskType, Difficulty)
 VALUES ('Memory', 3);
-
--- Difficulty 4
-INSERT INTO Tasks (TaskType, Difficulty)
-VALUES ('Aim', 4);
-
-INSERT INTO Tasks (TaskType, Difficulty)
-VALUES ('Reaction', 4);
-
-INSERT INTO Tasks (TaskType, Difficulty)
-VALUES ('Memory', 4);
-
-
