@@ -73,9 +73,17 @@ block content
       margin-top: 20px;
       font-size: 18px;
     }
+    
+    .score-display {
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: #FFD700;
+      font-weight: bold;
+    }
 
   .memory-game-container
     h1 Memory Test - #{difficulty.toUpperCase()}
+    .score-display Score: #[span#score]
     .timer Time: #[span#time 0]s
     .game-info#gameInfo Memorize the cards! They'll flip back in 3 seconds...
     .cards-grid#cardsGrid
@@ -91,32 +99,47 @@ block content
         canFlip: false,
         startTime: null,
         timerInterval: null,
-        moves: 0
+        moves: 0,
+        currentScore: 0,
+        baseScore: 0,
+        timeLimit: 0
     };
     
     document.addEventListener('DOMContentLoaded', () => {
         let rows = 2;
         let cols;
         
+        // Set grid size and scoring parameters based on difficulty
         switch(difficulty) {
             case 'easy':
                 cols = 3;
+                gameState.baseScore = 600;
+                gameState.timeLimit = 6; // seconds
                 break;
             case 'medium':
                 cols = 4;
+                gameState.baseScore = 800;
+                gameState.timeLimit = 8; // seconds
                 break;
             case 'hard':
                 cols = 5;
+                gameState.baseScore = 1000;
+                gameState.timeLimit = 10; // seconds
                 break;
             default:
                 cols = 3;
+                gameState.baseScore = 600;
+                gameState.timeLimit = 15; // seconds
         }
+        
+        gameState.currentScore = gameState.baseScore;
         
         initGame(rows, cols);
     });
     
     function initGame(rows, cols) {
         const totalCards = rows * cols;
+        const minMoves = (totalCards / 2); // Minimum possible moves (perfect play)
         const cardsGrid = document.getElementById('cardsGrid');
         
         // Clear previous game
@@ -126,7 +149,11 @@ block content
         gameState.matchedPairs = 0;
         gameState.canFlip = false;
         gameState.moves = 0;
+        gameState.currentScore = gameState.baseScore;
         document.getElementById('time').textContent = '0';
+        
+        // Update score display
+        document.getElementById('score').textContent = gameState.currentScore;
         
         // Set grid style
         cardsGrid.style.gridTemplateColumns = `repeat(${cols}, 100px)`;
@@ -169,11 +196,14 @@ block content
         // Show cards for memorization
         flipAllCards(true);
         
+        // Update game info with time limit
+        document.getElementById('gameInfo').textContent = `Memorize the cards! They'll flip back in 3 seconds... Time limit: ${gameState.timeLimit} seconds`;
+        
         // Start timer for memorization
         setTimeout(() => {
             flipAllCards(false);
             gameState.canFlip = true;
-            document.getElementById('gameInfo').textContent = "Find all matching pairs!";
+            document.getElementById('gameInfo').textContent = `Find all matching pairs! Time limit: ${gameState.timeLimit} seconds`;
             startTimer();
             updateStats();
         }, 3000);
@@ -184,6 +214,8 @@ block content
         
         const index = parseInt(card.dataset.index);
         const cardState = gameState.cards[index];
+        const totalCards = gameState.cards.length;
+        const minMoves = totalCards / 2; // Minimum possible moves (perfect play)
         
         // Don't allow flipping if already flipped or matched
         if (cardState.isFlipped || cardState.isMatched) return;
@@ -192,6 +224,25 @@ block content
         flipCard(cardState, true);
         gameState.flippedCards.push(cardState);
         gameState.moves++;
+        
+        // Calculate score - deduct points for extra moves
+        if (gameState.moves + 1 > minMoves) {
+            // Only deduct points for moves beyond the minimum
+            const movesPenalty = Math.floor((gameState.moves - minMoves) / 2) * 25;
+            gameState.currentScore = Math.max(0, gameState.baseScore - movesPenalty);
+            
+            // Also apply time penalty if over time limit
+            const currentTime = new Date();
+            const elapsedSeconds = Math.floor((currentTime - gameState.startTime) / 1000);
+            if (elapsedSeconds > gameState.timeLimit) {
+                const timePenalty = (elapsedSeconds - gameState.timeLimit) * 10;
+                gameState.currentScore = Math.max(0, gameState.currentScore - timePenalty);
+            }
+            
+            // Update score display
+            document.getElementById('score').textContent = gameState.currentScore;
+        }
+        
         updateStats();
         
         // Check for match if two cards are flipped
@@ -241,7 +292,23 @@ block content
     
     function startTimer() {
         gameState.startTime = new Date();
-        gameState.timerInterval = setInterval(updateTimer, 1000);
+        gameState.timerInterval = setInterval(() => {
+            updateTimer();
+            
+            // Apply time penalty when over time limit
+            const currentTime = new Date();
+            const elapsedSeconds = Math.floor((currentTime - gameState.startTime) / 1000);
+            
+            if (elapsedSeconds > gameState.timeLimit && gameState.canFlip) {
+                const totalCards = gameState.cards.length;
+                const minMoves = totalCards / 2;
+                const movesPenalty = Math.floor(Math.max(0, gameState.moves - minMoves) / 2) * 25;
+                const timePenalty = (elapsedSeconds - gameState.timeLimit) * 10;
+                
+                gameState.currentScore = Math.max(0, gameState.baseScore - movesPenalty - timePenalty);
+                document.getElementById('score').textContent = gameState.currentScore;
+            }
+        }, 1000);
     }
     
     function updateTimer() {
@@ -252,10 +319,28 @@ block content
     
     function endGame() {
         clearInterval(gameState.timerInterval);
-        const finalTime = document.getElementById('time').textContent;
+        const finalTime = parseInt(document.getElementById('time').textContent);
+        gameState.canFlip = false;
+        
+        // Calculate final score
+        const totalCards = gameState.cards.length;
+        const minMoves = totalCards / 2;
+        
+        let timePenalty = 0;
+        if (finalTime > gameState.timeLimit) {
+            timePenalty = (finalTime - gameState.timeLimit) * 10;
+        }
+        
+        const movesPenalty = Math.floor(Math.max(0, gameState.moves - minMoves) / 2) * 25;
+        gameState.currentScore = Math.max(0, gameState.baseScore - movesPenalty - timePenalty);
+        
+        // Update score display
+        document.getElementById('score').textContent = gameState.currentScore;
+        
         document.getElementById('gameInfo').textContent = 
             `Congratulations! You completed the game in ${finalTime} seconds with ${gameState.moves} moves!`;
-        gameState.canFlip = false;
+        document.getElementById('gameStats').textContent = 
+            `Final Score: ${gameState.currentScore} points (Base: ${gameState.baseScore}, Move penalty: -${movesPenalty}, Time penalty: -${timePenalty})`;
     }
     
     function shuffleArray(array) {
