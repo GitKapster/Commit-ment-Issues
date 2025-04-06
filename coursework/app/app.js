@@ -89,7 +89,7 @@ app.get("/", async function (req, res) {
       JOIN Users ON Leaderboard.UserID = Users.UserID
       WHERE Leaderboard.TaskID IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)  
       ORDER BY Leaderboard.Score DESC
-      LIMIT 10;
+      LIMIT 5;
     `;
 
     // Execute SQL query
