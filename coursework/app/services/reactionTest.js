@@ -139,7 +139,6 @@ document.addEventListener("DOMContentLoaded", function() {
         startTime = Date.now();
     }
     
-    // Record the reaction time when the user clicks the green box
     function recordReaction() {
         const reactionTime = (Date.now() - startTime) / 1000;
         console.log("Reaction time:", reactionTime);
@@ -148,6 +147,29 @@ document.addEventListener("DOMContentLoaded", function() {
         reactionBox.style.backgroundColor = "lightblue";
         reactionBox.textContent = "Click to play again";
         reactionBox.dataset.state = "finished";
+    
+        // Send the score to the server
+        fetch("/reaction-test/save-score", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                score: reactionTime.toFixed(3),
+                difficulty: difficulty.toLowerCase() // match 'easy', 'medium', 'hard'
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log("Score saved successfully");
+            } else {
+                console.warn("Failed to save score:", data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error sending score to server:", error);
+        });
     }
     
     // Helper function to get random delay
