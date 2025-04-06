@@ -168,17 +168,18 @@ block content
       const scoreDisplay = document.getElementById('score-display');
       const accuracyDisplay = document.getElementById('accuracy-display');
       
-      // Get difficulty from URL and set speed
+      // Get difficulty and taskId from URL
       const difficulty = "#{difficulty}";
+      const taskId = parseInt("#{taskId}") || 1; // Get taskId from template (with fallback)
       let speed;
       
       // Set different speeds based on difficulty
       if (difficulty === 'easy') {
         speed = 2000; // 2 seconds for easy
       } else if (difficulty === 'medium') {
-        speed = 1200; // 1.2 seconds for medium
+        speed = 1000; // 1.0 seconds for medium
       } else { // hard
-        speed = 600; // 0.6 seconds for hard (faster than before)
+        speed = 500; // 0.5 seconds for hard
       }
       
       // Listen for clicks on the game area to track misses
@@ -337,12 +338,12 @@ block content
         
         gameArea.appendChild(resultContainer);
         
-        // Save score
-        saveScore(finalScore, difficulty, accuracy);
+        // Save score - now includes taskId from the template
+        saveScore(finalScore, difficulty, accuracy, taskId);
       }
       
-      // Save score to database
-      function saveScore(finalScore, gameDifficulty, finalAccuracy) {
+      // Save score to database - now includes taskId parameter
+      function saveScore(finalScore, gameDifficulty, finalAccuracy, taskId) {
         if (finalScore > 0) {
           fetch('/aim-trainer/save-score', {
             method: 'POST',
@@ -352,7 +353,8 @@ block content
             body: JSON.stringify({
               score: finalScore,
               difficulty: gameDifficulty,
-              accuracy: finalAccuracy
+              accuracy: finalAccuracy,
+              taskId: taskId // Include the taskId
             })
           })
           .then(response => response.json())

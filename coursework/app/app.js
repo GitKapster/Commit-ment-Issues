@@ -82,14 +82,14 @@ app.use((req, res, next) => {
 // home page / root page
 app.get("/", async function (req, res) {
   try {
-    // SQL Query to get the top 5 scores for TaskID = 10
+    // Updated SQL Query to get the top 5 scores for all Aim training tasks (including TaskID 10)
     const query = `
       SELECT Users.Username, Leaderboard.Score
       FROM Leaderboard
       JOIN Users ON Leaderboard.UserID = Users.UserID
-      WHERE Leaderboard.TaskID = 10
+      WHERE Leaderboard.TaskID IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)  
       ORDER BY Leaderboard.Score DESC
-      LIMIT 5;
+      LIMIT 10;
     `;
 
     // Execute SQL query
@@ -122,10 +122,15 @@ app.get("/account/:id", async (req, res) => {
   }
 
   try {
-    // Query the database for the Aim task data
-    const aimQuery = 'SELECT * FROM Leaderboard WHERE UserID = ? AND TaskID = 1';
-    const memoryQuery = 'SELECT * FROM Leaderboard WHERE UserID = ? AND TaskID = 2';
-    const reactionQuery = 'SELECT * FROM Leaderboard WHERE UserID = ? AND TaskID = 3';
+    // Updated queries with correct task IDs
+    // Aim trainer uses task IDs 1 (easy), 4 (medium), 7 (hard)
+    const aimQuery = 'SELECT * FROM Leaderboard WHERE UserID = ? AND (TaskID = 1 OR TaskID = 4 OR TaskID = 7)';
+    
+    // Memory test uses task IDs 3 (easy), 6 (medium), 9 (hard)
+    const memoryQuery = 'SELECT * FROM Leaderboard WHERE UserID = ? AND (TaskID = 3 OR TaskID = 6 OR TaskID = 9)';
+    
+    // Reaction test uses task IDs 2 (easy), 5 (medium), 8 (hard)
+    const reactionQuery = 'SELECT * FROM Leaderboard WHERE UserID = ? AND (TaskID = 2 OR TaskID = 5 OR TaskID = 8)';
     
     // Execute the queries using `await` and `mysql2`'s query method
     const aimData = await db.query(aimQuery, [userID]);
@@ -505,14 +510,32 @@ app.post("/forum/topic/:id/reply", (req, res) => {
 app.get("/leaderboard", async (req, res) => {
   try {
     const query = `
-      SELECT Leaderboard.Score, Users.Username, Tasks.TaskType
-      FROM Leaderboard
-      JOIN Users ON Leaderboard.UserID = Users.UserID
-      JOIN Tasks ON Leaderboard.TaskID = Tasks.TaskID
-      ORDER BY Leaderboard.Score DESC
+      SELECT l.Score, u.Username, l.TaskID
+      FROM Leaderboard l
+      JOIN Users u ON l.UserID = u.UserID
+      ORDER BY l.Score DESC
     `;
 
-    const players = await db.query(query);
+    const result = await db.query(query);
+    
+    // Process the players to map task IDs to task types
+    const players = result.map(player => {
+      let taskType = "Unknown";
+      
+      // Map TaskIDs to game types
+      if (player.TaskID === 1 || player.TaskID === 4 || player.TaskID === 7 || player.TaskID === 10) {
+        taskType = "Aim";
+      } else if (player.TaskID === 2 || player.TaskID === 5 || player.TaskID === 8) {
+        taskType = "Reaction";
+      } else if (player.TaskID === 3 || player.TaskID === 6 || player.TaskID === 9) {
+        taskType = "Memory";
+      }
+      
+      return {
+        ...player,
+        TaskType: taskType
+      };
+    });
     
     res.render("leaderboard", { players });
   } catch (err) {
@@ -526,44 +549,73 @@ app.get("/tasks", (req, res) => {
   res.render("tasks"); // Render the tasks.pug template
 });
 
-// Aim Trainer Routes for different difficulties
+// UPDATED AIM TRAINER ROUTES WITH CORRECT TASK IDs
+// Aim Trainer Routes - task IDs: easy (1), medium (4), hard (7)
 app.get("/aim-trainer/easy", (req, res) => {
-  res.render("aim-trainer", { difficulty: "easy" });
+  res.render("aim-trainer", { difficulty: "easy", taskId: 1 });
 });
 
 app.get("/aim-trainer/medium", (req, res) => {
-  res.render("aim-trainer", { difficulty: "medium" });
+  res.render("aim-trainer", { difficulty: "medium", taskId: 4 });
 });
 
 app.get("/aim-trainer/hard", (req, res) => {
-  res.render("aim-trainer", { difficulty: "hard" });
+  res.render("aim-trainer", { difficulty: "hard", taskId: 7 });
 });
 
-// Route to handle saving scores
+// UPDATED REACTION TEST ROUTES WITH CORRECT TASK IDs
+// Reaction Test Routes - task IDs: easy (2), medium (5), hard (8)
+app.get("/reaction-test/easy", (req, res) => {
+  res.render("reaction-test", { difficulty: "easy", taskId: 2 });
+});
+
+app.get("/reaction-test/medium", (req, res) => {
+  res.render("reaction-test", { difficulty: "medium", taskId: 5 });
+});
+
+app.get("/reaction-test/hard", (req, res) => {
+  res.render("reaction-test", { difficulty: "hard", taskId: 8 });
+});
+
+// UPDATED MEMORY TEST ROUTES WITH CORRECT TASK IDs
+// Memory Test Routes - task IDs: easy (3), medium (6), hard (9)
+app.get("/memory-test/easy", (req, res) => {
+  res.render("memory-test", { difficulty: "easy", taskId: 3 });
+});
+
+app.get("/memory-test/medium", (req, res) => {
+  res.render("memory-test", { difficulty: "medium", taskId: 6 });
+});
+
+app.get("/memory-test/hard", (req, res) => {
+  res.render("memory-test", { difficulty: "hard", taskId: 9 });
+});
+
+// Route to handle saving scores for aim trainer
 app.post("/aim-trainer/save-score", async (req, res) => {
   if (!req.session.user) {
     return res.status(401).json({ success: false, message: "Not logged in" });
   }
 
   try {
-    const { score, difficulty, accuracy } = req.body;
+    const { score, difficulty, accuracy, taskId } = req.body;
     const userID = req.session.user.UserID;
     
-    // Aim trainer has TaskID = 10 based on the home page query
-    const taskID = 10;
+    // Use taskId from the request, or map based on difficulty if not provided
+    let actualTaskId = taskId;
+    if (!actualTaskId) {
+      if (difficulty === 'easy') actualTaskId = 1;
+      else if (difficulty === 'medium') actualTaskId = 4;
+      else if (difficulty === 'hard') actualTaskId = 7;
+      else actualTaskId = 1; // default to easy
+    }
     
-    // Map string difficulty to numeric value in database
-    let difficultyNum = 2; // default to medium (2)
-    if (difficulty === 'easy') difficultyNum = 1;
-    if (difficulty === 'hard') difficultyNum = 3;
-    
-    console.log(`Saving score: UserID=${userID}, TaskID=${taskID}, Score=${score}, Difficulty=${difficultyNum}`);
+    console.log(`Saving aim score: UserID=${userID}, TaskID=${actualTaskId}, Score=${score}, Accuracy=${accuracy}`);
     
     // Insert the score into the database
-    // This simple INSERT will just add the score to the database without any duplicate checks
     await db.query(
       "INSERT INTO Leaderboard (UserID, TaskID, Score) VALUES (?, ?, ?)",
-      [userID, taskID, score]
+      [userID, actualTaskId, score]
     );
     
     res.json({ success: true });
@@ -573,30 +625,73 @@ app.post("/aim-trainer/save-score", async (req, res) => {
   }
 });
 
-// Reaction Test Route for Easy Mode
-app.get("/reaction-test/easy", (req, res) => {
-  res.render("reaction-test", { difficulty: "easy" });
-});
-
-// Reaction Test Route for Medium Mode
-app.get("/reaction-test/medium", (req, res) => {
-  res.render("reaction-test", { difficulty: "medium" });
-});
-
-// Reaction Test Route for Hard Mode
-app.get("/reaction-test/hard", (req, res) => {
-  res.render("reaction-test", { difficulty: "hard" });
-});
-
-// Add this route
-app.get('/memory-test/:difficulty', (req, res) => {
-  const difficulty = req.params.difficulty;
-  if (!['easy', 'medium', 'hard'].includes(difficulty)) {
-    return res.redirect('/tasks');
+// Route to handle saving scores for reaction test
+app.post("/reaction-test/save-score", async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ success: false, message: "Not logged in" });
   }
-  res.render('memory-test', { difficulty });
+
+  try {
+    const { score, difficulty, taskId } = req.body;
+    const userID = req.session.user.UserID;
+    
+    // Use taskId from the request, or map based on difficulty if not provided
+    let actualTaskId = taskId;
+    if (!actualTaskId) {
+      if (difficulty === 'easy') actualTaskId = 2;
+      else if (difficulty === 'medium') actualTaskId = 5;
+      else if (difficulty === 'hard') actualTaskId = 8;
+      else actualTaskId = 2; // default to easy
+    }
+    
+    console.log(`Saving reaction score: UserID=${userID}, TaskID=${actualTaskId}, Score=${score}`);
+    
+    // Insert the score into the database
+    await db.query(
+      "INSERT INTO Leaderboard (UserID, TaskID, Score) VALUES (?, ?, ?)",
+      [userID, actualTaskId, score]
+    );
+    
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error saving score:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
 });
 
+// Route to handle saving scores for memory test
+app.post("/memory-test/save-score", async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ success: false, message: "Not logged in" });
+  }
+
+  try {
+    const { score, difficulty, taskId } = req.body;
+    const userID = req.session.user.UserID;
+    
+    // Use taskId from the request, or map based on difficulty if not provided
+    let actualTaskId = taskId;
+    if (!actualTaskId) {
+      if (difficulty === 'easy') actualTaskId = 3;
+      else if (difficulty === 'medium') actualTaskId = 6;
+      else if (difficulty === 'hard') actualTaskId = 9;
+      else actualTaskId = 3; // default to easy
+    }
+    
+    console.log(`Saving memory score: UserID=${userID}, TaskID=${actualTaskId}, Score=${score}`);
+    
+    // Insert the score into the database
+    await db.query(
+      "INSERT INTO Leaderboard (UserID, TaskID, Score) VALUES (?, ?, ?)",
+      [userID, actualTaskId, score]
+    );
+    
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error saving score:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
 
 // Start server on port 3000
 app.listen(3000,function(){
