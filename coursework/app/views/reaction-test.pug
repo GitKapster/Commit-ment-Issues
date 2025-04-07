@@ -2,258 +2,156 @@ extends layout
 
 block content
   style.
-    .reaction-container {
-      text-align: center;
-      width: 100%;
-      max-width: 500px;
-      margin: 0 auto;
-      padding-top: 20px;
-    }
-
-    h1 {
-      color: white;
-      margin-bottom: 30px;
-    }
-
-    #reaction-box {
-      width: 300px;
-      height: 300px;
+    .reaction-game-container {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      background-color: turquoise;
-      cursor: pointer;
-      border-radius: 10px;
-      font-size: 24px;
-      font-weight: bold;
-      transition: background-color 0.2s ease;
-      text-align: center;
-      color: black;
-      user-select: none;
-      margin: 0 auto;
-    }
-
-    #reaction-time {
-      font-size: 22px;
-      font-weight: bold;
-      color: white;
-      margin: 20px 0;
-    }
-    
-    .difficulty-info {
-      color: #ccc;
-      font-size: 16px;
       margin-top: 20px;
-      text-align: left;
-      padding: 15px;
-      background-color: rgba(0,0,0,0.2);
-      border-radius: 8px;
-      max-width: 500px;
-      margin: 20px auto;
+      color: white;
     }
 
-  .reaction-container
-    p#reaction-time Ready to Start!
-    div#reaction-box Click to Start
-    
-    .difficulty-info
-      h3 Difficulty Settings:
-      if difficulty === "Easy"
-        p Easy Mode: The box will turn directly from red to green.
-      else if difficulty === "Medium"
-        p Medium Mode: The box will show 1-2 random colors (purple or yellow) before turning green.
-      else
-        p Hard Mode: The box will show 1-4 random colors (purple, yellow, pink, or orange) before turning green.
-      
-      p Remember to only click when the box is GREEN!
+    .reaction-button {
+      padding: 20px 40px;
+      background-color: #8BC34A;
+      color: white;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
 
-  //- Include the script inline
+    .reaction-button:active {
+      background-color: #6A8A3F;
+    }
+
+    .reaction-button.disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .game-info {
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+
+    .timer {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .game-stats {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+    .score-display {
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: #FFD700;
+      font-weight: bold;
+    }
+
+  .reaction-game-container
+    h1 Reaction Test - #{difficulty.toUpperCase()}
+    .score-display Score: #[span#score]
+    .timer Time: #[span#time 0]s
+    .game-info#gameInfo Get ready! Wait for the button to change color...
+    .reaction-button#reactionButton Click me when it turns green!
+    .game-stats#gameStats Moves: #[span#moves 0]
+
   script.
-    document.addEventListener("DOMContentLoaded", function() {
-        const reactionBox = document.getElementById("reaction-box");
-        const reactionTimeDisplay = document.getElementById("reaction-time");
-        
-        if (!reactionBox || !reactionTimeDisplay) {
-            console.error("Could not find required elements");
-            return;
-        }
-        
-        let startTime;
-        let difficulty = "#{difficulty}"; // Get from template variable
-        
-        // Initialize the box with proper state
-        reactionBox.dataset.state = "ready";
-        
-        // Main click handler for the reaction box
-        reactionBox.addEventListener("click", function() {
-            console.log("Box clicked. State:", reactionBox.dataset.state);
-            
-            if (reactionBox.dataset.state === "ready") {
-                startCountdown();
-            } else if (reactionBox.dataset.state === "waiting" && reactionBox.style.backgroundColor === "green") {
-                recordReaction();
-            } else if (reactionBox.dataset.state === "finished") {
-                resetGame();
-            }
-        });
-        
-        // Reset game to initial state
-        function resetGame() {
-            reactionBox.style.backgroundColor = "turquoise";
-            reactionBox.textContent = "Click to Start";
-            reactionTimeDisplay.textContent = "Ready to Start!";
-            reactionBox.dataset.state = "ready";
-        }
-        
-        // Start the countdown after the first click
-        function startCountdown() {
-            reactionBox.style.backgroundColor = "turquoise";
-            reactionBox.textContent = "Get Ready!";
-            reactionBox.dataset.state = "countdown";
-            
-            let countdown = 3;
-            
-            let countdownInterval = setInterval(function() {
-                reactionBox.textContent = countdown.toString();
-                countdown--;
-                
-                if (countdown < 0) {
-                    clearInterval(countdownInterval);
-                    startReactionTest();
-                }
-            }, 1000);
-        }
-        
-        // Start the reaction test
-        function startReactionTest() {
-            reactionBox.style.backgroundColor = "red";
-            reactionBox.textContent = "Wait...";
-            reactionBox.dataset.state = "waiting";
-            
-            // Initial wait time (red screen)
-            const initialDelay = Math.floor(Math.random() * 2000) + 3000; // 3-5 seconds
-            
-            setTimeout(function() {
-                // After initial delay, show color sequence based on difficulty
-                if (difficulty === "Easy") {
-                    // Easy mode: directly to green
-                    showGreen();
-                } else if (difficulty === "Medium") {
-                    // Medium mode: 1-2 distractor colors
-                    const numColors = Math.floor(Math.random() * 2) + 1;
-                    const colors = ["purple", "yellow"];
-                    const selectedColors = [];
-                    
-                    // Select random colors without repeating
-                    for (let i = 0; i < numColors; i++) {
-                        if (colors.length > 0) {
-                            const randomIndex = Math.floor(Math.random() * colors.length);
-                            selectedColors.push(colors[randomIndex]);
-                            colors.splice(randomIndex, 1);
-                        }
-                    }
-                    
-                    console.log("Medium colors:", selectedColors);
-                    showColorSequence(selectedColors);
-                } else {
-                    // Hard mode: 1-4 distractor colors
-                    const numColors = Math.floor(Math.random() * 4) + 1;
-                    const colors = ["purple", "yellow", "pink", "orange"];
-                    const selectedColors = [];
-                    
-                    // Select random colors without repeating
-                    for (let i = 0; i < numColors; i++) {
-                        if (colors.length > 0) {
-                            const randomIndex = Math.floor(Math.random() * colors.length);
-                            selectedColors.push(colors[randomIndex]);
-                            colors.splice(randomIndex, 1);
-                        }
-                    }
-                    
-                    console.log("Hard colors:", selectedColors);
-                    showColorSequence(selectedColors);
-                }
-            }, initialDelay);
-        }
-        
-        // Show the sequence of distractor colors
-        function showColorSequence(colors) {
-            if (colors.length === 0) {
-                showGreen();
-                return;
-            }
-            
-            let colorIndex = 0;
-            
-            function nextColor() {
-                if (colorIndex < colors.length) {
-                    const color = colors[colorIndex];
-                    console.log("Showing color:", color);
-                    
-                    reactionBox.style.backgroundColor = color;
-                    reactionBox.textContent = "Not Yet!";
-                    
-                    // Delay before next color
-                    const colorDuration = (difficulty === "Hard") ? 
-                        Math.floor(Math.random() * 500) + 300 : // 300-800ms for Hard
-                        Math.floor(Math.random() * 800) + 500;  // 500-1300ms for Medium
-                    
-                    colorIndex++;
-                    setTimeout(nextColor, colorDuration);
-                } else {
-                    // End of sequence, show green
-                    showGreen();
-                }
-            }
-            
-            // Start the color sequence
-            nextColor();
-        }
-        
-        // Show the green box and start timing
-        function showGreen() {
-            console.log("Showing green");
-            reactionBox.style.backgroundColor = "green";
-            reactionBox.textContent = "CLICK!";
-            startTime = Date.now();
-        }
-        
-        function recordReaction() {
-            const reactionTimeInMs = Date.now() - startTime;
-            const reactionTimeInSeconds = reactionTimeInMs / 1000;
-            const scoreAsInteger = Math.round(reactionTimeInMs);
-            
-            console.log("Reaction time:", reactionTimeInSeconds, "seconds |", scoreAsInteger, "milliseconds");
-            
-            reactionTimeDisplay.textContent = `Time: ${reactionTimeInSeconds.toFixed(3)} seconds`;
-            reactionBox.style.backgroundColor = "lightblue";
-            reactionBox.textContent = "Click to play again";
-            reactionBox.dataset.state = "finished";
+    let gameState = {
+      score: 0,
+      moves: 0,
+      timeLimit: 0,
+      reactionTime: 0,
+      startTime: null,
+      reactionButton: null
+    };
 
-            // Send the score to the server as a whole integer (milliseconds)
-            fetch("/reaction-test/save-score", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    score: scoreAsInteger,
-                    difficulty: difficulty.toLowerCase() // match 'easy', 'medium', 'hard'
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    console.log("Score saved successfully");
-                } else {
-                    console.warn("Failed to save score:", data.message);
-                }
-            })
-            .catch(error => {
-                console.error("Error sending score to server:", error);
-            });
+    document.addEventListener('DOMContentLoaded', () => {
+        const difficulty = '#{difficulty}';
+        let reactionButton = document.getElementById('reactionButton');
+        gameState.reactionButton = reactionButton;
+        
+        // Set up difficulty-based settings
+        switch (difficulty) {
+            case 'easy':
+                gameState.timeLimit = 5; // seconds
+                break;
+            case 'medium':
+                gameState.timeLimit = 4; // seconds
+                break;
+            case 'hard':
+                gameState.timeLimit = 3; // seconds
+                break;
+            default:
+                gameState.timeLimit = 5; // Default
         }
         
-        // Start the game
-        resetGame();
+        // Initialize game state
+        startReactionTest();
     });
+
+    function startReactionTest() {
+        document.getElementById('gameInfo').textContent = 'Get ready! Wait for the button to turn green...';
+        document.getElementById('score').textContent = gameState.score;
+        document.getElementById('moves').textContent = gameState.moves;
+
+        gameState.reactionButton.classList.add('disabled');
+        gameState.reactionButton.textContent = 'Wait...';
+
+        // Wait for a random time between 1 and 5 seconds before changing the button color
+        const randomWaitTime = Math.floor(Math.random() * 5000) + 1000;
+
+        setTimeout(() => {
+            // Change button to green
+            gameState.reactionButton.classList.remove('disabled');
+            gameState.reactionButton.style.backgroundColor = '#4CAF50';
+            gameState.reactionButton.textContent = 'Click me now!';
+            gameState.startTime = new Date(); // Start timing
+            document.getElementById('gameInfo').textContent = 'Click when the button turns green!';
+        }, randomWaitTime);
+        
+        // Start the countdown timer for time limit
+        startTimer();
+    }
+
+    function startTimer() {
+        let elapsedTime = 0;
+        const timerInterval = setInterval(() => {
+            elapsedTime++;
+            document.getElementById('time').textContent = elapsedTime;
+            
+            if (elapsedTime >= gameState.timeLimit) {
+                clearInterval(timerInterval);
+                endGame('Time is up!');
+            }
+        }, 1000);
+    }
+
+    function handleButtonClick() {
+        if (gameState.reactionButton.classList.contains('disabled')) {
+            return; // Ignore click if button isn't green
+        }
+        
+        const reactionTime = new Date() - gameState.startTime;
+        gameState.reactionTime = reactionTime;
+        gameState.moves++;
+
+        document.getElementById('moves').textContent = gameState.moves;
+        gameState.score = Math.max(0, Math.floor(1000 - reactionTime / 10)); // Scoring logic
+
+        document.getElementById('score').textContent = gameState.score;
+
+        document.getElementById('gameInfo').textContent = `Your reaction time: ${reactionTime}ms`;
+
+        // After clicking, wait for a moment before restarting the game
+        setTimeout(() => {
+            startReactionTest();
+        }, 2000);
+    }
+
+    document.getElementById('reactionButton').addEventListener('click', handleButtonClick);
+
