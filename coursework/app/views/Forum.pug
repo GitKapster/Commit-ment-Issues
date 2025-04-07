@@ -10,13 +10,13 @@ block content
       h2 Categories
       .category-list
         .category-item
-          a(href='/forum/category/general') General
+          a(href='javascript:void(0)' onclick='showComingSoon()') General
           .category-description Discuss general topics
         .category-item
-          a(href='/forum/category/questions') Questions
+          a(href='javascript:void(0)' onclick='showComingSoon()') Questions
           .category-description Ask and answer questions
         .category-item
-          a(href='/forum/category/announcements') Announcements
+          a(href='javascript:void(0)' onclick='showComingSoon()') Announcements
           .category-description Important updates and announcements
 
     // Recent topics section
@@ -78,6 +78,17 @@ block content
             .form-actions
               button.submit-btn(type="submit") Post Topic
               button.cancel-btn(type="button" onclick="closeNewTopicModal()") Cancel
+    
+    // Coming Soon Modal
+    #coming-soon-modal.modal.hidden
+      .modal-content
+        .modal-header
+          h3 Coming Soon
+          span.close-modal(onclick="closeComingSoonModal()") &times;
+        .modal-body
+          p This feature is coming soon. Check back later!
+          .form-actions
+            button.cancel-btn(type="button" onclick="closeComingSoonModal()") Close
       
   script.
     // Toggle topic content visibility
@@ -95,6 +106,15 @@ block content
       document.getElementById('new-topic-modal').classList.add('hidden');
       document.getElementById('new-topic-form').reset();
       document.getElementById('word-count').textContent = '0';
+    }
+    
+    // Coming Soon Modal functions
+    function showComingSoon() {
+      document.getElementById('coming-soon-modal').classList.remove('hidden');
+    }
+    
+    function closeComingSoonModal() {
+      document.getElementById('coming-soon-modal').classList.add('hidden');
     }
     
     // Word counter
