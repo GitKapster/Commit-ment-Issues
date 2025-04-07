@@ -190,7 +190,7 @@ block content
     
     function initGame(rows, cols) {
         const totalCards = rows * cols;
-        const minMoves = (totalCards / 2); // Minimum possible moves (perfect play)
+        const minMoves = totalCards / 2; // Minimum possible moves (perfect play)
         const cardsGrid = document.getElementById('cardsGrid');
         
         // Clear previous game
@@ -274,31 +274,31 @@ block content
         // Flip the card
         flipCard(cardState, true);
         gameState.flippedCards.push(cardState);
-        gameState.moves++;
-        
-        // Calculate score - deduct points for extra moves
-        if (gameState.moves + 1 > minMoves) {
-            // Only deduct points for moves beyond the minimum
-            const movesPenalty = Math.floor((gameState.moves - minMoves) / 2) * 25;
-            gameState.currentScore = Math.max(0, gameState.baseScore - movesPenalty);
-            
-            // Also apply time penalty if over time limit
-            const currentTime = new Date();
-            const elapsedSeconds = Math.floor((currentTime - gameState.startTime) / 1000);
-            if (elapsedSeconds > gameState.timeLimit) {
-                const timePenalty = (elapsedSeconds - gameState.timeLimit) * 10;
-                gameState.currentScore = Math.max(0, gameState.currentScore - timePenalty);
-            }
-            
-            // Update score display
-            document.getElementById('score').textContent = gameState.currentScore;
-        }
-        
-        updateStats();
         
         // Check for match if two cards are flipped
         if (gameState.flippedCards.length === 2) {
+            // This counts as one move (a pair flip)
+            gameState.moves++;
             gameState.canFlip = false;
+            
+            // Calculate score - only deduct points for moves beyond the minimum
+            if (gameState.moves > minMoves) {
+                const movesPenalty = (gameState.moves - minMoves) * 25;
+                gameState.currentScore = Math.max(0, gameState.baseScore - movesPenalty);
+                
+                // Also apply time penalty if over time limit
+                const currentTime = new Date();
+                const elapsedSeconds = Math.floor((currentTime - gameState.startTime) / 1000);
+                if (elapsedSeconds > gameState.timeLimit) {
+                    const timePenalty = (elapsedSeconds - gameState.timeLimit) * 10;
+                    gameState.currentScore = Math.max(0, gameState.currentScore - timePenalty);
+                }
+                
+                // Update score display
+                document.getElementById('score').textContent = gameState.currentScore;
+            }
+            
+            updateStats();
             
             if (gameState.flippedCards[0].value === gameState.flippedCards[1].value) {
                 // Match found
@@ -353,7 +353,7 @@ block content
             if (elapsedSeconds > gameState.timeLimit && gameState.canFlip) {
                 const totalCards = gameState.cards.length;
                 const minMoves = totalCards / 2;
-                const movesPenalty = Math.floor(Math.max(0, gameState.moves - minMoves) / 2) * 25;
+                const movesPenalty = (gameState.moves - minMoves) * 25;
                 const timePenalty = (elapsedSeconds - gameState.timeLimit) * 10;
                 
                 gameState.currentScore = Math.max(0, gameState.baseScore - movesPenalty - timePenalty);
@@ -368,7 +368,7 @@ block content
         document.getElementById('time').textContent = elapsedSeconds;
     }
     
-    function endGame() {
+    async function endGame() {
         clearInterval(gameState.timerInterval);
         const finalTime = parseInt(document.getElementById('time').textContent);
         gameState.canFlip = false;
@@ -382,7 +382,7 @@ block content
             timePenalty = (finalTime - gameState.timeLimit) * 10;
         }
         
-        const movesPenalty = Math.floor(Math.max(0, gameState.moves - minMoves) / 2) * 25;
+        const movesPenalty = (gameState.moves - minMoves) * 25;
         gameState.currentScore = Math.max(0, gameState.baseScore - movesPenalty - timePenalty);
         
         // Update score display
@@ -398,11 +398,11 @@ block content
         // Close modal button
         document.getElementById('closeModal').addEventListener('click', () => {
             document.getElementById('scoreModal').style.display = 'none';
-        });
+        }, { once: true });
         
         // Save the score if user is logged in
         if (isLoggedIn) {
-            saveScore(gameState.currentScore);
+            await saveScore(gameState.currentScore);
         }
     }
     
