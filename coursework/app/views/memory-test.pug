@@ -1,4 +1,3 @@
-//- views/memory-test.pug
 extends layout
 
 block content
@@ -7,7 +6,7 @@ block content
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-top: 20px;
+      margin-top: 100px;
       color: white;
     }
     
@@ -81,6 +80,43 @@ block content
       font-weight: bold;
     }
 
+    #scoreModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      z-index: 1000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #333;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+    }
+
+    #closeModal, .modal-btn {
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    #closeModal:hover, .modal-btn:hover {
+      background: #45a049;
+    }
+
   .memory-game-container
     h1 Memory Test - #{difficulty.toUpperCase()}
     .score-display Score: #[span#score]
@@ -89,9 +125,24 @@ block content
     .cards-grid#cardsGrid
     .game-stats#gameStats
 
+  #scoreModal
+    .modal-content
+      h2 Game Completed!
+      p#finalStats
+      if user
+        p#saveStatus Your score has been saved!
+        button#closeModal Close
+      else
+        p You need to be logged in to save your score.
+        div(style="display: flex; gap: 10px; justify-content: center;")
+          a.modal-btn(href="/login") Login
+          a.modal-btn(href="/register") Register
+          button#closeModal Play Without Saving
+
   script.
     const symbols = ['★', '☀', '♫', '☂', '♠', '♥', '♦', '♣', '☎', '✈', '☯', '⚓'];
     const difficulty = '#{difficulty}';
+    const isLoggedIn = #{user ? true : false};
     const gameState = {
         cards: [],
         flippedCards: [],
@@ -139,7 +190,7 @@ block content
     
     function initGame(rows, cols) {
         const totalCards = rows * cols;
-        const minMoves = (totalCards / 2); // Minimum possible moves (perfect play)
+        const minMoves = totalCards / 2; // Minimum possible moves (perfect play)
         const cardsGrid = document.getElementById('cardsGrid');
         
         // Clear previous game
@@ -223,31 +274,31 @@ block content
         // Flip the card
         flipCard(cardState, true);
         gameState.flippedCards.push(cardState);
-        gameState.moves++;
-        
-        // Calculate score - deduct points for extra moves
-        if (gameState.moves + 1 > minMoves) {
-            // Only deduct points for moves beyond the minimum
-            const movesPenalty = Math.floor((gameState.moves - minMoves) / 2) * 25;
-            gameState.currentScore = Math.max(0, gameState.baseScore - movesPenalty);
-            
-            // Also apply time penalty if over time limit
-            const currentTime = new Date();
-            const elapsedSeconds = Math.floor((currentTime - gameState.startTime) / 1000);
-            if (elapsedSeconds > gameState.timeLimit) {
-                const timePenalty = (elapsedSeconds - gameState.timeLimit) * 10;
-                gameState.currentScore = Math.max(0, gameState.currentScore - timePenalty);
-            }
-            
-            // Update score display
-            document.getElementById('score').textContent = gameState.currentScore;
-        }
-        
-        updateStats();
         
         // Check for match if two cards are flipped
         if (gameState.flippedCards.length === 2) {
+            // This counts as one move (a pair flip)
+            gameState.moves++;
             gameState.canFlip = false;
+            
+            // Calculate score - only deduct points for moves beyond the minimum
+            if (gameState.moves > minMoves) {
+                const movesPenalty = (gameState.moves - minMoves) * 25;
+                gameState.currentScore = Math.max(0, gameState.baseScore - movesPenalty);
+                
+                // Also apply time penalty if over time limit
+                const currentTime = new Date();
+                const elapsedSeconds = Math.floor((currentTime - gameState.startTime) / 1000);
+                if (elapsedSeconds > gameState.timeLimit) {
+                    const timePenalty = (elapsedSeconds - gameState.timeLimit) * 10;
+                    gameState.currentScore = Math.max(0, gameState.currentScore - timePenalty);
+                }
+                
+                // Update score display
+                document.getElementById('score').textContent = gameState.currentScore;
+            }
+            
+            updateStats();
             
             if (gameState.flippedCards[0].value === gameState.flippedCards[1].value) {
                 // Match found
@@ -302,7 +353,7 @@ block content
             if (elapsedSeconds > gameState.timeLimit && gameState.canFlip) {
                 const totalCards = gameState.cards.length;
                 const minMoves = totalCards / 2;
-                const movesPenalty = Math.floor(Math.max(0, gameState.moves - minMoves) / 2) * 25;
+                const movesPenalty = (gameState.moves - minMoves) * 25;
                 const timePenalty = (elapsedSeconds - gameState.timeLimit) * 10;
                 
                 gameState.currentScore = Math.max(0, gameState.baseScore - movesPenalty - timePenalty);
@@ -317,7 +368,7 @@ block content
         document.getElementById('time').textContent = elapsedSeconds;
     }
     
-    function endGame() {
+    async function endGame() {
         clearInterval(gameState.timerInterval);
         const finalTime = parseInt(document.getElementById('time').textContent);
         gameState.canFlip = false;
@@ -331,16 +382,56 @@ block content
             timePenalty = (finalTime - gameState.timeLimit) * 10;
         }
         
-        const movesPenalty = Math.floor(Math.max(0, gameState.moves - minMoves) / 2) * 25;
+        const movesPenalty = (gameState.moves - minMoves) * 25;
         gameState.currentScore = Math.max(0, gameState.baseScore - movesPenalty - timePenalty);
         
         // Update score display
         document.getElementById('score').textContent = gameState.currentScore;
         
-        document.getElementById('gameInfo').textContent = 
-            `Congratulations! You completed the game in ${finalTime} seconds with ${gameState.moves} moves!`;
-        document.getElementById('gameStats').textContent = 
-            `Final Score: ${gameState.currentScore} points (Base: ${gameState.baseScore}, Move penalty: -${movesPenalty}, Time penalty: -${timePenalty})`;
+        // Prepare final stats
+        const finalStats = `Time: ${finalTime}s | Moves: ${gameState.moves} | Score: ${gameState.currentScore}`;
+        document.getElementById('finalStats').textContent = finalStats;
+        
+        // Show the modal
+        document.getElementById('scoreModal').style.display = 'flex';
+        
+        // Close modal button
+        document.getElementById('closeModal').addEventListener('click', () => {
+            document.getElementById('scoreModal').style.display = 'none';
+        }, { once: true });
+        
+        // Save the score if user is logged in
+        if (isLoggedIn) {
+            await saveScore(gameState.currentScore);
+        }
+    }
+    
+    async function saveScore(score) {
+        try {
+            document.getElementById('saveStatus').textContent = 'Saving your score...';
+            
+            const response = await fetch('/memory-test/save-score', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    score: score,
+                    difficulty: difficulty
+                })
+            });
+            
+            const result = await response.json();
+            if (result.success) {
+                document.getElementById('saveStatus').textContent = 'Score saved successfully!';
+            } else {
+                document.getElementById('saveStatus').textContent = 'Failed to save score. Please try again.';
+                console.error('Failed to save score:', result.message);
+            }
+        } catch (error) {
+            document.getElementById('saveStatus').textContent = 'Error saving score. Please try again.';
+            console.error('Error saving score:', error);
+        }
     }
     
     function shuffleArray(array) {
