@@ -1,6 +1,7 @@
 extends game-template
 
 block page_title
+  h1 CS2 mechanics guide
 
 block navigation
       .nav-container
@@ -15,30 +16,92 @@ block navigation
             a(href='#practice') Practice Routine
             a(href='#overview') Overview
 
+block section_introduction
+  | Welcome to our comprehensive guide on different mechanics within Counter-Strike 2
+
 block intro_image
+  .image-container
+    img.img-full(src="https://csmarket.gg/blog/wp-content/uploads/2025/01/1_thumbnail-1024x546.png" alt="CS2 Gameplay")
+    .image-caption Counter-Strike 2 Gameplay
 
 block section_aiming_overview
+  | Aiming in CS2 requires precision and control
+  | The game rewards methodical positioning and first-bullet accuracy with high damage headshots
+  | All weapons have movement inaccuracy factors, with standing still being essential for maximum precision
+  | Success in duels heavily depends on your crosshair placement, recoil control, and understanding weapon spray patterns
 
-block section_aiming_styles 
+block section_aiming_styles
+  | Different aiming styles develop based on roles, preferences and weapon choices
+  | Entry fraggers often use higher sensitivity for quick flicks and checking multiple angles when entering sites
+  | AWPers and support players might prefer lower sensitivity for holding angles and making precise shots
+  | Your weapon choice also impacts your ideal sensitivity - rifle players need good spray control while AWPers need precision for single shots
 
-block section_aiming_tip 
+block section_aiming_tip
+  | "Crosshair placement is everything. If your crosshair is already at head level where enemies will peek, you've already won half the battle." - s1mple
 
 block section_mouse_control 
+  | Consistent mouse control is key in CS2 where headshots and spray control determine the outcome of fights
+  | Finding a sensitivity that lets you control both micro-adjustments and spray patterns is important
+  | Your setup should allow for both precision and the ability to react to flanks
 
 block section_sensitivity 
+  | A good starting point is ensuring you can do a 180° turn in one mousepad swipe
+  | Lower sensitivities (400-800 eDPI) are common among pros for better spray control
+  | Consider your desk space, mousepad size, and arm/wrist aiming preference
+  | Most pro players use between 600-1200 eDPI (mouse DPI × in-game sensitivity)
 
 block section_crosshair_placement
+  | Good crosshair placement is the foundation of effective CS2 aiming.
+  | Always keep your crosshair at head level and pre-aim common angles.
+  | As you move around the map, constantly adjust your aim to where enemies are most likely to appear, this is called pre aiming.
+  | This minimizes the adjustments needed when an enemy appears, giving you faster time-to-kill.
 
-block crosshair_placement_image 
+block crosshair_placement_image
+  .image-container 
+    img.img-large(src="http://blog.scope.gg/content/images/2021/02/2-lineika-1.jpg" alt="CS2 Crosshair Placement")
+    .image-caption Proper Crosshair Placement in CS2
 
-block crosshair_design 
+block crosshair_design
+  | Creating your perfect crosshair is one of the most important tasks as a new player, it is very easy to be overstimulated by the amount of choice and customization.
+  | Most players chose to go for a small simple crosshair with a static style, but many also like thick bulky crosshairs with dynamic styles it is all upt to preference.
+  | A small, visible crosshair helps with precision without obscuring targets.
+  | Static crosshairs are preferred by most players as they provide consistent feedback without additional clutter and distraction on the screen.
+  | Many professional players use a simple dot or small cross with a gap in the middle.
 
-block section_movement_overview 
+block crosshair_image
+  .image-container
+    img.img-med(src="https://images.steamusercontent.com/ugc/308865903687468218/33D45DA6D63576176A0554724B194213D9EDF95A/" alt="CS2 Crosshairs" style="width: 600px; height: auto;")
+    .image-caption Examples of popular pro crosshairs
 
-block movement_practice 
+block section_movement_overview
+  | Movement in CS2 is a key skill that separates good players from great ones
+  | Counter-strafing (tapping the opposite movement key to stop quickly) is essential for accurate shooting
+  | Proper peeking techniques like shoulder peeking, jiggle peeking, and wide swings give you advantages in duels
+  | Advanced movement techniques like bunny hopping and air strafing can provide tactical advantages in certain situations
 
-block practice_overview 
+block movement_practice
+  .video-container
+    iframe(
+      src="https://www.youtube.com/embed/AGcgQEzCCrI",
+      frameborder="0",
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+      allowfullscreen
+    )
+
+block practice_overview
+  | Our practice routine focuses on: Crosshair Placement, Counter-Strafing, Spray Control, and Utility Usage
 
 block practice_routine 
+  .practice-container
+    div.practice-item 1. Warm up with aim_botz or other workshop maps (15 mins)
+    div.practice-item 2. Practice spray patterns on recoil master map (10 mins)
+    div.practice-item 3. Work on movement and counter-strafing (10 mins)
+    div.practice-item 4. Practice utility lineups for your main maps (15 mins)
+    div.practice-item 5. Deathmatch focusing on headshots only (20 mins)
+    div.practice-item 6. Review your recent demos to identify areas for improvement
 
 block section_overview
+  | Becoming proficient in CS2 requires consistent practice of these fundamental mechanics
+  | Focus on developing good habits early rather than trying to fix bad ones later
+  | Remember that game sense and positioning are just as important as mechanical skill
+  | Stay patient - improvement takes time but follows consistent practice
