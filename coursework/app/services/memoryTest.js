@@ -1,4 +1,3 @@
-// public/memory-test.js
 document.addEventListener('DOMContentLoaded', () => {
   const difficulty = window.location.pathname.split('/')[2];
   let rows, cols;
@@ -50,6 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const timerElement = document.getElementById('time');
   const gameStatsElement = document.getElementById('gameStats');
   const scoreElement = document.getElementById('score');
+  const scoreModal = document.getElementById('scoreModal');
+  const finalStatsElement = document.getElementById('finalStats');
+  const saveStatusElement = document.getElementById('saveStatus');
   
   // Initialize the game
   function initGame() {
@@ -61,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     gameState.canFlip = false;
     gameState.moves = 0;
     gameState.currentScore = baseScore;
+    scoreModal.style.display = 'none';
     
     // Set grid style
     cardsGrid.style.gridTemplateColumns = `repeat(${cols}, 100px)`;
@@ -227,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
     timerElement.textContent = elapsedSeconds;
   }
   
-  function endGame() {
+  async function endGame() {
     clearInterval(gameState.timerInterval);
     const finalTime = parseInt(timerElement.textContent);
     
@@ -242,9 +245,46 @@ document.addEventListener('DOMContentLoaded', () => {
     
     updateScore();
     
-    difficultyInfo.textContent = `Congratulations! You completed the game in ${finalTime} seconds with ${gameState.moves} moves!`;
-    gameStatsElement.textContent = `Final Score: ${gameState.currentScore} points (Base: ${baseScore}, Move penalty: -${movesPenalty}, Time penalty: -${timePenalty})`;
-    gameState.canFlip = false;
+    // Show final stats in modal
+    finalStatsElement.textContent = `Time: ${finalTime}s | Moves: ${gameState.moves} | Score: ${gameState.currentScore}`;
+    scoreModal.style.display = 'flex';
+    
+    // Set up close button
+    document.getElementById('closeModal').addEventListener('click', () => {
+      scoreModal.style.display = 'none';
+    }, { once: true });
+    
+    // Save score if user is logged in
+    try {
+      const response = await fetch('/check-auth');
+      const authData = await response.json();
+      
+      if (authData.isAuthenticated) {
+        saveStatusElement.textContent = 'Saving your score...';
+        const saveResponse = await fetch('/memory-test/save-score', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            score: gameState.currentScore,
+            difficulty: difficulty
+          })
+        });
+        
+        const saveResult = await saveResponse.json();
+        if (saveResult.success) {
+          saveStatusElement.textContent = 'Score saved successfully!';
+        } else {
+          saveStatusElement.textContent = 'Failed to save score. Please try again.';
+        }
+      }
+    } catch (error) {
+      console.error('Error saving score:', error);
+      if (saveStatusElement) {
+        saveStatusElement.textContent = 'Error saving score. Please try again.';
+      }
+    }
   }
   
   // Utility function to shuffle array
